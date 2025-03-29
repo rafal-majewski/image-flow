@@ -6,6 +6,7 @@ export default {
 	experimentalOperatorPosition: "start",
 	experimentalTernaries: true,
 	objectWrap: "collapse",
+	overrides: [],
 	plugins: ["prettier-plugin-svelte"],
 	printWidth: 80,
 	quoteProps: "as-needed",
@@ -13,5 +14,4 @@ export default {
 	singleQuote: false,
 	trailingComma: "all",
 	useTabs: true,
-	overrides: [],
 } as const satisfies Config;

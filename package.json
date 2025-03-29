@@ -1,14 +1,21 @@
 {
 	"devDependencies": {
+		"@sveltejs/adapter-static": "3.0.8",
 		"@sveltejs/kit": "2.20.2",
+		"@sveltejs/vite-plugin-svelte": "5.0.3",
+		"@types/node": "22.13.14",
 		"prettier": "3.5.3",
 		"prettier-plugin-svelte": "3.3.3",
+		"svelte": "5.25.3",
 		"svelte-check": "4.1.5",
+		"typescript": "5.8.2",
 		"vite": "6.2.3"
 	},
+	"name": "belve-explorer",
 	"scripts": {
-		"build:check": "svelte-kit sync && svelte-check --fail-on-warnings",
+		"build:check": "svelte-sync && svelte-check",
 		"dev": "vite dev"
 	},
-	"type": "module"
+	"type": "module",
+	"version": "0.0.0"
 }

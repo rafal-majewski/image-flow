@@ -1,0 +1,33 @@
+{
+	"appPort": [],
+	"build": {
+		"args": {"ALPINE_VERSION": "3.21", "NODE_JS_VERSION": "23.10.0"},
+		"cacheFrom": [],
+		"dockerfile": "./Dockerfile",
+		"options": []
+	},
+	"capAdd": [],
+	"containerEnv": {},
+	"containerUser": "node",
+	"customizations": {
+		"vscode": {"extensions": ["emeraldwalk.RunOnSave", "svelte.svelte-vscode"]}
+	},
+	"features": {},
+	"forwardPorts": [],
+	"init": false,
+	"mounts": [],
+	"name": "Development",
+	"otherPortsAttributes": {},
+	"overrideCommand": true,
+	"portsAttributes": {},
+	"privileged": false,
+	"remoteEnv": {},
+	"remoteUser": "node",
+	"runArgs": [],
+	"securityOpt": [],
+	"shutdownAction": "stopContainer",
+	"updateRemoteUserUID": true,
+	"userEnvProbe": "none",
+	"workspaceFolder": "/home/node/${localWorkspaceFolderBasename}",
+	"workspaceMount": "source=${localWorkspaceFolder},target=/home/node/${localWorkspaceFolderBasename},type=bind,consistency=consistent"
+}
