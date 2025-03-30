@@ -1,12 +1,11 @@
 <script lang="ts">
-	import type {SupportedNode} from "./SupportedNode.ts";
-	import {FromUrlLoaderNode} from "./FromUrlLoaderNode.svelte.ts";
-	import NodeDisplayer from "./NodeDisplayer.svelte";
 	import type {Coordinates} from "./Coordinates.ts";
 	import Menu from "./Menu.svelte";
-	import {generateId} from "./generateId.ts";
-	import type {NodeId} from "./NodeId.ts";
-	// let dialog: HTMLDialogElement;
+	import type {Node} from "./Node.ts";
+	import FromUrlLoaderNodeDisplayer from "./FromUrlLoaderNodeDisplayer.svelte";
+	import {FromUrlLoaderNode} from "./FromUrlLoaderNode.svelte.ts";
+	import {MapperNode} from "./MapperNode.svelte.ts";
+	import MapperNodeDisplayer from "./MapperNodeDisplayer.svelte";
 	let board: HTMLElement;
 	let cursorPosition = $state<Coordinates | null>(null);
 	let cameraPosition = $state<Coordinates>({x: 0, y: 0});
@@ -33,25 +32,29 @@
 	// 	dialog.close();
 	// }
 
-	let nodes = $state<readonly SupportedNode[]>([]);
+	let nodes = $state.raw<readonly Node[]>([]);
 	function handleAddFromUrlLoaderNodeClick(): void {
 		if (cursorPosition !== null) {
-			const node = new FromUrlLoaderNode(generateId(), {
-				x: cursorPosition.x,
-				y: cursorPosition.y,
-			});
-			nodes = [...nodes, node];
+			const newNode = new FromUrlLoaderNode(cursorPosition);
+			nodes = [...nodes, newNode];
+			cursorPosition = null;
+		}
+	}
+	function handleAddMapperButtonClick(): void {
+		if (cursorPosition !== null) {
+			const newNode = new MapperNode(cursorPosition);
+			nodes = [...nodes, newNode];
 			cursorPosition = null;
 		}
 	}
 	let isBeingDragged = false;
-	function handleMouseDown(event: MouseEvent): void {
+	function handleMouseDown(): void {
 		isBeingDragged = true;
 	}
-	function handleMouseUp(event: MouseEvent): void {
+	function handleMouseUp(): void {
 		isBeingDragged = false;
 	}
-	function handleMouseLeave(event: MouseEvent): void {
+	function handleMouseLeave(): void {
 		isBeingDragged = false;
 	}
 	function handleMouseMove(event: MouseEvent): void {
@@ -63,8 +66,8 @@
 			};
 		}
 	}
-	function handleNodeDelete(id: NodeId): void {
-		nodes = nodes.filter((node) => node.id !== id);
+	function handleNodeDelete(node: Node): void {
+		nodes = nodes.filter((nodeToCheck) => node !== nodeToCheck);
 	}
 </script>
 
@@ -82,16 +85,30 @@
 		style:top="calc(50% + {-cameraPosition.y}px)"
 		style:left="calc(50% + {-cameraPosition.x}px)"
 	>
-		{#if cursorPosition}
+		{#if cursorPosition !== null}
 			<Menu
 				position={cursorPosition}
 				onAddFromUrlLoaderNodeClick={handleAddFromUrlLoaderNodeClick}
+				onAddMapperNodeClick={handleAddMapperButtonClick}
 			/>
 		{/if}
 		<ul>
-			{#each nodes as node (node.id)}
+			{#each nodes as node, i (i)}
 				<li>
-					<NodeDisplayer {node} onDelete={handleNodeDelete} />
+					{#snippet fromUrlLoader(node: FromUrlLoaderNode)}
+						<FromUrlLoaderNodeDisplayer {node} onDelete={handleNodeDelete} />
+					{/snippet}
+					{#snippet mapper(node: MapperNode)}
+						<MapperNodeDisplayer {node} onDelete={handleNodeDelete} />
+					{/snippet}
+					{@render node.acceptVisitor({
+						visitFromUrlLoader() {
+							return fromUrlLoader;
+						},
+						visitMapper() {
+							return mapper;
+						},
+					} as const)(node)}
 				</li>
 			{/each}
 		</ul>

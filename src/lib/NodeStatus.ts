@@ -1,6 +1,6 @@
 export type NodeStatus =
 	| "errored"
-	| "processing"
+	| "working"
 	| "done"
 	| "unconfigured"
 	| "idling";

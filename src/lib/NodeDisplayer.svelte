@@ -1,17 +1,21 @@
 <script lang="ts">
-	import type {SupportedNode} from "./SupportedNode.ts";
-	import type {NodeId} from "./NodeId.ts";
+	import type {Node} from "./Node.ts";
+	import type {Snippet} from "svelte";
 	const {
-		node,
 		onDelete,
-	}: Readonly<{node: SupportedNode; onDelete: (id: NodeId) => void}> = $props();
+		content,
+		node,
+		// onAdd,
+	}: Readonly<{
+		onDelete: (node: Node) => void;
+		node: Node;
+		content: Snippet<[]>;
+	}> = $props();
 	function handleDeleteButtonClick(): void {
-		onDelete(node.id);
+		onDelete(node);
 	}
-	function handleUrlInput(
-		event: Event & Readonly<{currentTarget: HTMLInputElement}>,
-	): void {
-		node.load(event.currentTarget.value);
+	function handleAddOutputButtonClick(): void {
+		// TODO AD HERE
 	}
 </script>
 
@@ -19,7 +23,7 @@
 	style:top="{node.position.y}px"
 	style:left="{node.position.x}px"
 	class:errored={node.status === "errored"}
-	class:processing={node.status === "processing"}
+	class:processing={node.status === "working"}
 	class:done={node.status === "done"}
 	class:unconfigured={node.status === "unconfigured"}
 	class:idling={node.status === "idling"}
@@ -27,8 +31,17 @@
 	<header>
 		{node.name}
 	</header>
-	<input type="text" oninput={handleUrlInput} />
-	<button onclick={handleDeleteButtonClick}>🗑️</button>
+	<menu>
+		<li>
+			<button onclick={handleDeleteButtonClick}>🗑️</button>
+		</li>
+	</menu>
+	<menu>
+		<li>
+			<button onclick={handleAddOutputButtonClick}>+</button>
+		</li>
+	</menu>
+	{@render content()}
 </section>
 
 <style lang="scss">
@@ -48,10 +61,10 @@
 			border-color: green;
 		}
 		&.unconfigured {
-			border-color: blue;
+			border-color: gray;
 		}
 		&.idling {
-			border-color: gray;
+			border-color: blue;
 		}
 	}
 </style>

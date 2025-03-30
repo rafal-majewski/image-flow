@@ -3,20 +3,21 @@
 	const {
 		position,
 		onAddFromUrlLoaderNodeClick,
+		onAddMapperNodeClick,
 	}: Readonly<{
 		position: Coordinates;
 		onAddFromUrlLoaderNodeClick: () => void;
+		onAddMapperNodeClick: () => void;
 	}> = $props();
-	let htmlElement: HTMLDialogElement;
 </script>
 
 <dialog
 	style:top="calc({position.y}px + 50%)"
 	style:left="calc({position.x}px + 50%)"
-	bind:this={htmlElement}
 	open
 >
 	<button onclick={onAddFromUrlLoaderNodeClick}>Add from URL loader</button>
+	<button onclick={onAddMapperNodeClick}>Add mapper</button>
 </dialog>
 
 <style>

@@ -13,7 +13,7 @@
 	},
 	"name": "belve-explorer",
 	"scripts": {
-		"build:check": "svelte-sync && svelte-check",
+		"build:check": "svelte-kit sync && svelte-check",
 		"dev": "vite dev"
 	},
 	"type": "module",

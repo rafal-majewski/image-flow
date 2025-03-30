@@ -57,7 +57,7 @@
 		// useDefineForClassFields: true,
 	},
 	"exclude": [".git", "node_modules"],
-	"extends": [],
+	"extends": ["./.svelte-kit/tsconfig.json"],
 	"files": [],
 	"include": ["**/*"],
 	"references": []
