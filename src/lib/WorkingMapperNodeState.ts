@@ -4,7 +4,7 @@ import {NoInputNodeState} from "./NoInputNodeState.ts";
 import {NoMapperMapperNodeState} from "./NoMapperMapperNodeState.ts";
 export class WorkingMapperNodeState extends MapperNodeState {
 	public constructor(mapper: Mapper, input: ImageData) {
-		super("mapping", "working");
+		super("working");
 		this.mapper = mapper;
 		this.input = input;
 	}

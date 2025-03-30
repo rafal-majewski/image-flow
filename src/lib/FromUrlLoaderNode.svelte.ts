@@ -1,28 +1,33 @@
 import type {Coordinates} from "./Coordinates.ts";
 import type {MapperNode} from "./MapperNode.svelte.ts";
-import {Node} from "./Node.ts";
+import {Node} from "./Node.svelte.ts";
 import {checkIfUrlIsValid} from "./checkIfUrlIsValid.ts";
 import type {NodeVisitor} from "./NodeVisitor.ts";
-import type {NodeStatus} from "./NodeStatus.ts";
 import type {FromUrlLoaderNodeState} from "./FromUrlLoaderNodeState.ts";
 import {NoUrlFromUrlLoaderNodeState} from "./NoUrlFromUrlLoaderNodeState.ts";
+import type {NodeStatus} from "./NodeStatus.ts";
 export class FromUrlLoaderNode extends Node {
 	private readonly nextNodes: readonly MapperNode[];
-	private state: FromUrlLoaderNodeState =
+	private _state: FromUrlLoaderNodeState =
 		$state.raw() as FromUrlLoaderNodeState;
-	public status: NodeStatus = $derived(this.state.status);
+	public get state(): FromUrlLoaderNodeState {
+		return this._state;
+	}
+	public get status(): NodeStatus {
+		return this._state.status;
+	}
 	public constructor(position: Coordinates) {
 		super("From URL loader", position);
 		this.nextNodes = [];
-		this.state = new NoUrlFromUrlLoaderNodeState();
+		this._state = new NoUrlFromUrlLoaderNodeState();
 	}
 	public async setUrl(url: string): Promise<void> {
 		if (checkIfUrlIsValid(url)) {
-			const loadingInProgressState = this.state.loadingInProgress(
+			const loadingInProgressState = this._state.loadingInProgress(
 				url,
 				this.nextNodes,
 			);
-			this.state = loadingInProgressState;
+			this._state = loadingInProgressState;
 			const imageElement = new Image();
 			imageElement.crossOrigin = "Anonymous";
 			imageElement.src = url;
@@ -34,7 +39,7 @@ export class FromUrlLoaderNode extends Node {
 					resolve(false);
 				};
 			});
-			if (this.state === loadingInProgressState) {
+			if (this._state === loadingInProgressState) {
 				if (isLoadedSuccessfully) {
 					const canvas = document.createElement("canvas");
 					canvas.width = imageElement.width;
@@ -49,23 +54,23 @@ export class FromUrlLoaderNode extends Node {
 						canvas.width,
 						canvas.height,
 					);
-					this.state = loadingInProgressState.loadingSucceeded(
+					this._state = loadingInProgressState.loadingSucceeded(
 						image,
 						url,
 						this.nextNodes,
 					);
 				} else {
-					this.state = loadingInProgressState.loadingFailed(url);
+					this._state = loadingInProgressState.loadingFailed(url);
 				}
 			}
 		} else {
-			this.state = this.state.invalidUrl(url, this.nextNodes);
+			this._state = this._state.invalidUrl(url, this.nextNodes);
 		}
 
-		// switch (this.state.kind) {
+		// switch (this._state.kind) {
 		// 	case "noUrl": {
 		// 		if (checkIfUrlIsValid(url)) {
-		// 			const stateWhenStartedFetching = this.state;
+		// 			const stateWhenStartedFetching = this._state;
 		// 			const imageElement = new Image();
 		// 			imageElement.crossOrigin = "Anonymous";
 		// 			imageElement.src = url;
@@ -77,7 +82,7 @@ export class FromUrlLoaderNode extends Node {
 		// 					resolve(false);
 		// 				};
 		// 			});
-		// 			if (this.state === stateWhenStartedFetching) {
+		// 			if (this._state === stateWhenStartedFetching) {
 		// 				if (isLoadedSuccessfully) {
 		// 					const canvas = document.createElement("canvas");
 		// 					canvas.width = imageElement.width;
@@ -92,12 +97,12 @@ export class FromUrlLoaderNode extends Node {
 		// 						canvas.width,
 		// 						canvas.height,
 		// 					);
-		// 					this.state = {kind: "loaded", status: "done", data: {image, url}};
+		// 					this._state = {kind: "loaded", status: "done", data: {image, url}};
 		// 					for (const node of this.nextNodes) {
-		// 						node.input(this.state.data.image);
+		// 						node.input(this._state.data.image);
 		// 					}
 		// 				} else {
-		// 					this.state = {
+		// 					this._state = {
 		// 						kind: "fetchingFailed",
 		// 						status: "errored",
 		// 						data: {url},
@@ -105,13 +110,13 @@ export class FromUrlLoaderNode extends Node {
 		// 				}
 		// 			}
 		// 		} else {
-		// 			this.state = {kind: "invalidUrl", status: "errored", data: {url}};
+		// 			this._state = {kind: "invalidUrl", status: "errored", data: {url}};
 		// 		}
 		// 		break;
 		// 	}
 		// 	case "invalidUrl": {
 		// 		if (checkIfUrlIsValid(url)) {
-		// 			const stateWhenStartedFetching = this.state;
+		// 			const stateWhenStartedFetching = this._state;
 		// 			const imageElement = new Image();
 		// 			imageElement.crossOrigin = "Anonymous";
 		// 			imageElement.src = url;
@@ -123,7 +128,7 @@ export class FromUrlLoaderNode extends Node {
 		// 					resolve(false);
 		// 				};
 		// 			});
-		// 			if (this.state === stateWhenStartedFetching) {
+		// 			if (this._state === stateWhenStartedFetching) {
 		// 				if (isLoadedSuccessfully) {
 		// 					const canvas = document.createElement("canvas");
 		// 					canvas.width = imageElement.width;
@@ -138,12 +143,12 @@ export class FromUrlLoaderNode extends Node {
 		// 						canvas.width,
 		// 						canvas.height,
 		// 					);
-		// 					this.state = {kind: "loaded", status: "done", data: {image, url}};
+		// 					this._state = {kind: "loaded", status: "done", data: {image, url}};
 		// 					for (const node of this.nextNodes) {
-		// 						node.input(this.state.data.image);
+		// 						node.input(this._state.data.image);
 		// 					}
 		// 				} else {
-		// 					this.state = {
+		// 					this._state = {
 		// 						kind: "fetchingFailed",
 		// 						status: "errored",
 		// 						data: {url},
@@ -151,13 +156,13 @@ export class FromUrlLoaderNode extends Node {
 		// 				}
 		// 			}
 		// 		} else {
-		// 			this.state = {kind: "invalidUrl", status: "errored", data: {url}};
+		// 			this._state = {kind: "invalidUrl", status: "errored", data: {url}};
 		// 		}
 		// 		break;
 		// 	}
 		// 	case "fetching": {
 		// 		if (checkIfUrlIsValid(url)) {
-		// 			const stateWhenStartedFetching = this.state;
+		// 			const stateWhenStartedFetching = this._state;
 		// 			const imageElement = new Image();
 		// 			imageElement.crossOrigin = "Anonymous";
 		// 			imageElement.src = url;
@@ -169,7 +174,7 @@ export class FromUrlLoaderNode extends Node {
 		// 					resolve(false);
 		// 				};
 		// 			});
-		// 			if (this.state === stateWhenStartedFetching) {
+		// 			if (this._state === stateWhenStartedFetching) {
 		// 				if (isLoadedSuccessfully) {
 		// 					const canvas = document.createElement("canvas");
 		// 					canvas.width = imageElement.width;
@@ -184,12 +189,12 @@ export class FromUrlLoaderNode extends Node {
 		// 						canvas.width,
 		// 						canvas.height,
 		// 					);
-		// 					this.state = {kind: "loaded", status: "done", data: {image, url}};
+		// 					this._state = {kind: "loaded", status: "done", data: {image, url}};
 		// 					for (const node of this.nextNodes) {
-		// 						node.input(this.state.data.image);
+		// 						node.input(this._state.data.image);
 		// 					}
 		// 				} else {
-		// 					this.state = {
+		// 					this._state = {
 		// 						kind: "fetchingFailed",
 		// 						status: "errored",
 		// 						data: {url},
@@ -197,7 +202,7 @@ export class FromUrlLoaderNode extends Node {
 		// 				}
 		// 			}
 		// 		} else {
-		// 			this.state = {kind: "invalidUrl", status: "errored", data: {url}};
+		// 			this._state = {kind: "invalidUrl", status: "errored", data: {url}};
 		// 		}
 		// 		break;
 		// 	}
@@ -206,7 +211,7 @@ export class FromUrlLoaderNode extends Node {
 		// 			for (const node of this.nextNodes) {
 		// 				node.invalidate();
 		// 			}
-		// 			const stateWhenStartedFetching = this.state;
+		// 			const stateWhenStartedFetching = this._state;
 		// 			const imageElement = new Image();
 		// 			imageElement.crossOrigin = "Anonymous";
 		// 			imageElement.src = url;
@@ -218,7 +223,7 @@ export class FromUrlLoaderNode extends Node {
 		// 					resolve(false);
 		// 				};
 		// 			});
-		// 			if (this.state === stateWhenStartedFetching) {
+		// 			if (this._state === stateWhenStartedFetching) {
 		// 				if (isLoadedSuccessfully) {
 		// 					const canvas = document.createElement("canvas");
 		// 					canvas.width = imageElement.width;
@@ -233,12 +238,12 @@ export class FromUrlLoaderNode extends Node {
 		// 						canvas.width,
 		// 						canvas.height,
 		// 					);
-		// 					this.state = {kind: "loaded", status: "done", data: {image, url}};
+		// 					this._state = {kind: "loaded", status: "done", data: {image, url}};
 		// 					for (const node of this.nextNodes) {
-		// 						node.input(this.state.data.image);
+		// 						node.input(this._state.data.image);
 		// 					}
 		// 				} else {
-		// 					this.state = {
+		// 					this._state = {
 		// 						kind: "fetchingFailed",
 		// 						status: "errored",
 		// 						data: {url},
@@ -246,7 +251,7 @@ export class FromUrlLoaderNode extends Node {
 		// 				}
 		// 			}
 		// 		} else {
-		// 			this.state = {kind: "invalidUrl", status: "errored", data: {url}};
+		// 			this._state = {kind: "invalidUrl", status: "errored", data: {url}};
 		// 		}
 		// 		break;
 		// 	}

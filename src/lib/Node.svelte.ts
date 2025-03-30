@@ -3,7 +3,7 @@ import type {NodeStatus} from "./NodeStatus.ts";
 import type {NodeVisitor} from "./NodeVisitor.ts";
 export abstract class Node {
 	public readonly name: string;
-	public position: Coordinates;
+	public position: Coordinates = $state() as Coordinates;
 	public abstract readonly status: NodeStatus;
 	protected constructor(name: string, position: Coordinates) {
 		this.name = name;

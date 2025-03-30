@@ -1,21 +1,29 @@
 <script lang="ts">
-	import type {Node} from "./Node.ts";
+	import type {Node} from "./Node.svelte.ts";
 	import type {Snippet} from "svelte";
 	const {
-		onDelete,
+		onDeleted,
 		content,
 		node,
-		// onAdd,
+		onOutputAdded,
+		onDraggingStarted,
 	}: Readonly<{
-		onDelete: (node: Node) => void;
+		onDeleted: (node: Node) => void;
 		node: Node;
 		content: Snippet<[]>;
+		onOutputAdded: (sourceNode: Node) => void;
+		onDraggingStarted: (node: Node) => void;
 	}> = $props();
-	function handleDeleteButtonClick(): void {
-		onDelete(node);
+	function handleDeleteButtonClicked(): void {
+		onDeleted(node);
 	}
-	function handleAddOutputButtonClick(): void {
-		// TODO AD HERE
+	function handleAddOutputButtonClicked(): void {
+		onOutputAdded(node);
+	}
+	function handleMouseDowned(event: MouseEvent): void {
+		if (event.button === 0) {
+			onDraggingStarted(node);
+		}
 	}
 </script>
 
@@ -27,18 +35,20 @@
 	class:done={node.status === "done"}
 	class:unconfigured={node.status === "unconfigured"}
 	class:idling={node.status === "idling"}
+	onmousedown={handleMouseDowned}
+	role="none"
 >
 	<header>
 		{node.name}
 	</header>
 	<menu>
 		<li>
-			<button onclick={handleDeleteButtonClick}>🗑️</button>
+			<button onclick={handleDeleteButtonClicked}>🗑️</button>
 		</li>
 	</menu>
 	<menu>
 		<li>
-			<button onclick={handleAddOutputButtonClick}>+</button>
+			<button onclick={handleAddOutputButtonClicked}>-></button>
 		</li>
 	</menu>
 	{@render content()}
