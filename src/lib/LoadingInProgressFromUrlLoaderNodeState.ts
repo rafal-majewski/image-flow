@@ -1,9 +1,9 @@
 import {FromUrlLoaderNodeState} from "./FromUrlLoaderNodeState.ts";
 import {InvalidUrlFromUrlLoaderNodeState} from "./InvalidUrlFromUrlLoaderNodeState.ts";
 import {LoadingSucceededFromUrlLoaderNodeState} from "./LoadingSucceededFromUrlLoaderNodeState.ts";
-import type {MapperNode} from "./MapperNode.svelte.ts";
 import {NoUrlFromUrlLoaderNodeState} from "./NoUrlFromUrlLoaderNodeState.ts";
 import type {FromUrlLoaderNodeStateVisitor} from "./FromUrlLoaderNodeStateVisitor.ts";
+import type {Edge} from "./Edge.ts";
 export class LoadingInProgressFromUrlLoaderNodeState extends FromUrlLoaderNodeState {
 	public readonly url: string;
 	public constructor(url: string) {
@@ -24,10 +24,10 @@ export class LoadingInProgressFromUrlLoaderNodeState extends FromUrlLoaderNodeSt
 	public loadingSucceeded(
 		image: ImageData,
 		url: string,
-		nextNodes: readonly MapperNode[],
+		outputEdges: readonly Edge[],
 	): LoadingSucceededFromUrlLoaderNodeState {
-		for (const nextNode of nextNodes) {
-			nextNode.setInput(image);
+		for (const edge of outputEdges) {
+			edge.targetNode.setInput(image);
 		}
 		return new LoadingSucceededFromUrlLoaderNodeState(image, url);
 	}

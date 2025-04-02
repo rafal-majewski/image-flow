@@ -1,38 +1,29 @@
 import type {Coordinates} from "./Coordinates.ts";
+import type {Edge} from "./Edge.ts";
 import type {Mapper} from "./Mapper.ts";
-import type {MapperNodeState} from "./MapperNodeState.ts";
 import {Node} from "./Node.svelte.ts";
-import type {NodeStatus} from "./NodeStatus.ts";
-import type {NodeVisitor} from "./NodeVisitor.ts";
 import {NoInputAndNoMapperMapperNodeState} from "./NoInputAndNoMapperMapperNodeState.ts";
+import type {SupportedMapperNodeState} from "./SupportedMapperNodeState.ts";
 export class MapperNode extends Node {
-	private readonly nextNodes: readonly MapperNode[];
-	private _state: MapperNodeState = $state.raw() as MapperNodeState;
-	public get state(): MapperNodeState {
-		return this._state;
-	}
-	public get status(): NodeStatus {
-		return this._state.status;
-	}
+	public inputEdge: Edge | null = $state.raw() as Edge | null;
+	public state: SupportedMapperNodeState =
+		$state.raw() as SupportedMapperNodeState;
 	public constructor(position: Coordinates) {
 		super("Mapper", position);
 		this.position = position;
-		this.nextNodes = [];
-		this._state = new NoInputAndNoMapperMapperNodeState();
+		this.state = new NoInputAndNoMapperMapperNodeState();
+		this.inputEdge = null;
 	}
 	public setMapper(mapper: Mapper): void {
-		this._state = this._state.setMapper(mapper, this.nextNodes);
+		this.state = this.state.setMapper(mapper);
 	}
 	public unsetInput(): void {
-		this._state = this._state.unsetInput(this.nextNodes);
+		this.state = this.state.unsetInput();
 	}
 	public unsetMapper(): void {
-		this._state = this._state.unsetMapper(this.nextNodes);
+		this.state = this.state.unsetMapper();
 	}
 	public setInput(input: ImageData): void {
-		this._state = this._state.setInput(input, this.nextNodes);
-	}
-	public override acceptVisitor<Result>(visitor: NodeVisitor<Result>): Result {
-		return visitor.visitMapper(this);
+		this.state = this.state.setInput(input);
 	}
 }

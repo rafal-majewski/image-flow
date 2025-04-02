@@ -19,9 +19,20 @@
 		"lib": ["DOM", "DOM.Iterable", "ES2024"],
 		"libReplacement": false,
 		"maxNodeModuleJsDepth": 0,
-		"module": "node18", // "node18" / "nodenext" / "esnext" / "es2022" / "node16"
+		"module": "preserve", // "node18" / "nodenext" / "esnext" / "es2022" / "node16" / "Preseve"
 		"moduleDetection": "force",
-		"moduleResolution": "node16", // "bundler" / "node16"
+		"moduleResolution": "bundler", // "bundler" / "node16"
+		/* comp table
+			module	moduleResolution
+			preserve	bundler
+			esnext	bundler
+			es2022	bundler
+			node18	node16
+			nodenext	node16
+			esnext	node16
+			es2022	node16
+			node16	node16
+		 */
 		"moduleSuffixes": [],
 		"noEmit": true,
 		"noFallthroughCasesInSwitch": true,
@@ -37,7 +48,7 @@
 		"noUncheckedSideEffectImports": true,
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,
-		// "paths": {},
+		"paths": {},
 		"resolveJsonModule": false,
 		"resolvePackageJsonExports": false,
 		"resolvePackageJsonImports": false,

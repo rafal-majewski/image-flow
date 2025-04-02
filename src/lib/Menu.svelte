@@ -1,20 +1,19 @@
 <script lang="ts">
 	import type {Coordinates} from "./Coordinates.ts";
-	import {FromUrlLoaderNode} from "./FromUrlLoaderNode.svelte.ts";
-	import {MapperNode} from "./MapperNode.svelte.ts";
-	import type {Node} from "./Node.svelte.ts";
 	const {
 		position,
-		onNodeAdded,
-	}: Readonly<{position: Coordinates; onNodeAdded: (node: Node) => void}> =
-		$props();
-	function handleAddFromUrlLoaderNodeClick(): void {
-		const node = new FromUrlLoaderNode(position);
-		onNodeAdded(node);
+		onAddMapperNodeRequested,
+		onAddFromUrlLoaderNodeRequested,
+	}: Readonly<{
+		position: Coordinates;
+		onAddMapperNodeRequested: () => void;
+		onAddFromUrlLoaderNodeRequested: () => void;
+	}> = $props();
+	function handleAddFromUrlLoaderNodeButtonClick(): void {
+		onAddFromUrlLoaderNodeRequested();
 	}
-	function handleAddMapperNodeClick(): void {
-		const node = new MapperNode(position);
-		onNodeAdded(node);
+	function handleAddMapperNodeButtonClick(): void {
+		onAddMapperNodeRequested();
 	}
 </script>
 
@@ -23,8 +22,10 @@
 	style:left="calc({position.x}px + 50%)"
 	open
 >
-	<button onclick={handleAddFromUrlLoaderNodeClick}>Add from URL loader</button>
-	<button onclick={handleAddMapperNodeClick}>Add mapper</button>
+	<button onclick={handleAddFromUrlLoaderNodeButtonClick}
+		>Add from URL loader</button
+	>
+	<button onclick={handleAddMapperNodeButtonClick}>Add mapper</button>
 </dialog>
 
 <style>

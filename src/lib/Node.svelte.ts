@@ -1,13 +1,15 @@
 import type {Coordinates} from "./Coordinates.ts";
-import type {NodeStatus} from "./NodeStatus.ts";
-import type {NodeVisitor} from "./NodeVisitor.ts";
+import type {Edge} from "./Edge.ts";
 export abstract class Node {
+	public outputEdges: readonly Edge[] = $state() as readonly Edge[];
 	public readonly name: string;
 	public position: Coordinates = $state() as Coordinates;
-	public abstract readonly status: NodeStatus;
 	protected constructor(name: string, position: Coordinates) {
 		this.name = name;
 		this.position = position;
+		this.outputEdges = [];
 	}
-	public abstract acceptVisitor<Result>(visitor: NodeVisitor<Result>): Result;
+	public addOutputEdge(edge: Edge): void {
+		this.outputEdges = [...this.outputEdges, edge];
+	}
 }

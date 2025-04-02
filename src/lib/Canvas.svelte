@@ -13,11 +13,3 @@
 </script>
 
 <canvas bind:this={canvas}></canvas>
-
-<style>
-	canvas {
-		display: block;
-		max-width: 100%;
-		height: auto;
-	}
-</style>
