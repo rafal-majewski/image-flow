@@ -1,4 +1,4 @@
-export default /** @type {const} @satisfies {import("prettier").Config} */ {
+export default /** @type {const} @satisfies {import("prettier").Config} */ ({
 	arrowParens: "always",
 	bracketSpacing: false,
 	endOfLine: "lf",
@@ -13,4 +13,4 @@ export default /** @type {const} @satisfies {import("prettier").Config} */ {
 	singleQuote: false,
 	trailingComma: "all",
 	useTabs: true,
-};
+});
