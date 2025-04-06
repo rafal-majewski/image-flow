@@ -10,7 +10,13 @@
 	"containerEnv": {},
 	"containerUser": "node",
 	"customizations": {
-		"vscode": {"extensions": ["emeraldwalk.RunOnSave", "svelte.svelte-vscode"]}
+		"vscode": {
+			"extensions": [
+				"emeraldwalk.RunOnSave",
+				"mhutchie.git-graph",
+				"svelte.svelte-vscode"
+			]
+		}
 	},
 	"features": {},
 	"forwardPorts": [],

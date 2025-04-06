@@ -1,5 +1,4 @@
-import type {Config} from "prettier";
-export default {
+export default /** @type {const} @satisfies {import("prettier").Config} */ {
 	arrowParens: "always",
 	bracketSpacing: false,
 	endOfLine: "lf",
@@ -14,4 +13,4 @@ export default {
 	singleQuote: false,
 	trailingComma: "all",
 	useTabs: true,
-} as const satisfies Config;
+};

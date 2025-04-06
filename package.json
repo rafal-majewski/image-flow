@@ -11,7 +11,7 @@
 		"typescript": "5.8.2",
 		"vite": "6.2.3"
 	},
-	"name": "belve-explorer",
+	"name": "image-flow",
 	"scripts": {
 		"build:check": "svelte-kit sync && svelte-check",
 		"dev": "vite dev"
