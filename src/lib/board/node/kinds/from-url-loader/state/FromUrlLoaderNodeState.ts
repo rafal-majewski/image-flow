@@ -1,0 +1,22 @@
+import type {InvalidUrlFromUrlLoaderNodeState} from "./InvalidUrlFromUrlLoaderNodeState.ts";
+import type {LoadingInProgressFromUrlLoaderNodeState} from "./kinds/loading-in-progress/LoadingInProgressFromUrlLoaderNodeState.ts";
+import type {NodeStatus} from "../../../../../NodeStatus.ts";
+import type {NoUrlFromUrlLoaderNodeState} from "./kinds/no-url/NoUrlFromUrlLoaderNodeState.ts";
+import type {Edge} from "../../../../edge/Edge.ts";
+export abstract class FromUrlLoaderNodeState {
+	public readonly status: NodeStatus;
+	protected constructor(status: NodeStatus) {
+		this.status = status;
+	}
+	public abstract loadingInProgress(
+		url: string,
+		outputEdges: readonly Edge[],
+	): LoadingInProgressFromUrlLoaderNodeState;
+	public abstract invalidUrl(
+		url: string,
+		outputEdges: readonly Edge[],
+	): InvalidUrlFromUrlLoaderNodeState;
+	public abstract noUrl(
+		outputEdges: readonly Edge[],
+	): NoUrlFromUrlLoaderNodeState;
+}

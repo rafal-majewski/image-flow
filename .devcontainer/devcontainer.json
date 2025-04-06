@@ -12,7 +12,7 @@
 	"customizations": {
 		"vscode": {
 			"extensions": [
-				"emeraldwalk.RunOnSave",
+				"esbenp.prettier-vscode",
 				"mhutchie.git-graph",
 				"svelte.svelte-vscode"
 			]
