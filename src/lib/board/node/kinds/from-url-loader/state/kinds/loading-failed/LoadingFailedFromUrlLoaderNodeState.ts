@@ -1,5 +1,5 @@
 import {FromUrlLoaderNodeState} from "../../FromUrlLoaderNodeState.ts";
-import {InvalidUrlFromUrlLoaderNodeState} from "./InvalidUrlFromUrlLoaderNodeState.ts";
+import {InvalidUrlFromUrlLoaderNodeState} from "../../InvalidUrlFromUrlLoaderNodeState.ts";
 import {LoadingInProgressFromUrlLoaderNodeState} from "../loading-in-progress/LoadingInProgressFromUrlLoaderNodeState.ts";
 import {NoUrlFromUrlLoaderNodeState} from "../no-url/NoUrlFromUrlLoaderNodeState.ts";
 export class LoadingFailedFromUrlLoaderNodeState extends FromUrlLoaderNodeState {

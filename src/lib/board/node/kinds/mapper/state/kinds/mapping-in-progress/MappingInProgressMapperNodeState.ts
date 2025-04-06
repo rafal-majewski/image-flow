@@ -1,7 +1,7 @@
-import type {Mapper} from "../../mapper/Mapper.ts";
-import {MapperNodeState} from "../../state/MapperNodeState.ts";
-import {NoInputMapperNodeState} from "../../state/kinds/no-input/NoInputMapperNodeState.ts";
-import {NoMapperMapperNodeState} from "../../state/kinds/no-mapper/NoMapperMapperNodeState.ts";
+import type {Mapper} from "../../../mapper/Mapper.ts";
+import {MapperNodeState} from "../../MapperNodeState.ts";
+import {NoInputMapperNodeState} from "../no-input/NoInputMapperNodeState.ts";
+import {NoMapperMapperNodeState} from "../no-mapper/NoMapperMapperNodeState.ts";
 export class MappingInProgressMapperNodeState extends MapperNodeState {
 	public constructor(mapper: Mapper, input: ImageData) {
 		super("working");

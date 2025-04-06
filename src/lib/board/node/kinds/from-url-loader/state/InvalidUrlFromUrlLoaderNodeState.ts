@@ -1,6 +1,6 @@
-import {LoadingInProgressFromUrlLoaderNodeState} from "./LoadingInProgressFromUrlLoaderNodeState.ts";
 import {FromUrlLoaderNodeState} from "./FromUrlLoaderNodeState.ts";
-import {NoUrlFromUrlLoaderNodeState} from "./NoUrlFromUrlLoaderNodeState.ts";
+import {LoadingInProgressFromUrlLoaderNodeState} from "./kinds/loading-in-progress/LoadingInProgressFromUrlLoaderNodeState.ts";
+import {NoUrlFromUrlLoaderNodeState} from "./kinds/no-url/NoUrlFromUrlLoaderNodeState.ts";
 export class InvalidUrlFromUrlLoaderNodeState extends FromUrlLoaderNodeState {
 	public readonly url: string;
 	public constructor(url: string) {

@@ -1,6 +1,6 @@
 import type {Mapper} from "../../../mapper/Mapper.ts";
 import {MapperNodeState} from "../../MapperNodeState.ts";
-import {WorkingMapperNodeState} from "../../../states/mapping-in-progress/MappingInProgressMapperNodeState.ts";
+import {MappingInProgressMapperNodeState} from "../mapping-in-progress/MappingInProgressMapperNodeState.ts";
 import {NoInputAndNoMapperMapperNodeState} from "../no-input-and-no-mapper/NoInputAndNoMapperMapperNodeState.ts";
 export class NoInputMapperNodeState extends MapperNodeState {
 	public constructor(mapper: Mapper) {
@@ -17,7 +17,7 @@ export class NoInputMapperNodeState extends MapperNodeState {
 	public override unsetMapper(): NoInputAndNoMapperMapperNodeState {
 		return new NoInputAndNoMapperMapperNodeState();
 	}
-	public override setInput(input: ImageData): WorkingMapperNodeState {
-		return new WorkingMapperNodeState(this.mapper, input);
+	public override setInput(input: ImageData): MappingInProgressMapperNodeState {
+		return new MappingInProgressMapperNodeState(this.mapper, input);
 	}
 }

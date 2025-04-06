@@ -1,8 +1,8 @@
 <script lang="ts">
 	import type {MapperNode} from "./MapperNode.svelte.ts";
 	import type {Coordinates} from "../../../coordinates/Coordinates.ts";
-	import MapperNodeStateDisplayer from "./MapperNodeStateDisplayer.svelte";
 	import type {Mapper} from "./mapper/Mapper.ts";
+	import MapperNodeStateDisplayer from "./state/MapperNodeStateDisplayer.svelte";
 	const {
 		node,
 		onDeleteRequest,

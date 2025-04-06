@@ -1,8 +1,8 @@
 import {FromUrlLoaderNodeState} from "../../FromUrlLoaderNodeState.ts";
-import {InvalidUrlFromUrlLoaderNodeState} from "./InvalidUrlFromUrlLoaderNodeState.ts";
 import {LoadingSucceededFromUrlLoaderNodeState} from "../loading-succeeded/LoadingSucceededFromUrlLoaderNodeState.ts";
 import {NoUrlFromUrlLoaderNodeState} from "../no-url/NoUrlFromUrlLoaderNodeState.ts";
 import type {Edge} from "../../../../../../edge/Edge.ts";
+import {InvalidUrlFromUrlLoaderNodeState} from "../../InvalidUrlFromUrlLoaderNodeState.ts";
 export class LoadingInProgressFromUrlLoaderNodeState extends FromUrlLoaderNodeState {
 	public readonly url: string;
 	public constructor(url: string) {

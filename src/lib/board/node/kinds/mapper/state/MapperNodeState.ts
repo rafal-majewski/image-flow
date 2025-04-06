@@ -1,6 +1,6 @@
 import type {Edge} from "../../../../edge/Edge.ts";
 import type {Mapper} from "../mapper/Mapper.ts";
-import type {NodeStatus} from "../../../../../NodeStatus.ts";
+import type {NodeStatus} from "../../../status/NodeStatus.ts";
 export abstract class MapperNodeState {
 	readonly status: NodeStatus;
 	protected constructor(status: NodeStatus) {

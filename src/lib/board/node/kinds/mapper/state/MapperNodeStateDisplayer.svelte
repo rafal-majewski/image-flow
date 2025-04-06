@@ -1,11 +1,11 @@
 <script lang="ts">
-	import type {Mapper} from "./mapper/Mapper.ts";
-	import {NoInputAndNoMapperMapperNodeState} from "./states/no-input-and-no-mapper/NoInputAndNoMapperMapperNodeState.ts";
-	import {NoInputMapperNodeState} from "./states/no-input/NoInputMapperNodeState.ts";
-	import {NoMapperMapperNodeState} from "./states/no-mapper/NoMapperMapperNodeState.ts";
-	import type {SupportedMapperNodeState} from "./SupportedMapperNodeState.ts";
-	import {supportedMappers} from "./supportedMappers.ts";
-	import {WorkingMapperNodeState} from "./WorkingMapperNodeState.ts";
+	import type {Mapper} from "../mapper/Mapper.ts";
+	import type {SupportedMapperNodeState} from "../SupportedMapperNodeState.ts";
+	import {supportedMappers} from "../supportedMappers.ts";
+	import {MappingInProgressMapperNodeState} from "./kinds/mapping-in-progress/MappingInProgressMapperNodeState.ts";
+	import {NoInputAndNoMapperMapperNodeState} from "./kinds/no-input-and-no-mapper/NoInputAndNoMapperMapperNodeState.ts";
+	import {NoInputMapperNodeState} from "./kinds/no-input/NoInputMapperNodeState.ts";
+	import {NoMapperMapperNodeState} from "./kinds/no-mapper/NoMapperMapperNodeState.ts";
 	const {
 		state,
 		onUnsetMapperRequest,
@@ -42,7 +42,7 @@
 			<option
 				value={mapper.id}
 				selected={(state instanceof NoInputMapperNodeState
-					|| state instanceof WorkingMapperNodeState)
+					|| state instanceof MappingInProgressMapperNodeState)
 					&& state.mapper.id === mapper.id}
 			>
 				{mapper.name}
