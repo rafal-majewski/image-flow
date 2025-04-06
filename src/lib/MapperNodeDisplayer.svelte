@@ -1,71 +1,85 @@
 <script lang="ts">
 	import type {MapperNode} from "./MapperNode.svelte.ts";
 	import type {Coordinates} from "./Coordinates.ts";
+	import MapperNodeStateDisplayer from "./MapperNodeStateDisplayer.svelte";
+	import type {Mapper} from "./Mapper.ts";
 	const {
 		node,
-		onDeleteRequested,
-		onMouseLeftButtonDowned,
-		onAddOutputRequested,
-		onAddInputRequested,
-		onMouseLeftButtonUpped,
+		onDeleteRequest,
+		onMouseLeftButtonDown,
+		onAddOutputEdgeRequest,
+		onAddInputEdgeRequest,
+		onMouseLeftButtonUp,
 	}: Readonly<{
-		onDeleteRequested: (node: MapperNode) => void;
+		onDeleteRequest: (node: MapperNode) => void;
 		node: MapperNode;
-		onAddOutputRequested: (
+		onAddOutputEdgeRequest: (
 			sourceNode: MapperNode,
 			mouseClientPosition: Coordinates,
 		) => void;
-		onAddInputRequested: (
+		onAddInputEdgeRequest: (
 			sourceNode: MapperNode,
 			mouseClientPosition: Coordinates,
 		) => void;
-		onMouseLeftButtonDowned: (
+		onMouseLeftButtonDown: (
 			node: MapperNode,
 			mouseClientPosition: Coordinates,
 		) => void;
-		onMouseLeftButtonUpped: (node: MapperNode) => void;
+		onMouseLeftButtonUp: (node: MapperNode) => void;
 	}> = $props();
-	function handleDeleteButtonClicked(): void {
-		onDeleteRequested(node);
+	function handleDeleteButtonClick(): void {
+		onDeleteRequest(node);
 	}
-	function handleAddPreviousNodeButtonMouseDowned(event: MouseEvent): void {
-		onAddInputRequested(node, {x: event.clientX, y: event.clientY});
+	function handleAddInputEdgeButtonClick(event: MouseEvent): void {
+		onAddInputEdgeRequest(node, {x: event.clientX, y: event.clientY});
 	}
-	function handleAddNextNodeButtonMouseDowned(event: MouseEvent): void {
-		onAddOutputRequested(node, {x: event.clientX, y: event.clientY});
+	function handleAddOutputEdgeButtonClick(event: MouseEvent): void {
+		onAddOutputEdgeRequest(node, {x: event.clientX, y: event.clientY});
 	}
-	function handleMouseDowned(event: MouseEvent): void {
+	function handleMouseDown(event: MouseEvent): void {
 		if (event.button === 0) {
-			onMouseLeftButtonDowned(node, {x: event.clientX, y: event.clientY});
+			onMouseLeftButtonDown(node, {x: event.clientX, y: event.clientY});
 		}
 	}
-	function handleMouseUpped(event: MouseEvent): void {
+	function handleMouseUp(event: MouseEvent): void {
 		if (event.button === 0) {
-			onMouseLeftButtonUpped(node);
+			onMouseLeftButtonUp(node);
 		}
+	}
+	function handleSetMapperRequest(newMapper: Mapper): void {
+		node.setMapper(newMapper);
+	}
+	function handleUnsetMapperRequest(): void {
+		node.unsetMapper();
 	}
 </script>
 
 <section
 	style:top="{node.position.y}px"
 	style:left="{node.position.x}px"
-	class:errored={node.state.status === "errored"}
+	class:error={node.state.status === "errored"}
 	class:processing={node.state.status === "working"}
 	class:done={node.state.status === "done"}
-	class:unconfigured={node.state.status === "unconfigured"}
+	class:unconfigur={node.state.status === "unconfigured"}
 	class:idling={node.state.status === "idling"}
-	onmousedown={handleMouseDowned}
+	onmousedown={handleMouseDown}
 	role="none"
-	onmouseup={handleMouseUpped}
+	onmouseup={handleMouseUp}
 >
 	<header>{node.name}</header>
-	<button onclick={handleDeleteButtonClicked}>🗑️</button>
-	<button onmousedown={handleAddPreviousNodeButtonMouseDowned}>➡️📍</button>
-	<button onmousedown={handleAddNextNodeButtonMouseDowned}>📍➡️</button>
+	<button onclick={handleDeleteButtonClick}>🗑️</button>
+	<button onclick={handleAddInputEdgeButtonClick}>➡️📍</button>
+	<button onclick={handleAddOutputEdgeButtonClick}>📍➡️</button>
+	<MapperNodeStateDisplayer
+		state={node.state}
+		onSetMapperRequest={handleSetMapperRequest}
+		onUnsetMapperRequest={handleUnsetMapperRequest}
+	/>
 </section>
 
 <style lang="scss">
 	section {
+		width: min-content;
 		position: absolute;
 		transform: translate(-50%, -50%);
 		background-color: white;

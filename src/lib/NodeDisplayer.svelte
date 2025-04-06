@@ -1,5 +1,4 @@
 <script lang="ts">
-	// write a component that takes a node and contitionally displays its real rendering component
 	import {MapperNode} from "./MapperNode.svelte.ts";
 	import type {SupportedNode} from "./SupportedNode.ts";
 	import {FromUrlLoaderNode} from "./FromUrlLoaderNode.svelte.ts";
@@ -11,20 +10,20 @@
 		...restProps
 	}: Readonly<{
 		node: SupportedNode;
-		onAddOutputRequested: (
+		onAddOutputEdgeRequest: (
 			sourceNode: SupportedNode,
 			mouseClientPosition: Coordinates,
 		) => void;
-		onAddInputRequested: (
-			sourceNode: SupportedNode,
+		onAddInputEdgeRequest: (
+			sourceNode: MapperNode,
 			mouseClientPosition: Coordinates,
 		) => void;
-		onMouseLeftButtonDowned: (
+		onMouseLeftButtonDown: (
 			node: SupportedNode,
 			mouseClientPosition: Coordinates,
 		) => void;
-		onMouseLeftButtonUpped: (node: SupportedNode) => void;
-		onDeleteRequested: (node: SupportedNode) => void;
+		onMouseLeftButtonUp: (node: SupportedNode) => void;
+		onDeleteRequest: (node: SupportedNode) => void;
 	}> = $props();
 </script>
 

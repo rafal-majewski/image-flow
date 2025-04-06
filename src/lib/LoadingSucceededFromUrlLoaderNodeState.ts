@@ -25,6 +25,6 @@ export class LoadingSucceededFromUrlLoaderNodeState extends FromUrlLoaderNodeSta
 	public override acceptVisitor<Result>(
 		visitor: FromUrlLoaderNodeStateVisitor<Result>,
 	): Result {
-		return visitor.visitLoadingSucceeded(this);
+		return visitor.visitLoadingSucceed(this);
 	}
 }

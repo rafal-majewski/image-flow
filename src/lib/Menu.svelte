@@ -2,18 +2,18 @@
 	import type {Coordinates} from "./Coordinates.ts";
 	const {
 		position,
-		onAddMapperNodeRequested,
-		onAddFromUrlLoaderNodeRequested,
+		onAddMapperNodeRequest,
+		onAddFromUrlLoaderNodeRequest,
 	}: Readonly<{
 		position: Coordinates;
-		onAddMapperNodeRequested: () => void;
-		onAddFromUrlLoaderNodeRequested: () => void;
+		onAddMapperNodeRequest: () => void;
+		onAddFromUrlLoaderNodeRequest: () => void;
 	}> = $props();
 	function handleAddFromUrlLoaderNodeButtonClick(): void {
-		onAddFromUrlLoaderNodeRequested();
+		onAddFromUrlLoaderNodeRequest();
 	}
 	function handleAddMapperNodeButtonClick(): void {
-		onAddMapperNodeRequested();
+		onAddMapperNodeRequest();
 	}
 </script>
 

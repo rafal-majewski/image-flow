@@ -8,7 +8,7 @@ export interface FromUrlLoaderNodeStateVisitor<Result> {
 	visitLoadingInProgress(
 		state: LoadingInProgressFromUrlLoaderNodeState,
 	): Result;
-	visitLoadingSucceeded(state: LoadingSucceededFromUrlLoaderNodeState): Result;
-	visitLoadingFailed(state: LoadingFailedFromUrlLoaderNodeState): Result;
+	visitLoadingSucceed(state: LoadingSucceededFromUrlLoaderNodeState): Result;
+	visitLoadingFail(state: LoadingFailedFromUrlLoaderNodeState): Result;
 	visitNoUrl(state: NoUrlFromUrlLoaderNodeState): Result;
 }

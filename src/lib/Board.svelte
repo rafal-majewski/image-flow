@@ -9,8 +9,19 @@
 	import EdgeDisplayer from "./EdgeDisplayer.svelte";
 	import type {SupportedNodeClass} from "./SupportedNodeClass.ts";
 	import LineDisplayer from "./LineDisplayer.svelte";
+	import {computeInBoardPositionFromClientPosition} from "./computeInBoardPositionFromClientPosition.ts";
 	let board: HTMLElement;
 	let cameraPosition = $state<Coordinates>({x: 0, y: 0});
+	function computeInBoardPositionFromJustClientPosition(
+		clientPosition: Coordinates,
+	): Coordinates {
+		const boardBoundingBox = board.getBoundingClientRect();
+		return computeInBoardPositionFromClientPosition(
+			clientPosition,
+			boardBoundingBox,
+			cameraPosition,
+		);
+	}
 	let nodes = $state.raw<readonly SupportedNode[]>([]);
 	let edges = $state.raw<readonly Edge[]>([]);
 	let mode = $state.raw<
@@ -30,6 +41,7 @@
 		  }>
 		| Readonly<{kind: "addingNode"; data: Readonly<{position: Coordinates}>}>
 	>(null);
+	$inspect(mode);
 	function tryToAddNode(class_: SupportedNodeClass): void {
 		if (mode !== null && mode.kind === "addingNode") {
 			const newNode = new class_(mode.data.position);
@@ -37,32 +49,133 @@
 			mode = null;
 		}
 	}
-	function handleAddMapperNodeRequested(): void {
+	function handleAddMapperNodeRequest(): void {
 		tryToAddNode(MapperNode);
 	}
-	function handleAddFromUrlLoaderNodeRequested(): void {
+	function handleAddFromUrlLoaderNodeRequest(): void {
 		tryToAddNode(FromUrlLoaderNode);
 	}
-	function handleContextMenuOpened(event: MouseEvent): void {}
-	function handleMouseMoved(event: MouseEvent): void {}
-	function handleMouseDowned(event: MouseEvent): void {}
-	function handleMouseUpped(event: MouseEvent): void {}
-	function handleMouseLeft(event: MouseEvent): void {}
-	function handleAddOutputToNodeRequested(): void {}
-	function handleAddInputToNodeRequested(): void {}
-	function handleMouseLeftButtonDownedOnNode(): void {}
+	function handleContextMenuOpen(event: MouseEvent): void {
+		if (event.target === board && mode === null) {
+			event.preventDefault();
+			mode = {
+				kind: "addingNode",
+				data: {
+					position: computeInBoardPositionFromJustClientPosition({
+						x: event.clientX,
+						y: event.clientY,
+					}),
+				},
+			};
+		}
+	}
+	function handleMouseMov(event: MouseEvent): void {
+		if (mode !== null) {
+			switch (mode.kind) {
+				case "movingCamera": {
+					cameraPosition = {
+						x: cameraPosition.x - event.movementX,
+						y: cameraPosition.y - event.movementY,
+					};
+					break;
+				}
+				case "movingNode": {
+					mode.data.node.position = {
+						x: mode.data.node.position.x + event.movementX,
+						y: mode.data.node.position.y + event.movementY,
+					};
+					break;
+				}
+				case "addingEdgeFromSourceNode": {
+					mode = {
+						...mode,
+						data: {
+							...mode.data,
+							targetPosition: computeInBoardPositionFromJustClientPosition({
+								x: event.clientX,
+								y: event.clientY,
+							}),
+						},
+					};
+					break;
+				}
+				case "addingEdgeFromTargetNode": {
+					mode = {
+						...mode,
+						data: {
+							...mode.data,
+							sourcePosition: computeInBoardPositionFromJustClientPosition({
+								x: event.clientX,
+								y: event.clientY,
+							}),
+						},
+					};
+					break;
+				}
+			}
+		}
+	}
+	function handleMouseDown(event: MouseEvent): void {
+		if (event.target === board && mode === null && event.button === 0) {
+			mode = {kind: "movingCamera"};
+		}
+	}
+	function handleMouseUp(event: MouseEvent): void {
+		if (mode !== null && event.button === 0) {
+			switch (mode.kind) {
+				case "movingNode": {
+					mode = null;
+					break;
+				}
+				case "movingCamera": {
+					mode = null;
+					break;
+				}
+			}
+		}
+	}
+	function handleMouseLeft(): void {}
+	function handleAddOutputEdgeToNodeRequest(
+		node: SupportedNode,
+		clientPosition: Coordinates,
+	): void {
+		if (mode === null) {
+			mode = {
+				kind: "addingEdgeFromSourceNode",
+				data: {
+					sourceNode: node,
+					targetPosition:
+						computeInBoardPositionFromJustClientPosition(clientPosition),
+				},
+			};
+		}
+	}
+	function handleAddInputEdgeToNodeRequest(node: MapperNode): void {
+		if (mode !== null && mode.kind === "addingEdgeFromSourceNode") {
+			const edge = new Edge(mode.data.sourceNode, node);
+			edges = [...edges, edge];
+			mode.data.sourceNode.addOutputEdge(edge);
+			node.inputEdge = edge;
+			mode = null;
+		}
+	}
+	function handleMouseLeftButtonDownedOnNode(node: SupportedNode): void {
+		if (mode === null) {
+			mode = {kind: "movingNode", data: {node}};
+		}
+	}
 	function handleMouseLeftButtonUppedOnNode(): void {}
-	function handleDeleteNodeRequested(): void {}
+	function handleDeleteNodeRequest(): void {}
 </script>
 
 <section
-	oncontextmenu={handleContextMenuOpened}
+	oncontextmenu={handleContextMenuOpen}
 	role="none"
 	bind:this={board}
-	onmousemove={handleMouseMoved}
+	onmousemove={handleMouseMov}
 	style:background-position="calc(50% + {-cameraPosition.x}px) calc(50% + {-cameraPosition.y}px)"
-	onmousedown={handleMouseDowned}
-	onmouseup={handleMouseUpped}
+	onmousedown={handleMouseDown}
+	onmouseup={handleMouseUp}
 	onmouseleave={handleMouseLeft}
 >
 	<div
@@ -72,8 +185,8 @@
 		{#if mode !== null && mode.kind === "addingNode"}
 			<Menu
 				position={mode.data.position}
-				onAddMapperNodeRequested={handleAddMapperNodeRequested}
-				onAddFromUrlLoaderNodeRequested={handleAddFromUrlLoaderNodeRequested}
+				onAddMapperNodeRequest={handleAddMapperNodeRequest}
+				onAddFromUrlLoaderNodeRequest={handleAddFromUrlLoaderNodeRequest}
 			/>
 		{/if}
 		<ul>
@@ -81,11 +194,11 @@
 				<li>
 					<NodeDisplayer
 						{node}
-						onAddOutputRequested={handleAddOutputToNodeRequested}
-						onAddInputRequested={handleAddInputToNodeRequested}
-						onMouseLeftButtonDowned={handleMouseLeftButtonDownedOnNode}
-						onMouseLeftButtonUpped={handleMouseLeftButtonUppedOnNode}
-						onDeleteRequested={handleDeleteNodeRequested}
+						onAddOutputEdgeRequest={handleAddOutputEdgeToNodeRequest}
+						onAddInputEdgeRequest={handleAddInputEdgeToNodeRequest}
+						onMouseLeftButtonDown={handleMouseLeftButtonDownedOnNode}
+						onMouseLeftButtonUp={handleMouseLeftButtonUppedOnNode}
+						onDeleteRequest={handleDeleteNodeRequest}
 					/>
 				</li>
 			{/each}

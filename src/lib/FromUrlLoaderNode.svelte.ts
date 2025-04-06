@@ -40,13 +40,13 @@ export class FromUrlLoaderNode extends Node {
 						canvas.width,
 						canvas.height,
 					);
-					this.state = loadingInProgressState.loadingSucceeded(
+					this.state = loadingInProgressState.loadingSucceed(
 						image,
 						url,
 						this.outputEdges,
 					);
 				} else {
-					this.state = loadingInProgressState.loadingFailed(url);
+					this.state = loadingInProgressState.loadingFail(url);
 				}
 			}
 		} else {

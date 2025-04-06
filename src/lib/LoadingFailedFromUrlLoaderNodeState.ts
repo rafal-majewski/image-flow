@@ -23,6 +23,6 @@ export class LoadingFailedFromUrlLoaderNodeState extends FromUrlLoaderNodeState 
 	public override acceptVisitor<Result>(
 		visitor: FromUrlLoaderNodeStateVisitor<Result>,
 	): Result {
-		return visitor.visitLoadingFailed(this);
+		return visitor.visitLoadingFail(this);
 	}
 }

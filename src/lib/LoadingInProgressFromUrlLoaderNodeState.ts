@@ -21,7 +21,7 @@ export class LoadingInProgressFromUrlLoaderNodeState extends FromUrlLoaderNodeSt
 	public override noUrl(): NoUrlFromUrlLoaderNodeState {
 		return new NoUrlFromUrlLoaderNodeState();
 	}
-	public loadingSucceeded(
+	public loadingSucceed(
 		image: ImageData,
 		url: string,
 		outputEdges: readonly Edge[],
@@ -31,7 +31,7 @@ export class LoadingInProgressFromUrlLoaderNodeState extends FromUrlLoaderNodeSt
 		}
 		return new LoadingSucceededFromUrlLoaderNodeState(image, url);
 	}
-	public loadingFailed(url: string): LoadingInProgressFromUrlLoaderNodeState {
+	public loadingFail(url: string): LoadingInProgressFromUrlLoaderNodeState {
 		return new LoadingInProgressFromUrlLoaderNodeState(url);
 	}
 	public override acceptVisitor<Result>(
