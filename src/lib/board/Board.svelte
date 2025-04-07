@@ -69,7 +69,7 @@
 			};
 		}
 	}
-	function handleMouseMov(event: MouseEvent): void {
+	function handleMouseMove(event: MouseEvent): void {
 		if (mode !== null) {
 			switch (mode.kind) {
 				case "movingCamera": {
@@ -116,7 +116,11 @@
 		}
 	}
 	function handleMouseDown(event: MouseEvent): void {
-		if (event.target === board && mode === null && event.button === 0) {
+		if (
+			event.target === board
+			&& event.button === 0
+			&& (mode === null || mode.kind === "addingNode")
+		) {
 			mode = {kind: "movingCamera"};
 		}
 	}
@@ -134,7 +138,28 @@
 			}
 		}
 	}
-	function handleMouseLeft(): void {}
+	function handleMouseLeft(): void {
+		if (mode !== null) {
+			switch (mode.kind) {
+				case "movingNode": {
+					mode = null;
+					break;
+				}
+				case "movingCamera": {
+					mode = null;
+					break;
+				}
+				case "addingEdgeFromSourceNode": {
+					mode = null;
+					break;
+				}
+				case "addingEdgeFromTargetNode": {
+					mode = null;
+					break;
+				}
+			}
+		}
+	}
 	function handleAddOutputEdgeToNodeRequest(
 		node: SupportedNode,
 		clientPosition: Coordinates,
@@ -172,7 +197,7 @@
 	oncontextmenu={handleContextMenuOpen}
 	role="none"
 	bind:this={board}
-	onmousemove={handleMouseMov}
+	onmousemove={handleMouseMove}
 	style:background-position="calc(50% + {-cameraPosition.x}px) calc(50% + {-cameraPosition.y}px)"
 	onmousedown={handleMouseDown}
 	onmouseup={handleMouseUp}

@@ -1,4 +1,4 @@
-import type {InvalidUrlFromUrlLoaderNodeState} from "./state/InvalidUrlFromUrlLoaderNodeState.ts";
+import type {InvalidUrlFromUrlLoaderNodeState} from "./state/kinds/invalid-url/InvalidUrlFromUrlLoaderNodeState.ts";
 import type {LoadingFailedFromUrlLoaderNodeState} from "./state/kinds/loading-failed/LoadingFailedFromUrlLoaderNodeState.ts";
 import type {LoadingInProgressFromUrlLoaderNodeState} from "./state/kinds/loading-in-progress/LoadingInProgressFromUrlLoaderNodeState.ts";
 import type {LoadingSucceededFromUrlLoaderNodeState} from "./state/kinds/loading-succeeded/LoadingSucceededFromUrlLoaderNodeState.ts";

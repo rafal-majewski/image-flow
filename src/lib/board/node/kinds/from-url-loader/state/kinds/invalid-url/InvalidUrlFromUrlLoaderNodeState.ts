@@ -1,43 +1,29 @@
 import type {Edge} from "../../../../../../edge/Edge.ts";
 import {FromUrlLoaderNodeState} from "../../FromUrlLoaderNodeState.ts";
-import {InvalidUrlFromUrlLoaderNodeState} from "../invalid-url/InvalidUrlFromUrlLoaderNodeState.ts";
 import {LoadingInProgressFromUrlLoaderNodeState} from "../loading-in-progress/LoadingInProgressFromUrlLoaderNodeState.ts";
 import {NoUrlFromUrlLoaderNodeState} from "../no-url/NoUrlFromUrlLoaderNodeState.ts";
-export class LoadingSucceededFromUrlLoaderNodeState extends FromUrlLoaderNodeState {
-	public readonly image: ImageData;
+export class InvalidUrlFromUrlLoaderNodeState extends FromUrlLoaderNodeState {
 	public readonly url: string;
-	public constructor(image: ImageData, url: string) {
-		super("done");
-		this.image = image;
+	public constructor(url: string) {
+		super("errored");
 		this.url = url;
 	}
 	public override load(
 		url: string,
 		outputEdges: readonly Edge[],
 	): LoadingInProgressFromUrlLoaderNodeState {
-		for (const edge of outputEdges) {
-			edge.targetNode.unsetInput();
-		}
 		return new LoadingInProgressFromUrlLoaderNodeState(url);
 	}
 	public override setInvalidUrl(
 		url: string,
 		outputEdges: readonly Edge[],
 	): InvalidUrlFromUrlLoaderNodeState {
-		for (const edge of outputEdges) {
-			edge.targetNode.unsetInput();
-		}
 		return new InvalidUrlFromUrlLoaderNodeState(url);
 	}
 	public override unsetUrl(
 		outputEdges: readonly Edge[],
 	): NoUrlFromUrlLoaderNodeState {
-		for (const edge of outputEdges) {
-			edge.targetNode.unsetInput();
-		}
 		return new NoUrlFromUrlLoaderNodeState();
 	}
-	public override handleNewOutputEdge(edge: Edge): void {
-		edge.targetNode.setInput(this.image);
-	}
+	public override handleNewOutputEdge(edge: Edge): void {}
 }

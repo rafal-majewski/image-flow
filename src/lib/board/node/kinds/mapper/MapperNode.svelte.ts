@@ -15,15 +15,18 @@ export class MapperNode extends Node {
 		this.inputEdge = null;
 	}
 	public setMapper(mapper: Mapper): void {
-		this.state = this.state.setMapper(mapper);
+		this.state = this.state.setMapper(mapper, this.outputEdges);
 	}
 	public unsetInput(): void {
-		this.state = this.state.unsetInput();
+		this.state = this.state.unsetInput(this.outputEdges);
 	}
 	public unsetMapper(): void {
-		this.state = this.state.unsetMapper();
+		this.state = this.state.unsetMapper(this.outputEdges);
 	}
 	public setInput(input: ImageData): void {
-		this.state = this.state.setInput(input);
+		this.state = this.state.setInput(input, this.outputEdges);
+	}
+	public handleNewOutputEdge(edge: Edge): void {
+		this.state.handleNewOutputEdge(edge);
 	}
 }

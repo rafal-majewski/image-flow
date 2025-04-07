@@ -3,6 +3,7 @@ import type {SupportedFromUrlLoaderNodeState} from "./SupportedFromUrlLoaderNode
 import type {Coordinates} from "../../../coordinates/Coordinates.ts";
 import {Node} from "../../Node.svelte.ts";
 import {checkIfUrlIsValid} from "./checking-if-url-is-valid/checkIfUrlIsValid.ts";
+import type {Edge} from "../../../edge/Edge.ts";
 export class FromUrlLoaderNode extends Node {
 	public state: SupportedFromUrlLoaderNodeState =
 		$state.raw() as SupportedFromUrlLoaderNodeState;
@@ -12,7 +13,7 @@ export class FromUrlLoaderNode extends Node {
 	}
 	public async setUrl(url: string): Promise<void> {
 		if (checkIfUrlIsValid(url)) {
-			const loadingInProgressState = this.state.loadingInProgress(url);
+			const loadingInProgressState = this.state.load(url, this.outputEdges);
 			this.state = loadingInProgressState;
 			const imageElement = new Image();
 			imageElement.crossOrigin = "Anonymous";
@@ -40,17 +41,21 @@ export class FromUrlLoaderNode extends Node {
 						canvas.width,
 						canvas.height,
 					);
-					this.state = loadingInProgressState.loadingSucceed(
+					this.state = loadingInProgressState.succeedLoading(
 						image,
 						url,
 						this.outputEdges,
 					);
 				} else {
-					this.state = loadingInProgressState.loadingFail(url);
+					this.state = loadingInProgressState.failLoading(url);
 				}
 			}
 		} else {
-			this.state = this.state.invalidUrl(url);
+			this.state = this.state.setInvalidUrl(url, this.outputEdges);
 		}
+	}
+	protected override handleNewOutputEdge(edge: Edge): void {
+		console.log("handleNewOutputEdge", edge);
+		this.state.handleNewOutputEdge(edge);
 	}
 }

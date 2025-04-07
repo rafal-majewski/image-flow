@@ -43,7 +43,6 @@
 			onMouseLeftButtonUp(node);
 		}
 	}
-	function handleSetMapperRequest(): void {}
 </script>
 
 <section
@@ -62,33 +61,7 @@
 	<header>{node.name}</header>
 	<button onclick={handleDeleteButtonClick}>🗑️</button>
 	<button onclick={handleAddNextNodeButtonClick}>📍➡️</button>
-	<FromUrlLoaderNodeStateDisplayer
-		state={node.state}
-		onSetMapperRequest={handleSetMapperRequest}
-	/>
-	<!-- {#snippet loadingLoadingSucceed(
-		state: LoadingSucceededFromUrlLoaderNodeState,
-	)}
-		<LoadingInProgressFromUrlLoaderNodeStateDisplayer {state} />
-	{/snippet}
-	{#snippet nothing()}{/snippet}
-	{@render node.state.acceptVisitor({
-		visitInvalidUrl() {
-			return nothing;
-		},
-		visitLoadingInProgress() {
-			return nothing;
-		},
-		visitLoadingSucceed() {
-			return loadingLoadingSucceeded;
-		},
-		visitLoadingFail() {
-			return nothing;
-		},
-		visitNoUrl() {
-			return nothing;
-		},
-	} as const)(node.state as any)} -->
+	<FromUrlLoaderNodeStateDisplayer {node} />
 </section>
 
 <style lang="scss">

@@ -46,12 +46,6 @@
 			onMouseLeftButtonUp(node);
 		}
 	}
-	function handleSetMapperRequest(newMapper: Mapper): void {
-		node.setMapper(newMapper);
-	}
-	function handleUnsetMapperRequest(): void {
-		node.unsetMapper();
-	}
 </script>
 
 <section
@@ -70,11 +64,7 @@
 	<button onclick={handleDeleteButtonClick}>🗑️</button>
 	<button onclick={handleAddInputEdgeButtonClick}>➡️📍</button>
 	<button onclick={handleAddOutputEdgeButtonClick}>📍➡️</button>
-	<MapperNodeStateDisplayer
-		state={node.state}
-		onSetMapperRequest={handleSetMapperRequest}
-		onUnsetMapperRequest={handleUnsetMapperRequest}
-	/>
+	<MapperNodeStateDisplayer {node} />
 </section>
 
 <style lang="scss">

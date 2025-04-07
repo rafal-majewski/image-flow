@@ -9,7 +9,9 @@ export abstract class Node {
 		this.position = position;
 		this.outputEdges = [];
 	}
+	protected abstract handleNewOutputEdge(edge: Edge): void;
 	public addOutputEdge(edge: Edge): void {
 		this.outputEdges = [...this.outputEdges, edge];
+		this.handleNewOutputEdge(edge);
 	}
 }

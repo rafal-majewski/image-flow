@@ -12,9 +12,10 @@ export class GrayscaleMapper extends Mapper {
 		const grayness = this.computeGrayness(color);
 		return {red: grayness, green: grayness, blue: grayness, alpha: color.alpha};
 	}
-	public map(input: ImageData): ImageData {
+	public *map(input: ImageData): Generator<ImageData, ImageData, void> {
 		const result = new ImageData(input.width, input.height);
 		for (let byteIndex = 0; byteIndex < input.data.length; byteIndex += 4) {
+			yield result;
 			const color: Color = {
 				red: input.data[byteIndex] as ColorComponentValue,
 				green: input.data[byteIndex + 1] as ColorComponentValue,

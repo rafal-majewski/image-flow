@@ -16,4 +16,5 @@ export abstract class MapperNodeState {
 		image: ImageData,
 		outputEdges: readonly Edge[],
 	): MapperNodeState;
+	public abstract handleNewOutputEdge(edge: Edge): void;
 }
