@@ -72,13 +72,14 @@
 			onclick={handleSetInputNodeButtonClick}
 			disabled={node instanceof FromUrlLoaderNode
 				|| node.inputNode !== null
-				|| (mode !== null && mode.kind === "settingInputNode")}>➡️📍</button
+				|| (mode !== null && mode.kindName === "settingInputNode")}>➡️📍</button
 		>
 		<header>{node.name}</header>
 		<button onclick={handleDeleteButtonClick}>🗑️</button>
 		<button
 			onclick={handleSetOutputNodeButtonClick}
-			disabled={mode !== null && mode.kind === "settingOutputNode"}>📍➡️</button
+			disabled={mode !== null && mode.kindName === "settingOutputNode"}
+			>📍➡️</button
 		>
 	</div>
 	{#if node instanceof MapperNode}

@@ -27,7 +27,7 @@
 	let mode = $state.raw<null | SupportedBoardMode>(null);
 	$inspect(mode);
 	function handleAddNodeRequest(newNodeClass: SupportedNodeClass): void {
-		if (mode !== null && mode.kind === "addingNode") {
+		if (mode !== null && mode.kindName === "addingNode") {
 			const newNode = new newNodeClass(mode.data.position, generateNodeId());
 			nodes = [...nodes, newNode];
 			mode = null;
@@ -43,7 +43,7 @@
 		if (event.target === board && mode === null) {
 			event.preventDefault();
 			mode = {
-				kind: "addingNode",
+				kindName: "addingNode",
 				data: {
 					position: computeInBoardPositionFromJustClientPosition({
 						x: event.clientX,
@@ -55,7 +55,7 @@
 	}
 	function handleMouseMove(event: MouseEvent): void {
 		if (mode !== null) {
-			switch (mode.kind) {
+			switch (mode.kindName) {
 				case "movingCamera": {
 					cameraPosition = {
 						x: cameraPosition.x - event.movementX,
@@ -103,14 +103,14 @@
 		if (
 			event.target === board
 			&& event.button === 0
-			&& (mode === null || mode.kind === "addingNode")
+			&& (mode === null || mode.kindName === "addingNode")
 		) {
-			mode = {kind: "movingCamera"};
+			mode = {kindName: "movingCamera"};
 		}
 	}
 	function handleMouseUp(event: MouseEvent): void {
 		if (mode !== null && event.button === 0) {
-			switch (mode.kind) {
+			switch (mode.kindName) {
 				case "movingNode": {
 					mode = null;
 					break;
@@ -124,7 +124,7 @@
 	}
 	function handleMouseLeft(): void {
 		if (mode !== null) {
-			switch (mode.kind) {
+			switch (mode.kindName) {
 				case "movingNode": {
 					mode = null;
 					break;
@@ -150,14 +150,14 @@
 	): void {
 		if (mode === null) {
 			mode = {
-				kind: "settingOutputNode",
+				kindName: "settingOutputNode",
 				data: {
 					sourceNode: nodeInRequest,
 					targetPosition:
 						computeInBoardPositionFromJustClientPosition(clientPosition),
 				},
 			};
-		} else if (mode.kind === "settingInputNode") {
+		} else if (mode.kindName === "settingInputNode") {
 			mode.data.targetNode.inputNode = nodeInRequest;
 			nodeInRequest.outputNodes = [
 				...nodeInRequest.outputNodes,
@@ -172,14 +172,14 @@
 	): void {
 		if (mode === null) {
 			mode = {
-				kind: "settingInputNode",
+				kindName: "settingInputNode",
 				data: {
 					targetNode: nodeInRequest,
 					sourcePosition:
 						computeInBoardPositionFromJustClientPosition(clientPosition),
 				},
 			};
-		} else if (mode.kind === "settingOutputNode") {
+		} else if (mode.kindName === "settingOutputNode") {
 			mode.data.sourceNode.outputNodes = [
 				...mode.data.sourceNode.outputNodes,
 				nodeInRequest,
@@ -190,7 +190,7 @@
 	}
 	function handleMouseLeftButtonDownedOnNode(node: SupportedNode): void {
 		if (mode === null) {
-			mode = {kind: "movingNode", data: {node}};
+			mode = {kindName: "movingNode", data: {node}};
 		}
 	}
 	function handleMouseLeftButtonUppedOnNode(): void {}
@@ -207,7 +207,7 @@
 		}
 		nodes = nodes.filter((node) => node !== nodeToDelete);
 		if (mode !== null) {
-			switch (mode.kind) {
+			switch (mode.kindName) {
 				case "settingOutputNode": {
 					if (mode.data.sourceNode === nodeToDelete) {
 						mode = null;
@@ -245,7 +245,7 @@
 		style:top="calc(50% + {-cameraPosition.y}px)"
 		style:left="calc(50% + {-cameraPosition.x}px)"
 	>
-		{#if mode !== null && mode.kind === "addingNode"}
+		{#if mode !== null && mode.kindName === "addingNode"}
 			<Menu
 				position={mode.data.position}
 				onAddMapperNodeRequest={handleAddMapperNodeRequest}
@@ -272,14 +272,14 @@
 				{/each}
 			{/each}
 			{#if mode !== null}
-				{#if mode.kind === "settingOutputNode"}
+				{#if mode.kindName === "settingOutputNode"}
 					<li>
 						<LineDisplayer
 							sourcePosition={mode.data.sourceNode.position}
 							targetPosition={mode.data.targetPosition}
 						/>
 					</li>
-				{:else if mode.kind === "settingInputNode"}
+				{:else if mode.kindName === "settingInputNode"}
 					<li>
 						<LineDisplayer
 							sourcePosition={mode.data.sourcePosition}
