@@ -2,18 +2,19 @@ import {NoUrlFromUrlLoaderNodeState} from "./state/kinds/no-url/NoUrlFromUrlLoad
 import type {SupportedFromUrlLoaderNodeState} from "./SupportedFromUrlLoaderNodeState.ts";
 import type {Coordinates} from "../../../coordinates/Coordinates.ts";
 import {Node} from "../../Node.svelte.ts";
+import type {MapperNode} from "../mapper/MapperNode.svelte.ts";
 import {checkIfUrlIsValid} from "./checking-if-url-is-valid/checkIfUrlIsValid.ts";
-import type {Edge} from "../../../edge/Edge.ts";
+import type {NodeId} from "../../id/NodeId.ts";
 export class FromUrlLoaderNode extends Node {
 	public state: SupportedFromUrlLoaderNodeState =
 		$state.raw() as SupportedFromUrlLoaderNodeState;
-	public constructor(position: Coordinates) {
-		super("From URL loader", position);
+	public constructor(position: Coordinates, id: NodeId) {
+		super("From URL", position, id);
 		this.state = new NoUrlFromUrlLoaderNodeState();
 	}
 	public async setUrl(url: string): Promise<void> {
 		if (checkIfUrlIsValid(url)) {
-			const loadingInProgressState = this.state.load(url, this.outputEdges);
+			const loadingInProgressState = this.state.load(url, this.outputNodes);
 			this.state = loadingInProgressState;
 			const imageElement = new Image();
 			imageElement.crossOrigin = "Anonymous";
@@ -44,18 +45,17 @@ export class FromUrlLoaderNode extends Node {
 					this.state = loadingInProgressState.succeedLoading(
 						image,
 						url,
-						this.outputEdges,
+						this.outputNodes,
 					);
 				} else {
 					this.state = loadingInProgressState.failLoading(url);
 				}
 			}
 		} else {
-			this.state = this.state.setInvalidUrl(url, this.outputEdges);
+			this.state = this.state.setInvalidUrl(url, this.outputNodes);
 		}
 	}
-	protected override handleNewOutputEdge(edge: Edge): void {
-		console.log("handleNewOutputEdge", edge);
-		this.state.handleNewOutputEdge(edge);
+	protected override handleNewOutputNode(outputNode: MapperNode): void {
+		this.state.handleNewOutputNode(outputNode);
 	}
 }

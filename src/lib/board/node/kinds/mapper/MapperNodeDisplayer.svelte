@@ -54,7 +54,7 @@
 	class:error={node.state.status === "errored"}
 	class:processing={node.state.status === "working"}
 	class:done={node.state.status === "done"}
-	class:unconfigur={node.state.status === "unconfigured"}
+	class:unconfigured={node.state.status === "unconfigured"}
 	class:idling={node.state.status === "idling"}
 	onmousedown={handleMouseDown}
 	role="none"

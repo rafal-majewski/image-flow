@@ -1,6 +1,6 @@
-import type {Edge} from "../../../../edge/Edge.ts";
 import type {Mapper} from "../mapper/Mapper.ts";
 import type {NodeStatus} from "../../../status/NodeStatus.ts";
+import type {MapperNode} from "../MapperNode.svelte.ts";
 export abstract class MapperNodeState {
 	readonly status: NodeStatus;
 	protected constructor(status: NodeStatus) {
@@ -8,13 +8,17 @@ export abstract class MapperNodeState {
 	}
 	public abstract setMapper(
 		mapper: Mapper,
-		outputEdges: readonly Edge[],
+		outputNodes: readonly MapperNode[],
 	): MapperNodeState;
-	public abstract unsetInput(outputEdges: readonly Edge[]): MapperNodeState;
-	public abstract unsetMapper(outputEdges: readonly Edge[]): MapperNodeState;
+	public abstract unsetInput(
+		outputNodes: readonly MapperNode[],
+	): MapperNodeState;
+	public abstract unsetMapper(
+		outputNodes: readonly MapperNode[],
+	): MapperNodeState;
 	public abstract setInput(
 		image: ImageData,
-		outputEdges: readonly Edge[],
+		outputNodes: readonly MapperNode[],
 	): MapperNodeState;
-	public abstract handleNewOutputEdge(edge: Edge): void;
+	public abstract handleNewOutputNode(outputNode: MapperNode): void;
 }

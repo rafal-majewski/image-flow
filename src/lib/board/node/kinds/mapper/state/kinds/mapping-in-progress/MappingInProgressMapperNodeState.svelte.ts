@@ -1,9 +1,9 @@
-import type {Edge} from "../../../../../../edge/Edge.ts";
 import type {Mapper} from "../../../mapper/Mapper.ts";
 import {MapperNodeState} from "../../MapperNodeState.ts";
 import {MappingSucceededMapperNodeState} from "../mapping-succeeded/MappingSucceededMapperNodeState.svelte.ts";
 import {NoInputMapperNodeState} from "../no-input/NoInputMapperNodeState.ts";
 import {NoMapperMapperNodeState} from "../no-mapper/NoMapperMapperNodeState.ts";
+import type {MapperNode} from "../../../MapperNode.svelte.ts";
 export class MappingInProgressMapperNodeState extends MapperNodeState {
 	public constructor(
 		mapper: Mapper,
@@ -23,59 +23,59 @@ export class MappingInProgressMapperNodeState extends MapperNodeState {
 	public readonly output: ImageData = $state() as ImageData;
 	public override setMapper(
 		newMapper: Mapper,
-		outputEdges: readonly Edge[],
+		outputNodes: readonly MapperNode[],
 	): MappingSucceededMapperNodeState | MappingInProgressMapperNodeState {
-		const newGenerator = newMapper.map(this.input);
-		const newGeneratorResult = newGenerator.next();
-		if (newGeneratorResult.done) {
-			for (const edge of outputEdges) {
-				edge.targetNode.setInput(newGeneratorResult.value);
+		const generator = newMapper.map(this.input);
+		const generatorResult = generator.next();
+		if (generatorResult.done) {
+			for (const outputNode of outputNodes) {
+				outputNode.setInput(generatorResult.value);
 			}
 			return new MappingSucceededMapperNodeState(
 				newMapper,
 				this.input,
-				newGeneratorResult.value,
+				generatorResult.value,
 			);
 		} else {
 			return new MappingInProgressMapperNodeState(
 				newMapper,
 				this.input,
-				newGenerator,
-				newGeneratorResult.value,
+				generator,
+				generatorResult.value,
 			);
 		}
 	}
 	public override unsetInput(
-		outputEdges: readonly Edge[],
+		outputNodes: readonly MapperNode[],
 	): NoInputMapperNodeState {
 		return new NoInputMapperNodeState(this.mapper);
 	}
 	public override unsetMapper(
-		outputEdges: readonly Edge[],
+		outputNodes: readonly MapperNode[],
 	): NoMapperMapperNodeState {
 		return new NoMapperMapperNodeState(this.input);
 	}
 	public override setInput(
 		input: ImageData,
-		outputEdges: readonly Edge[],
+		outputNodes: readonly MapperNode[],
 	): MappingSucceededMapperNodeState | MappingInProgressMapperNodeState {
-		const newGenerator = this.mapper.map(input);
-		const newGeneratorResult = newGenerator.next();
-		if (newGeneratorResult.done) {
-			for (const edge of outputEdges) {
-				edge.targetNode.setInput(newGeneratorResult.value);
+		const generator = this.mapper.map(input);
+		const generatorResult = generator.next();
+		if (generatorResult.done) {
+			for (const outputNode of outputNodes) {
+				outputNode.setInput(generatorResult.value);
 			}
 			return new MappingSucceededMapperNodeState(
 				this.mapper,
 				input,
-				newGeneratorResult.value,
+				generatorResult.value,
 			);
 		} else {
 			return new MappingInProgressMapperNodeState(
 				this.mapper,
 				input,
-				newGenerator,
-				newGeneratorResult.value,
+				generator,
+				generatorResult.value,
 			);
 		}
 	}
@@ -98,5 +98,5 @@ export class MappingInProgressMapperNodeState extends MapperNodeState {
 			);
 		}
 	}
-	public override handleNewOutputEdge(edge: Edge): void {}
+	public override handleNewOutputNode(outputNode: MapperNode): void {}
 }

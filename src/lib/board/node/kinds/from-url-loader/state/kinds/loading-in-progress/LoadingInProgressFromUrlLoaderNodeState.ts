@@ -1,7 +1,7 @@
 import {FromUrlLoaderNodeState} from "../../FromUrlLoaderNodeState.ts";
 import {LoadingSucceededFromUrlLoaderNodeState} from "../loading-succeeded/LoadingSucceededFromUrlLoaderNodeState.ts";
 import {NoUrlFromUrlLoaderNodeState} from "../no-url/NoUrlFromUrlLoaderNodeState.ts";
-import type {Edge} from "../../../../../../edge/Edge.ts";
+import type {MapperNode} from "../../../../mapper/MapperNode.svelte.ts";
 import {InvalidUrlFromUrlLoaderNodeState} from "../invalid-url/InvalidUrlFromUrlLoaderNodeState.ts";
 import {LoadingFailedFromUrlLoaderNodeState} from "../loading-failed/LoadingFailedFromUrlLoaderNodeState.ts";
 export class LoadingInProgressFromUrlLoaderNodeState extends FromUrlLoaderNodeState {
@@ -12,33 +12,33 @@ export class LoadingInProgressFromUrlLoaderNodeState extends FromUrlLoaderNodeSt
 	}
 	public override load(
 		url: string,
-		outputEdges: readonly Edge[],
+		outputNodes: readonly MapperNode[],
 	): LoadingInProgressFromUrlLoaderNodeState {
 		return new LoadingInProgressFromUrlLoaderNodeState(url);
 	}
 	public override setInvalidUrl(
 		url: string,
-		outputEdges: readonly Edge[],
+		outputNodes: readonly MapperNode[],
 	): InvalidUrlFromUrlLoaderNodeState {
 		return new InvalidUrlFromUrlLoaderNodeState(url);
 	}
 	public override unsetUrl(
-		outputEdges: readonly Edge[],
+		outputNodes: readonly MapperNode[],
 	): NoUrlFromUrlLoaderNodeState {
 		return new NoUrlFromUrlLoaderNodeState();
 	}
 	public succeedLoading(
 		image: ImageData,
 		url: string,
-		outputEdges: readonly Edge[],
+		outputNodes: readonly MapperNode[],
 	): LoadingSucceededFromUrlLoaderNodeState {
-		for (const edge of outputEdges) {
-			edge.targetNode.setInput(image);
+		for (const outputNode of outputNodes) {
+			outputNode.setInput(image);
 		}
 		return new LoadingSucceededFromUrlLoaderNodeState(image, url);
 	}
 	public failLoading(url: string): LoadingFailedFromUrlLoaderNodeState {
 		return new LoadingFailedFromUrlLoaderNodeState(url);
 	}
-	public override handleNewOutputEdge(edge: Edge): void {}
+	public override handleNewOutputNode(outputNode: MapperNode): void {}
 }

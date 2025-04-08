@@ -1,9 +1,9 @@
-import type {Edge} from "../../../../../../edge/Edge.ts";
 import type {Mapper} from "../../../mapper/Mapper.ts";
 import {MapperNodeState} from "../../MapperNodeState.ts";
 import {MappingInProgressMapperNodeState} from "../mapping-in-progress/MappingInProgressMapperNodeState.svelte.ts";
 import {MappingSucceededMapperNodeState} from "../mapping-succeeded/MappingSucceededMapperNodeState.svelte.ts";
 import {NoInputAndNoMapperMapperNodeState} from "../no-input-and-no-mapper/NoInputAndNoMapperMapperNodeState.ts";
+import type {MapperNode} from "../../../MapperNode.svelte.ts";
 export class NoMapperMapperNodeState extends MapperNodeState {
 	public constructor(input: ImageData) {
 		super("unconfigured");
@@ -12,13 +12,13 @@ export class NoMapperMapperNodeState extends MapperNodeState {
 	public readonly input: ImageData;
 	public override setMapper(
 		mapper: Mapper,
-		outputEdges: readonly Edge[],
+		outputNodes: readonly MapperNode[],
 	): MappingSucceededMapperNodeState | MappingInProgressMapperNodeState {
 		const generator = mapper.map(this.input);
 		const generatorResult = generator.next();
 		if (generatorResult.done) {
-			for (const edge of outputEdges) {
-				edge.targetNode.setInput(generatorResult.value);
+			for (const outputNode of outputNodes) {
+				outputNode.setInput(generatorResult.value);
 			}
 			return new MappingSucceededMapperNodeState(
 				mapper,
@@ -35,20 +35,20 @@ export class NoMapperMapperNodeState extends MapperNodeState {
 		}
 	}
 	public override unsetInput(
-		outputEdges: readonly Edge[],
+		outputNodes: readonly MapperNode[],
 	): NoInputAndNoMapperMapperNodeState {
 		return new NoInputAndNoMapperMapperNodeState();
 	}
 	public override unsetMapper(
-		outputEdges: readonly Edge[],
+		outputNodes: readonly MapperNode[],
 	): NoMapperMapperNodeState {
 		return new NoMapperMapperNodeState(this.input);
 	}
 	public override setInput(
 		input: ImageData,
-		outputEdges: readonly Edge[],
+		outputNodes: readonly MapperNode[],
 	): NoMapperMapperNodeState {
 		return new NoMapperMapperNodeState(input);
 	}
-	public override handleNewOutputEdge(edge: Edge): void {}
+	public override handleNewOutputNode(outputNode: MapperNode): void {}
 }

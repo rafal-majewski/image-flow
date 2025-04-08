@@ -1,10 +1,13 @@
 <script lang="ts">
-	import type {Edge} from "../edge/Edge.ts";
 	import LineDisplayer from "../line-displayer/LineDisplayer.svelte";
-	const {edge}: Readonly<{edge: Edge}> = $props();
+	import type {Node} from "../node/Node.svelte.ts";
+	const {
+		sourceNode,
+		targetNode,
+	}: Readonly<{sourceNode: Node; targetNode: Node}> = $props();
 </script>
 
 <LineDisplayer
-	sourcePosition={edge.sourceNode.position}
-	targetPosition={edge.targetNode.position}
+	sourcePosition={sourceNode.position}
+	targetPosition={targetNode.position}
 />

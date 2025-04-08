@@ -1,7 +1,6 @@
 <script lang="ts">
 	import {computeInBoardPositionFromClientPosition} from "./computing-in-board-position-from-client-position/computeInBoardPositionFromClientPosition.ts";
 	import type {Coordinates} from "./coordinates/Coordinates.ts";
-	import {Edge} from "./edge/Edge.ts";
 	import EdgeDisplayer from "./edge-displayer/EdgeDisplayer.svelte";
 	import {FromUrlLoaderNode} from "./node/kinds/from-url-loader/FromUrlLoaderNode.svelte.ts";
 	import LineDisplayer from "./line-displayer/LineDisplayer.svelte";
@@ -10,6 +9,7 @@
 	import type {SupportedNodeClass} from "./node/SupportedNodeClass.ts";
 	import Menu from "./main/Menu.svelte";
 	import type {SupportedNode} from "./node/SupportedNode.ts";
+	import {generateNodeId} from "./node/id/generation/generateNodeId.ts";
 	let board: HTMLElement;
 	let cameraPosition = $state<Coordinates>({x: 0, y: 0});
 	function computeInBoardPositionFromJustClientPosition(
@@ -23,7 +23,6 @@
 		);
 	}
 	let nodes = $state.raw<readonly SupportedNode[]>([]);
-	let edges = $state.raw<readonly Edge[]>([]);
 	let mode = $state.raw<
 		| null
 		| Readonly<{kind: "movingCamera"}>
@@ -42,18 +41,18 @@
 		| Readonly<{kind: "addingNode"; data: Readonly<{position: Coordinates}>}>
 	>(null);
 	$inspect(mode);
-	function tryToAddNode(class_: SupportedNodeClass): void {
+	function handleAddNodeRequest(newNodeClass: SupportedNodeClass): void {
 		if (mode !== null && mode.kind === "addingNode") {
-			const newNode = new class_(mode.data.position);
+			const newNode = new newNodeClass(mode.data.position, generateNodeId());
 			nodes = [...nodes, newNode];
 			mode = null;
 		}
 	}
 	function handleAddMapperNodeRequest(): void {
-		tryToAddNode(MapperNode);
+		handleAddNodeRequest(MapperNode);
 	}
 	function handleAddFromUrlLoaderNodeRequest(): void {
-		tryToAddNode(FromUrlLoaderNode);
+		handleAddNodeRequest(FromUrlLoaderNode);
 	}
 	function handleContextMenuOpen(event: MouseEvent): void {
 		if (event.target === board && mode === null) {
@@ -175,12 +174,13 @@
 			};
 		}
 	}
-	function handleAddInputEdgeToNodeRequest(node: MapperNode): void {
+	function handleAddInputEdgeToNodeRequest(targetNode: MapperNode): void {
 		if (mode !== null && mode.kind === "addingEdgeFromSourceNode") {
-			const edge = new Edge(mode.data.sourceNode, node);
-			edges = [...edges, edge];
-			mode.data.sourceNode.addOutputEdge(edge);
-			node.inputEdge = edge;
+			mode.data.sourceNode.outputNodes = [
+				...mode.data.sourceNode.outputNodes,
+				targetNode,
+			];
+			targetNode.inputNode = mode.data.sourceNode;
 			mode = null;
 		}
 	}
@@ -226,11 +226,11 @@
 						onDeleteRequest={handleDeleteNodeRequest}
 					/>
 				</li>
-			{/each}
-			{#each edges as edge, edgeIndex (edgeIndex)}
-				<li>
-					<EdgeDisplayer {edge} />
-				</li>
+				{#each node.outputNodes as outputNode (`${node.id}->${outputNode.id}`)}
+					<li>
+						<EdgeDisplayer sourceNode={node} targetNode={outputNode} />
+					</li>
+				{/each}
 			{/each}
 			{#if mode !== null}
 				{#if mode.kind === "addingEdgeFromSourceNode"}

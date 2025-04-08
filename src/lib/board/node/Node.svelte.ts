@@ -1,17 +1,20 @@
-import type {Edge} from "../edge/Edge.ts";
 import type {Coordinates} from "../coordinates/Coordinates.ts";
+import type {NodeId} from "./id/NodeId.ts";
+import type {MapperNode} from "./kinds/mapper/MapperNode.svelte.ts";
 export abstract class Node {
-	public outputEdges: readonly Edge[] = $state() as readonly Edge[];
+	public outputNodes: readonly MapperNode[] = $state() as readonly MapperNode[];
 	public readonly name: string;
 	public position: Coordinates = $state() as Coordinates;
-	protected constructor(name: string, position: Coordinates) {
+	public readonly id: NodeId;
+	protected constructor(name: string, position: Coordinates, id: NodeId) {
 		this.name = name;
 		this.position = position;
-		this.outputEdges = [];
+		this.outputNodes = [];
+		this.id = id;
 	}
-	protected abstract handleNewOutputEdge(edge: Edge): void;
-	public addOutputEdge(edge: Edge): void {
-		this.outputEdges = [...this.outputEdges, edge];
-		this.handleNewOutputEdge(edge);
+	protected abstract handleNewOutputNode(outputNode: MapperNode): void;
+	public addOutputNode(outputNode: MapperNode): void {
+		this.outputNodes = [...this.outputNodes, outputNode];
+		this.handleNewOutputNode(outputNode);
 	}
 }
