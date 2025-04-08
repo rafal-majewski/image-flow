@@ -34,5 +34,6 @@
 	svg {
 		position: absolute;
 		transform-origin: center left;
+		pointer-events: none;
 	}
 </style>

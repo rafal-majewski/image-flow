@@ -10,6 +10,7 @@
 	import Menu from "./main/Menu.svelte";
 	import type {SupportedNode} from "./node/SupportedNode.ts";
 	import {generateNodeId} from "./node/id/generation/generateNodeId.ts";
+	import type {SupportedBoardMode} from "./mode/SupportedBoardMode.ts";
 	let board: HTMLElement;
 	let cameraPosition = $state<Coordinates>({x: 0, y: 0});
 	function computeInBoardPositionFromJustClientPosition(
@@ -23,23 +24,7 @@
 		);
 	}
 	let nodes = $state.raw<readonly SupportedNode[]>([]);
-	let mode = $state.raw<
-		| null
-		| Readonly<{kind: "movingCamera"}>
-		| Readonly<{kind: "movingNode"; data: Readonly<{node: SupportedNode}>}>
-		| Readonly<{
-				kind: "addingEdgeFromSourceNode";
-				data: Readonly<{
-					sourceNode: SupportedNode;
-					targetPosition: Coordinates;
-				}>;
-		  }>
-		| Readonly<{
-				kind: "addingEdgeFromTargetNode";
-				data: Readonly<{targetNode: MapperNode; sourcePosition: Coordinates}>;
-		  }>
-		| Readonly<{kind: "addingNode"; data: Readonly<{position: Coordinates}>}>
-	>(null);
+	let mode = $state.raw<null | SupportedBoardMode>(null);
 	$inspect(mode);
 	function handleAddNodeRequest(newNodeClass: SupportedNodeClass): void {
 		if (mode !== null && mode.kind === "addingNode") {
@@ -85,7 +70,7 @@
 					};
 					break;
 				}
-				case "addingEdgeFromSourceNode": {
+				case "settingOutputNode": {
 					mode = {
 						...mode,
 						data: {
@@ -98,7 +83,7 @@
 					};
 					break;
 				}
-				case "addingEdgeFromTargetNode": {
+				case "settingInputNode": {
 					mode = {
 						...mode,
 						data: {
@@ -148,39 +133,58 @@
 					mode = null;
 					break;
 				}
-				case "addingEdgeFromSourceNode": {
+				case "settingOutputNode": {
 					mode = null;
 					break;
 				}
-				case "addingEdgeFromTargetNode": {
+				case "settingInputNode": {
 					mode = null;
 					break;
 				}
 			}
 		}
 	}
-	function handleAddOutputEdgeToNodeRequest(
-		node: SupportedNode,
+	function handleSetOutputNodeToNodeRequest(
+		nodeInRequest: SupportedNode,
 		clientPosition: Coordinates,
 	): void {
 		if (mode === null) {
 			mode = {
-				kind: "addingEdgeFromSourceNode",
+				kind: "settingOutputNode",
 				data: {
-					sourceNode: node,
+					sourceNode: nodeInRequest,
 					targetPosition:
 						computeInBoardPositionFromJustClientPosition(clientPosition),
 				},
 			};
+		} else if (mode.kind === "settingInputNode") {
+			mode.data.targetNode.inputNode = nodeInRequest;
+			nodeInRequest.outputNodes = [
+				...nodeInRequest.outputNodes,
+				mode.data.targetNode,
+			];
+			mode = null;
 		}
 	}
-	function handleAddInputEdgeToNodeRequest(targetNode: MapperNode): void {
-		if (mode !== null && mode.kind === "addingEdgeFromSourceNode") {
+	function handleSetInputNodeToNodeRequest(
+		nodeInRequest: MapperNode,
+		clientPosition: Coordinates,
+	): void {
+		if (mode === null) {
+			mode = {
+				kind: "settingInputNode",
+				data: {
+					targetNode: nodeInRequest,
+					sourcePosition:
+						computeInBoardPositionFromJustClientPosition(clientPosition),
+				},
+			};
+		} else if (mode.kind === "settingOutputNode") {
 			mode.data.sourceNode.outputNodes = [
 				...mode.data.sourceNode.outputNodes,
-				targetNode,
+				nodeInRequest,
 			];
-			targetNode.inputNode = mode.data.sourceNode;
+			nodeInRequest.inputNode = mode.data.sourceNode;
 			mode = null;
 		}
 	}
@@ -190,7 +194,41 @@
 		}
 	}
 	function handleMouseLeftButtonUppedOnNode(): void {}
-	function handleDeleteNodeRequest(): void {}
+	function handleDeleteNodeRequest(nodeToDelete: SupportedNode): void {
+		if (nodeToDelete instanceof MapperNode && nodeToDelete.inputNode !== null) {
+			nodeToDelete.inputNode.outputNodes =
+				nodeToDelete.inputNode.outputNodes.filter(
+					(nodeToDeleteInputNodeOutputNode) =>
+						nodeToDeleteInputNodeOutputNode !== nodeToDelete,
+				);
+		}
+		for (const nodeToDeleteOutputNode of nodeToDelete.outputNodes) {
+			nodeToDeleteOutputNode.inputNode = null;
+		}
+		nodes = nodes.filter((node) => node !== nodeToDelete);
+		if (mode !== null) {
+			switch (mode.kind) {
+				case "settingOutputNode": {
+					if (mode.data.sourceNode === nodeToDelete) {
+						mode = null;
+					}
+					break;
+				}
+				case "settingInputNode": {
+					if (mode.data.targetNode === nodeToDelete) {
+						mode = null;
+					}
+					break;
+				}
+				case "movingNode": {
+					if (mode.data.node === nodeToDelete) {
+						mode = null;
+					}
+					break;
+				}
+			}
+		}
+	}
 </script>
 
 <section
@@ -219,11 +257,12 @@
 				<li>
 					<NodeDisplayer
 						{node}
-						onAddOutputEdgeRequest={handleAddOutputEdgeToNodeRequest}
-						onAddInputEdgeRequest={handleAddInputEdgeToNodeRequest}
+						onSetOutputNodeRequest={handleSetOutputNodeToNodeRequest}
+						onSetInputNodeRequest={handleSetInputNodeToNodeRequest}
 						onMouseLeftButtonDown={handleMouseLeftButtonDownedOnNode}
 						onMouseLeftButtonUp={handleMouseLeftButtonUppedOnNode}
 						onDeleteRequest={handleDeleteNodeRequest}
+						{mode}
 					/>
 				</li>
 				{#each node.outputNodes as outputNode (`${node.id}->${outputNode.id}`)}
@@ -233,14 +272,14 @@
 				{/each}
 			{/each}
 			{#if mode !== null}
-				{#if mode.kind === "addingEdgeFromSourceNode"}
+				{#if mode.kind === "settingOutputNode"}
 					<li>
 						<LineDisplayer
 							sourcePosition={mode.data.sourceNode.position}
 							targetPosition={mode.data.targetPosition}
 						/>
 					</li>
-				{:else if mode.kind === "addingEdgeFromTargetNode"}
+				{:else if mode.kind === "settingInputNode"}
 					<li>
 						<LineDisplayer
 							sourcePosition={mode.data.sourcePosition}
