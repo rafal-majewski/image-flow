@@ -1,4 +1,6 @@
 <script lang="ts">
+	import type {Coordinates} from "../../../../coordinates/Coordinates.ts";
+	import type {SupportedBoardMode} from "../../../../mode/SupportedBoardMode.ts";
 	import Canvas from "../../../Canvas.svelte";
 	import {MapperNode} from "../MapperNode.svelte.ts";
 	import {supportedMappers} from "../supportedMappers.ts";
@@ -7,7 +9,18 @@
 	import {NoInputAndNoMapperMapperNodeState} from "./kinds/no-input-and-no-mapper/NoInputAndNoMapperMapperNodeState.ts";
 	import {NoInputMapperNodeState} from "./kinds/no-input/NoInputMapperNodeState.ts";
 	import {NoMapperMapperNodeState} from "./kinds/no-mapper/NoMapperMapperNodeState.ts";
-	const {node}: Readonly<{node: MapperNode}> = $props();
+	const {
+		node,
+		onSetInputNodeRequest,
+		mode,
+	}: Readonly<{
+		node: MapperNode;
+		onSetInputNodeRequest: (
+			targetNode: MapperNode,
+			mouseClientPosition: Coordinates,
+		) => void;
+		mode: SupportedBoardMode | null;
+	}> = $props();
 	function handleSelectChange(
 		event: Event & Readonly<{currentTarget: HTMLSelectElement}>,
 	): void {
@@ -29,9 +42,21 @@
 			}
 		}
 	}
+	function handleSetInputNodeButtonClick(
+		event: MouseEvent & Readonly<{currentTarget: HTMLButtonElement}>,
+	): void {
+		if (node.inputNode === null) {
+			onSetInputNodeRequest(node, {x: event.clientX, y: event.clientY});
+		}
+	}
 </script>
 
 <section>
+	<button
+		onclick={handleSetInputNodeButtonClick}
+		disabled={node.inputNode !== null
+			|| (mode !== null && mode.kindName === "settingInputNode")}>➡️📍</button
+	>
 	<select onchange={handleSelectChange}>
 		<option
 			value="none"

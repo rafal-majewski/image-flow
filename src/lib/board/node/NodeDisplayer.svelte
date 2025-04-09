@@ -35,11 +35,6 @@
 	function handleDeleteButtonClick(): void {
 		onDeleteRequest(node);
 	}
-	function handleSetInputNodeButtonClick(event: MouseEvent): void {
-		if (node instanceof MapperNode) {
-			onSetInputNodeRequest(node, {x: event.clientX, y: event.clientY});
-		}
-	}
 	function handleSetOutputNodeButtonClick(event: MouseEvent): void {
 		onSetOutputNodeRequest(node, {x: event.clientX, y: event.clientY});
 	}
@@ -68,12 +63,6 @@
 	onmouseup={handleMouseUp}
 >
 	<div>
-		<button
-			onclick={handleSetInputNodeButtonClick}
-			disabled={node instanceof FromUrlLoaderNode
-				|| node.inputNode !== null
-				|| (mode !== null && mode.kindName === "settingInputNode")}>➡️📍</button
-		>
 		<header>{node.name}</header>
 		<button onclick={handleDeleteButtonClick}>🗑️</button>
 		<button
@@ -83,7 +72,7 @@
 		>
 	</div>
 	{#if node instanceof MapperNode}
-		<MapperNodeStateDisplayer {node} />
+		<MapperNodeStateDisplayer {node} {onSetInputNodeRequest} {mode} />
 	{:else if node instanceof FromUrlLoaderNode}
 		<FromUrlLoaderNodeStateDisplayer {node} />
 	{/if}
