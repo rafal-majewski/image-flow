@@ -12,22 +12,26 @@ export class GrayscaleMapper extends Mapper {
 		const grayness = this.computeGrayness(color);
 		return {red: grayness, green: grayness, blue: grayness, alpha: color.alpha};
 	}
-	public *map(input: ImageData): Generator<ImageData, ImageData, void> {
-		const result = new ImageData(input.width, input.height);
-		for (let byteIndex = 0; byteIndex < input.data.length; byteIndex += 4) {
-			yield result;
+	public *map(inputImage: ImageData): Generator<ImageData, ImageData, void> {
+		const outputImage = new ImageData(inputImage.width, inputImage.height);
+		for (
+			let byteIndex = 0;
+			byteIndex < inputImage.data.length;
+			byteIndex += 4
+		) {
+			yield outputImage;
 			const color: Color = {
-				red: input.data[byteIndex] as ColorComponentValue,
-				green: input.data[byteIndex + 1] as ColorComponentValue,
-				blue: input.data[byteIndex + 2] as ColorComponentValue,
-				alpha: input.data[byteIndex + 3] as ColorComponentValue,
+				red: inputImage.data[byteIndex] as ColorComponentValue,
+				green: inputImage.data[byteIndex + 1] as ColorComponentValue,
+				blue: inputImage.data[byteIndex + 2] as ColorComponentValue,
+				alpha: inputImage.data[byteIndex + 3] as ColorComponentValue,
 			};
 			const grayscaleColor = this.convertColorToGrayscaleColor(color);
-			result.data[byteIndex] = grayscaleColor.red;
-			result.data[byteIndex + 1] = grayscaleColor.green;
-			result.data[byteIndex + 2] = grayscaleColor.blue;
-			result.data[byteIndex + 3] = grayscaleColor.alpha;
+			outputImage.data[byteIndex] = grayscaleColor.red;
+			outputImage.data[byteIndex + 1] = grayscaleColor.green;
+			outputImage.data[byteIndex + 2] = grayscaleColor.blue;
+			outputImage.data[byteIndex + 3] = grayscaleColor.alpha;
 		}
-		return result;
+		return outputImage;
 	}
 }

@@ -1,2 +1,6 @@
 import {GrayscaleMapper} from "./mapper/implementations/grayscale/GrayscaleMapper.ts";
-export const supportedMappers = [new GrayscaleMapper()] as const;
+import {NearestNeighborScalingMapper} from "./mapper/implementations/nearest-neighbor-scaling/NearestNeighborScalingMapper.ts";
+export const supportedMappers = [
+	new GrayscaleMapper(),
+	new NearestNeighborScalingMapper({width: 100, height: 100}),
+] as const;

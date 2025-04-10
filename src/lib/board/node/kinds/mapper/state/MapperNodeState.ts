@@ -10,13 +10,13 @@ export abstract class MapperNodeState {
 		mapper: Mapper,
 		outputNodes: readonly MapperNode[],
 	): MapperNodeState;
-	public abstract unsetInput(
+	public abstract unsetInputImage(
 		outputNodes: readonly MapperNode[],
 	): MapperNodeState;
 	public abstract unsetMapper(
 		outputNodes: readonly MapperNode[],
 	): MapperNodeState;
-	public abstract setInput(
+	public abstract setInputImage(
 		image: ImageData,
 		outputNodes: readonly MapperNode[],
 	): MapperNodeState;

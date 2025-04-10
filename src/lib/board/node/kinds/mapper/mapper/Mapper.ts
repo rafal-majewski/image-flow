@@ -5,5 +5,7 @@ export abstract class Mapper {
 		this.name = name;
 	}
 	public readonly name: string;
-	public abstract map(image: ImageData): Generator<ImageData, ImageData, void>;
+	public abstract map(
+		inputImage: ImageData,
+	): Generator<ImageData, ImageData, void>;
 }

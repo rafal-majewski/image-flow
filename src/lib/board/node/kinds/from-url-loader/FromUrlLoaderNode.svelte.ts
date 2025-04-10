@@ -14,7 +14,7 @@ export class FromUrlLoaderNode extends Node {
 	}
 	public async setUrl(url: string): Promise<void> {
 		if (checkIfUrlIsValid(url)) {
-			const loadingInProgressState = this.state.load(url, this.outputNodes);
+			const loadingInProgressState = this.state.load(url, this.$outputNodes);
 			this.state = loadingInProgressState;
 			const imageElement = new Image();
 			imageElement.crossOrigin = "Anonymous";
@@ -45,14 +45,14 @@ export class FromUrlLoaderNode extends Node {
 					this.state = loadingInProgressState.succeedLoading(
 						image,
 						url,
-						this.outputNodes,
+						this.$outputNodes,
 					);
 				} else {
 					this.state = loadingInProgressState.failLoading(url);
 				}
 			}
 		} else {
-			this.state = this.state.setInvalidUrl(url, this.outputNodes);
+			this.state = this.state.setInvalidUrl(url, this.$outputNodes);
 		}
 	}
 	protected override handleNewOutputNode(outputNode: MapperNode): void {

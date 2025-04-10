@@ -6,28 +6,41 @@ import type {SupportedMapperNodeState} from "./SupportedMapperNodeState.ts";
 import type {SupportedNode} from "../../SupportedNode.ts";
 import type {NodeId} from "../../id/NodeId.ts";
 export class MapperNode extends Node {
-	public inputNode: SupportedNode | null = $state.raw() as SupportedNode | null;
-	public state: SupportedMapperNodeState =
+	private state: SupportedMapperNodeState =
 		$state.raw() as SupportedMapperNodeState;
 	public constructor(position: Coordinates, id: NodeId) {
 		super("Mapper", position, id);
 		this.position = position;
 		this.state = new NoInputAndNoMapperMapperNodeState();
-		this.inputNode = null;
 	}
 	public setMapper(mapper: Mapper): void {
-		this.state = this.state.setMapper(mapper, this.outputNodes);
+		this.state = this.state.setMapper(mapper, this.$outputNodes);
 	}
-	public unsetInput(): void {
-		this.state = this.state.unsetInput(this.outputNodes);
+	public unsetInputImage(): void {
+		this.state = this.state.unsetInputImage(this.$outputNodes);
 	}
 	public unsetMapper(): void {
-		this.state = this.state.unsetMapper(this.outputNodes);
+		this.state = this.state.unsetMapper(this.$outputNodes);
 	}
-	public setInput(input: ImageData): void {
-		this.state = this.state.setInput(input, this.outputNodes);
-	}
+	// public setInputImage(input: ImageData): void {
+	// 	this.state = this.state.setInputImage(input, this.$outputNodes);
+	// }
 	public handleNewOutputNode(outputNode: MapperNode): void {
 		this.state.handleNewOutputNode(outputNode);
+	}
+	public setInputNodeWithInputImage(
+		inputNode: SupportedNode,
+		inputImage: ImageData,
+	): void {
+		this.inputNode = inputNode;
+		this.state = this.state.setInputImage(inputImage, this.$outputNodes);
+	}
+	public setInputNodeWithoutInputImage(inputNode: SupportedNode): void {
+		this.inputNode = inputNode;
+		this.state = this.state.unsetInputImage(this.$outputNodes);
+	}
+	public unsetInputNode(): void {
+		this.inputNode = null;
+		this.state = this.state.unsetInputImage(this.$outputNodes);
 	}
 }

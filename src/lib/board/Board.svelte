@@ -158,11 +158,7 @@
 				},
 			};
 		} else if (mode.kindName === "settingInputNode") {
-			mode.data.targetNode.inputNode = nodeInRequest;
-			nodeInRequest.outputNodes = [
-				...nodeInRequest.outputNodes,
-				mode.data.targetNode,
-			];
+			nodeInRequest.addOutputNode(mode.data.targetNode);
 			mode = null;
 		}
 	}
@@ -180,11 +176,7 @@
 				},
 			};
 		} else if (mode.kindName === "settingOutputNode") {
-			mode.data.sourceNode.outputNodes = [
-				...mode.data.sourceNode.outputNodes,
-				nodeInRequest,
-			];
-			nodeInRequest.inputNode = mode.data.sourceNode;
+			mode.data.sourceNode.addOutputNode(nodeInRequest);
 			mode = null;
 		}
 	}
@@ -195,15 +187,14 @@
 	}
 	function handleMouseLeftButtonUppedOnNode(): void {}
 	function handleDeleteNodeRequest(nodeToDelete: SupportedNode): void {
-		if (nodeToDelete instanceof MapperNode && nodeToDelete.inputNode !== null) {
-			nodeToDelete.inputNode.outputNodes =
-				nodeToDelete.inputNode.outputNodes.filter(
-					(nodeToDeleteInputNodeOutputNode) =>
-						nodeToDeleteInputNodeOutputNode !== nodeToDelete,
-				);
+		if (
+			nodeToDelete instanceof MapperNode
+			&& nodeToDelete.$inputNode !== null
+		) {
+			nodeToDelete.$inputNode.deleteOutputNode(nodeToDelete);
 		}
-		for (const nodeToDeleteOutputNode of nodeToDelete.outputNodes) {
-			nodeToDeleteOutputNode.inputNode = null;
+		for (const nodeToDeleteOutputNode of nodeToDelete.$outputNodes) {
+			nodeToDeleteOutputNode.unsetInputNode();
 		}
 		nodes = nodes.filter((node) => node !== nodeToDelete);
 		if (mode !== null) {
@@ -265,7 +256,7 @@
 						{mode}
 					/>
 				</li>
-				{#each node.outputNodes as outputNode (`${node.id}->${outputNode.id}`)}
+				{#each node.$outputNodes as outputNode (`${node.id}->${outputNode.id}`)}
 					<li>
 						<EdgeDisplayer sourceNode={node} targetNode={outputNode} />
 					</li>

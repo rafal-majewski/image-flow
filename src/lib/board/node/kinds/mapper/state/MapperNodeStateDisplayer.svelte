@@ -45,7 +45,7 @@
 	function handleSetInputNodeButtonClick(
 		event: MouseEvent & Readonly<{currentTarget: HTMLButtonElement}>,
 	): void {
-		if (node.inputNode === null) {
+		if (node.$inputNode === null) {
 			onSetInputNodeRequest(node, {x: event.clientX, y: event.clientY});
 		}
 	}
@@ -54,7 +54,7 @@
 <section>
 	<button
 		onclick={handleSetInputNodeButtonClick}
-		disabled={node.inputNode !== null
+		disabled={node.$inputNode !== null
 			|| (mode !== null && mode.kindName === "settingInputNode")}>➡️📍</button
 	>
 	<select onchange={handleSelectChange}>
