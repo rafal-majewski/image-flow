@@ -1,3 +1,3 @@
-import type {FromUrlLoaderNode} from "./kinds/from-url-loader/FromUrlLoaderNode.svelte.ts";
-import type {MapperNode} from "./kinds/mapper/MapperNode.svelte.ts";
-export type SupportedNode = FromUrlLoaderNode | MapperNode;
+import type {SupportedFromUrlLoaderNode} from "./kinds/from-url-loader/SupportedFromUrlLoaderNode.ts";
+import type {SupportedMapperNode} from "./kinds/mapper/SupportedMapperNode.ts";
+export type SupportedNode = SupportedFromUrlLoaderNode | SupportedMapperNode;

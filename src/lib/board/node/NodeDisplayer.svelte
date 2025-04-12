@@ -3,8 +3,8 @@
 	import {FromUrlLoaderNode} from "./kinds/from-url-loader/FromUrlLoaderNode.svelte.ts";
 	import type {Coordinates} from "../coordinates/Coordinates.ts";
 	import type {SupportedNode} from "./SupportedNode.ts";
-	import MapperNodeStateDisplayer from "./kinds/mapper/state/MapperNodeStateDisplayer.svelte";
-	import FromUrlLoaderNodeStateDisplayer from "./kinds/from-url-loader/state/FromUrlLoaderNodeStateDisplayer.svelte";
+	import MapperNodeDisplayer from "./kinds/mapper/state/MapperNodeDisplayer.svelte";
+	import FromUrlLoaderNodeDisplayer from "./kinds/from-url-loader/state/FromUrlLoaderNodeDisplayer.svelte";
 	import type {SupportedBoardMode} from "../mode/SupportedBoardMode.ts";
 	const {
 		node,
@@ -53,17 +53,23 @@
 <section
 	style:top="{node.position.y}px"
 	style:left="{node.position.x}px"
-	class:error={node.state.status === "errored"}
-	class:processing={node.state.status === "working"}
-	class:done={node.state.status === "done"}
-	class:unconfigured={node.state.status === "unconfigured"}
-	class:idling={node.state.status === "idling"}
+	class:error={node.status === "errored"}
+	class:processing={node.status === "working"}
+	class:done={node.status === "done"}
+	class:unconfigured={node.status === "unconfigured"}
+	class:idling={node.status === "idling"}
 	onmousedown={handleMouseDown}
 	role="none"
 	onmouseup={handleMouseUp}
 >
 	<div>
-		<header>{node.name}</header>
+		<header>
+			{#if node instanceof MapperNode}
+				Mapper
+			{:else if node instanceof FromUrlLoaderNode}
+				From URL
+			{/if}
+		</header>
 		<button onclick={handleDeleteButtonClick}>🗑️</button>
 		<button
 			onclick={handleSetOutputNodeButtonClick}
@@ -72,9 +78,9 @@
 		>
 	</div>
 	{#if node instanceof MapperNode}
-		<MapperNodeStateDisplayer {node} {onSetInputNodeRequest} {mode} />
+		<MapperNodeDisplayer {node} {onSetInputNodeRequest} {mode} />
 	{:else if node instanceof FromUrlLoaderNode}
-		<FromUrlLoaderNodeStateDisplayer {node} />
+		<FromUrlLoaderNodeDisplayer {node} />
 	{/if}
 </section>
 

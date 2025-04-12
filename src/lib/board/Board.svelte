@@ -2,15 +2,20 @@
 	import {computeInBoardPositionFromClientPosition} from "./computing-in-board-position-from-client-position/computeInBoardPositionFromClientPosition.ts";
 	import type {Coordinates} from "./coordinates/Coordinates.ts";
 	import EdgeDisplayer from "./edge-displayer/EdgeDisplayer.svelte";
-	import {FromUrlLoaderNode} from "./node/kinds/from-url-loader/FromUrlLoaderNode.svelte.ts";
-	import LineDisplayer from "./line-displayer/LineDisplayer.svelte";
-	import {MapperNode} from "./node/kinds/mapper/MapperNode.svelte.ts";
 	import NodeDisplayer from "./node/NodeDisplayer.svelte";
 	import type {SupportedNodeClass} from "./node/SupportedNodeClass.ts";
 	import Menu from "./main/Menu.svelte";
 	import type {SupportedNode} from "./node/SupportedNode.ts";
 	import {generateNodeId} from "./node/id/generation/generateNodeId.ts";
 	import type {SupportedBoardMode} from "./mode/SupportedBoardMode.ts";
+	import LineDisplayer from "./line-displayer/LineDisplayer.svelte";
+	import {MapperNode} from "./node/kinds/mapper/MapperNode.ts";
+	import {NoMapperMapperNode} from "./node/kinds/mapper/kinds/no-mapper/NoMapperMapperNode.ts";
+	import {FromUrlLoaderNode} from "./node/kinds/from-url-loader/FromUrlLoaderNode.ts";
+	import {MappingInProgressMapperNode} from "./node/kinds/mapper/kinds/mapping-in-progress/MappingInProgressMapperNode.ts";
+	import {MappingSucceededMapperNode} from "./node/kinds/mapper/kinds/mapping-succeeded/MappingSucceededMapperNode.ts";
+	import {NoInputImageAndNoMapperMapperNode} from "./node/kinds/mapper/kinds/no-input-image-and-no-mapper/NoInputImageAndNoMapperMapperNode.ts";
+	import {NoInputImageMapperNode} from "./node/kinds/mapper/kinds/no-input-image/NoInputImageMapperNode.ts";
 	let board: HTMLElement;
 	let cameraPosition = $state<Coordinates>({x: 0, y: 0});
 	function computeInBoardPositionFromJustClientPosition(
@@ -187,13 +192,20 @@
 	}
 	function handleMouseLeftButtonUppedOnNode(): void {}
 	function handleDeleteNodeRequest(nodeToDelete: SupportedNode): void {
-		if (
-			nodeToDelete instanceof MapperNode
-			&& nodeToDelete.$inputNode !== null
-		) {
-			nodeToDelete.$inputNode.deleteOutputNode(nodeToDelete);
+		for (const nodeToDeleteOutputNode of nodeToDelete.outputNodes) {
+			nodeToDeleteOutputNode.unsetInputNode();
 		}
-		for (const nodeToDeleteOutputNode of nodeToDelete.$outputNodes) {
+		if (
+			(nodeToDelete instanceof MappingInProgressMapperNode
+				|| nodeToDelete instanceof MappingSucceededMapperNode
+				|| nodeToDelete instanceof NoInputImageMapperNode
+				|| nodeToDelete instanceof NoInputImageAndNoMapperMapperNode
+				|| nodeToDelete instanceof NoMapperMapperNode)
+			&& nodeToDelete.inputNode !== null
+		) {
+			nodeToDelete.inputNode.deleteOutputNode(nodeToDelete);
+		}
+		for (const nodeToDeleteOutputNode of nodeToDelete.outputNodes) {
 			nodeToDeleteOutputNode.unsetInputNode();
 		}
 		nodes = nodes.filter((node) => node !== nodeToDelete);
@@ -256,7 +268,7 @@
 						{mode}
 					/>
 				</li>
-				{#each node.$outputNodes as outputNode (`${node.id}->${outputNode.id}`)}
+				{#each node.outputNodes as outputNode (`${node.id}->${outputNode.id}`)}
 					<li>
 						<EdgeDisplayer sourceNode={node} targetNode={outputNode} />
 					</li>
