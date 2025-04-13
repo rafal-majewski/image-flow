@@ -1,42 +1,27 @@
 <script lang="ts">
-	import {MapperNode} from "./kinds/mapper/MapperNode.svelte.ts";
-	import {FromUrlLoaderNode} from "./kinds/from-url-loader/FromUrlLoaderNode.svelte.ts";
+	import type {Snippet} from "svelte";
 	import type {Coordinates} from "../coordinates/Coordinates.ts";
-	import type {SupportedNode} from "./SupportedNode.ts";
-	import MapperNodeDisplayer from "./kinds/mapper/state/MapperNodeDisplayer.svelte";
-	import FromUrlLoaderNodeDisplayer from "./kinds/from-url-loader/state/FromUrlLoaderNodeDisplayer.svelte";
-	import type {SupportedBoardMode} from "../mode/SupportedBoardMode.ts";
+	import type {Node} from "./Node.svelte.ts";
 	const {
 		node,
 		onDeleteRequest,
 		onMouseLeftButtonDown,
-		onSetOutputNodeRequest,
-		onSetInputNodeRequest,
 		onMouseLeftButtonUp,
-		mode,
+		stateDisplayer,
+		name,
 	}: Readonly<{
-		mode: SupportedBoardMode | null;
-		onDeleteRequest: (node: SupportedNode) => void;
-		node: SupportedNode;
-		onSetOutputNodeRequest: (
-			sourceNode: SupportedNode,
-			mouseClientPosition: Coordinates,
-		) => void;
-		onSetInputNodeRequest: (
-			targetNode: MapperNode,
-			mouseClientPosition: Coordinates,
-		) => void;
+		onDeleteRequest: (node: Node) => void;
+		node: Node;
 		onMouseLeftButtonDown: (
-			node: SupportedNode,
+			node: Node,
 			mouseClientPosition: Coordinates,
 		) => void;
-		onMouseLeftButtonUp: (node: SupportedNode) => void;
+		onMouseLeftButtonUp: (node: Node) => void;
+		name: string;
+		stateDisplayer: Snippet<[]>;
 	}> = $props();
 	function handleDeleteButtonClick(): void {
 		onDeleteRequest(node);
-	}
-	function handleSetOutputNodeButtonClick(event: MouseEvent): void {
-		onSetOutputNodeRequest(node, {x: event.clientX, y: event.clientY});
 	}
 	function handleMouseDown(event: MouseEvent): void {
 		if (event.button === 0) {
@@ -64,24 +49,11 @@
 >
 	<div>
 		<header>
-			{#if node instanceof MapperNode}
-				Mapper
-			{:else if node instanceof FromUrlLoaderNode}
-				From URL
-			{/if}
+			{name}
 		</header>
 		<button onclick={handleDeleteButtonClick}>🗑️</button>
-		<button
-			onclick={handleSetOutputNodeButtonClick}
-			disabled={mode !== null && mode.kindName === "settingOutputNode"}
-			>📍➡️</button
-		>
 	</div>
-	{#if node instanceof MapperNode}
-		<MapperNodeDisplayer {node} {onSetInputNodeRequest} {mode} />
-	{:else if node instanceof FromUrlLoaderNode}
-		<FromUrlLoaderNodeDisplayer {node} />
-	{/if}
+	{@render stateDisplayer()}
 </section>
 
 <style lang="scss">

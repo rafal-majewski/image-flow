@@ -1,6 +1,6 @@
-import type {SupportedNode} from "../../../node/SupportedNode.ts";
+import type {Node} from "../../../node/Node.svelte.ts";
 import type {BoardMode} from "../../BoardMode.ts";
 export type MovingNodeBoardMode = BoardMode<
 	"movingNode",
-	Readonly<{node: SupportedNode}>
+	Readonly<{node: Node}>
 >;

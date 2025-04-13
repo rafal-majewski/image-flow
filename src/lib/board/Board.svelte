@@ -2,20 +2,18 @@
 	import {computeInBoardPositionFromClientPosition} from "./computing-in-board-position-from-client-position/computeInBoardPositionFromClientPosition.ts";
 	import type {Coordinates} from "./coordinates/Coordinates.ts";
 	import EdgeDisplayer from "./edge-displayer/EdgeDisplayer.svelte";
-	import NodeDisplayer from "./node/NodeDisplayer.svelte";
-	import type {SupportedNodeClass} from "./node/SupportedNodeClass.ts";
+	import type {SupportedNodeCreator} from "./node/SupportedNodeCreator.ts";
 	import Menu from "./main/Menu.svelte";
 	import type {SupportedNode} from "./node/SupportedNode.ts";
 	import {generateNodeId} from "./node/id/generation/generateNodeId.ts";
 	import type {SupportedBoardMode} from "./mode/SupportedBoardMode.ts";
 	import LineDisplayer from "./line-displayer/LineDisplayer.svelte";
-	import {MapperNode} from "./node/kinds/mapper/MapperNode.ts";
-	import {NoMapperMapperNode} from "./node/kinds/mapper/kinds/no-mapper/NoMapperMapperNode.ts";
-	import {FromUrlLoaderNode} from "./node/kinds/from-url-loader/FromUrlLoaderNode.ts";
-	import {MappingInProgressMapperNode} from "./node/kinds/mapper/kinds/mapping-in-progress/MappingInProgressMapperNode.ts";
-	import {MappingSucceededMapperNode} from "./node/kinds/mapper/kinds/mapping-succeeded/MappingSucceededMapperNode.ts";
-	import {NoInputImageAndNoMapperMapperNode} from "./node/kinds/mapper/kinds/no-input-image-and-no-mapper/NoInputImageAndNoMapperMapperNode.ts";
-	import {NoInputImageMapperNode} from "./node/kinds/mapper/kinds/no-input-image/NoInputImageMapperNode.ts";
+	import SupportedNodeDisplayer from "./node/SupportedNodeDisplayer.svelte";
+	import type {Node} from "./node/Node.svelte.ts";
+	import type {SupportedOutputNode} from "./node/SupportedOutputNode.ts";
+	import type {SupportedInputNode} from "./node/SupportedInputNode.ts";
+	import {MapperNode} from "./node/kinds/mapper/MapperNode.svelte.ts";
+	import {FromUrlLoaderNode} from "./node/kinds/from-url-loader/FromUrlLoaderNode.svelte.ts";
 	let board: HTMLElement;
 	let cameraPosition = $state<Coordinates>({x: 0, y: 0});
 	function computeInBoardPositionFromJustClientPosition(
@@ -31,18 +29,18 @@
 	let nodes = $state.raw<readonly SupportedNode[]>([]);
 	let mode = $state.raw<null | SupportedBoardMode>(null);
 	$inspect(mode);
-	function handleAddNodeRequest(newNodeClass: SupportedNodeClass): void {
+	function handleAddNodeRequest(newNodeCreator: SupportedNodeCreator): void {
 		if (mode !== null && mode.kindName === "addingNode") {
-			const newNode = new newNodeClass(mode.data.position, generateNodeId());
+			const newNode = newNodeCreator(generateNodeId(), mode.data.position);
 			nodes = [...nodes, newNode];
 			mode = null;
 		}
 	}
 	function handleAddMapperNodeRequest(): void {
-		handleAddNodeRequest(MapperNode);
+		handleAddNodeRequest(MapperNode.create);
 	}
 	function handleAddFromUrlLoaderNodeRequest(): void {
-		handleAddNodeRequest(FromUrlLoaderNode);
+		handleAddNodeRequest(FromUrlLoaderNode.create);
 	}
 	function handleContextMenuOpen(event: MouseEvent): void {
 		if (event.target === board && mode === null) {
@@ -150,7 +148,7 @@
 		}
 	}
 	function handleSetOutputNodeToNodeRequest(
-		nodeInRequest: SupportedNode,
+		nodeInRequest: SupportedInputNode,
 		clientPosition: Coordinates,
 	): void {
 		if (mode === null) {
@@ -168,7 +166,7 @@
 		}
 	}
 	function handleSetInputNodeToNodeRequest(
-		nodeInRequest: MapperNode,
+		nodeInRequest: SupportedOutputNode,
 		clientPosition: Coordinates,
 	): void {
 		if (mode === null) {
@@ -185,52 +183,51 @@
 			mode = null;
 		}
 	}
-	function handleMouseLeftButtonDownedOnNode(node: SupportedNode): void {
+	function handleMouseLeftButtonDownedOnNode(node: Node): void {
 		if (mode === null) {
 			mode = {kindName: "movingNode", data: {node}};
 		}
 	}
 	function handleMouseLeftButtonUppedOnNode(): void {}
-	function handleDeleteNodeRequest(nodeToDelete: SupportedNode): void {
-		for (const nodeToDeleteOutputNode of nodeToDelete.outputNodes) {
-			nodeToDeleteOutputNode.unsetInputNode();
-		}
-		if (
-			(nodeToDelete instanceof MappingInProgressMapperNode
-				|| nodeToDelete instanceof MappingSucceededMapperNode
-				|| nodeToDelete instanceof NoInputImageMapperNode
-				|| nodeToDelete instanceof NoInputImageAndNoMapperMapperNode
-				|| nodeToDelete instanceof NoMapperMapperNode)
-			&& nodeToDelete.inputNode !== null
-		) {
-			nodeToDelete.inputNode.deleteOutputNode(nodeToDelete);
-		}
-		for (const nodeToDeleteOutputNode of nodeToDelete.outputNodes) {
-			nodeToDeleteOutputNode.unsetInputNode();
-		}
+	function handleDeleteNodeRequest(nodeToDelete: Node): void {
+		nodeToDelete.disconnect();
 		nodes = nodes.filter((node) => node !== nodeToDelete);
-		if (mode !== null) {
-			switch (mode.kindName) {
-				case "settingOutputNode": {
-					if (mode.data.sourceNode === nodeToDelete) {
-						mode = null;
-					}
-					break;
-				}
-				case "settingInputNode": {
-					if (mode.data.targetNode === nodeToDelete) {
-						mode = null;
-					}
-					break;
-				}
-				case "movingNode": {
-					if (mode.data.node === nodeToDelete) {
-						mode = null;
-					}
-					break;
-				}
-			}
-		}
+		// if (
+		// 	(nodeToDelete instanceof MappingInProgressMapperNode
+		// 		|| nodeToDelete instanceof MappingSucceededMapperNode
+		// 		|| nodeToDelete instanceof NoInputImageMapperNode
+		// 		|| nodeToDelete instanceof NoInputImageAndNoMapperMapperNode
+		// 		|| nodeToDelete instanceof NoMapperMapperNode)
+		// 	&& nodeToDelete.inputNode !== null
+		// ) {
+		// 	nodeToDelete.inputNode.deleteOutputNode(nodeToDelete);
+		// }
+		// for (const nodeToDeleteOutputNode of nodeToDelete.outputNodes) {
+		// 	nodeToDeleteOutputNode.unsetInputNode();
+		// }
+		// nodes = nodes.filter((node) => node !== nodeToDelete);
+		// if (mode !== null) {
+		// 	switch (mode.kindName) {
+		// 		case "settingOutputNode": {
+		// 			if (mode.data.sourceNode === nodeToDelete) {
+		// 				mode = null;
+		// 			}
+		// 			break;
+		// 		}
+		// 		case "settingInputNode": {
+		// 			if (mode.data.targetNode === nodeToDelete) {
+		// 				mode = null;
+		// 			}
+		// 			break;
+		// 		}
+		// 		case "movingNode": {
+		// 			if (mode.data.node === nodeToDelete) {
+		// 				mode = null;
+		// 			}
+		// 			break;
+		// 		}
+		// 	}
+		// }
 	}
 </script>
 
@@ -258,14 +255,14 @@
 		<ul>
 			{#each nodes as node, nodeIndex (nodeIndex)}
 				<li>
-					<NodeDisplayer
+					<SupportedNodeDisplayer
 						{node}
-						onSetOutputNodeRequest={handleSetOutputNodeToNodeRequest}
-						onSetInputNodeRequest={handleSetInputNodeToNodeRequest}
+						onDeleteRequest={handleDeleteNodeRequest}
 						onMouseLeftButtonDown={handleMouseLeftButtonDownedOnNode}
 						onMouseLeftButtonUp={handleMouseLeftButtonUppedOnNode}
-						onDeleteRequest={handleDeleteNodeRequest}
-						{mode}
+						onSetInputNodeRequest={handleSetInputNodeToNodeRequest}
+						onSetOutputNodeRequest={handleSetOutputNodeToNodeRequest}
+						boardMode={mode}
 					/>
 				</li>
 				{#each node.outputNodes as outputNode (`${node.id}->${outputNode.id}`)}
