@@ -192,42 +192,28 @@
 	function handleDeleteNodeRequest(nodeToDelete: Node): void {
 		nodeToDelete.disconnect();
 		nodes = nodes.filter((node) => node !== nodeToDelete);
-		// if (
-		// 	(nodeToDelete instanceof MappingInProgressMapperNode
-		// 		|| nodeToDelete instanceof MappingSucceededMapperNode
-		// 		|| nodeToDelete instanceof NoInputImageMapperNode
-		// 		|| nodeToDelete instanceof NoInputImageAndNoMapperMapperNode
-		// 		|| nodeToDelete instanceof NoMapperMapperNode)
-		// 	&& nodeToDelete.inputNode !== null
-		// ) {
-		// 	nodeToDelete.inputNode.deleteOutputNode(nodeToDelete);
-		// }
-		// for (const nodeToDeleteOutputNode of nodeToDelete.outputNodes) {
-		// 	nodeToDeleteOutputNode.unsetInputNode();
-		// }
-		// nodes = nodes.filter((node) => node !== nodeToDelete);
-		// if (mode !== null) {
-		// 	switch (mode.kindName) {
-		// 		case "settingOutputNode": {
-		// 			if (mode.data.sourceNode === nodeToDelete) {
-		// 				mode = null;
-		// 			}
-		// 			break;
-		// 		}
-		// 		case "settingInputNode": {
-		// 			if (mode.data.targetNode === nodeToDelete) {
-		// 				mode = null;
-		// 			}
-		// 			break;
-		// 		}
-		// 		case "movingNode": {
-		// 			if (mode.data.node === nodeToDelete) {
-		// 				mode = null;
-		// 			}
-		// 			break;
-		// 		}
-		// 	}
-		// }
+		if (mode !== null) {
+			switch (mode.kindName) {
+				case "settingOutputNode": {
+					if (mode.data.sourceNode === nodeToDelete) {
+						mode = null;
+					}
+					break;
+				}
+				case "settingInputNode": {
+					if (mode.data.targetNode === nodeToDelete) {
+						mode = null;
+					}
+					break;
+				}
+				case "movingNode": {
+					if (mode.data.node === nodeToDelete) {
+						mode = null;
+					}
+					break;
+				}
+			}
+		}
 	}
 </script>
 
