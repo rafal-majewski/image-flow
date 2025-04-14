@@ -1,6 +1,7 @@
+import type {OutputNode} from "../../../../../OutputNode.ts";
 import type {SupportedInputNode} from "../../../../../SupportedInputNode.ts";
-import type {SupportedOutputNode} from "../../../../../SupportedOutputNode.ts";
 import type {Mapper} from "../../../mapper/Mapper.ts";
+import type {MapperNode} from "../../../MapperNode.svelte.ts";
 import {MapperNodeState} from "../../MapperNodeState.ts";
 import {NoInputImageMapperNodeState} from "../no-input-image/NoInputImageMapperNodeState.ts";
 import {NoInputNodeAndNoMapperMapperNodeState} from "../no-input-node-and-no-mapper/NoInputNodeAndNoMapperMapperNodeState.ts";
@@ -13,32 +14,54 @@ export class NoInputImageAndNoMapperMapperNodeState extends MapperNodeState {
 	public readonly inputNode: SupportedInputNode;
 	public override setMapper(
 		mapper: Mapper,
-		outputNodes: readonly SupportedOutputNode[],
+		outputNodes: readonly OutputNode[],
 	): NoInputImageMapperNodeState {
 		return new NoInputImageMapperNodeState(this.inputNode, mapper);
 	}
-	public unsetInputNode(
-		outputNodes: readonly SupportedOutputNode[],
+	public override unsetInputNode(
+		outputNodes: readonly OutputNode[],
 	): NoInputNodeAndNoMapperMapperNodeState {
 		return new NoInputNodeAndNoMapperMapperNodeState();
 	}
-	public setInputImage(
+	public override setInputImage(
 		inputImage: ImageData,
-		outputNodes: readonly SupportedOutputNode[],
+		outputNodes: readonly OutputNode[],
 	): NoMapperMapperNodeState {
 		return new NoMapperMapperNodeState(inputImage, this.inputNode);
 	}
 	public override setInputNodeWithInputImage(
-		newInputImage: ImageData,
 		newInputNode: SupportedInputNode,
-		outputNodes: readonly SupportedOutputNode[],
+		newInputImage: ImageData,
+		outputNodes: readonly OutputNode[],
 	): NoMapperMapperNodeState {
 		return new NoMapperMapperNodeState(newInputImage, newInputNode);
 	}
 	public override setInputNodeWithoutInputImage(
 		newInputNode: SupportedInputNode,
-		outputNodes: readonly SupportedOutputNode[],
+		outputNodes: readonly OutputNode[],
 	): NoInputImageAndNoMapperMapperNodeState {
 		return new NoInputImageAndNoMapperMapperNodeState(newInputNode);
+	}
+	public override disconnect(
+		thisNode: MapperNode,
+		outputNodes: readonly OutputNode[],
+	): NoInputNodeAndNoMapperMapperNodeState {
+		this.inputNode.deleteOutputNode(thisNode);
+		for (const outputNode of outputNodes) {
+			outputNode.unsetInputNode();
+		}
+		return new NoInputNodeAndNoMapperMapperNodeState();
+	}
+	public override unsetInputImage(outputNodes: readonly OutputNode[]): this {
+		return this;
+	}
+	public override unsetMapper(outputNodes: readonly OutputNode[]): this {
+		return this;
+	}
+	public override connectOutputNode(
+		thisNode: MapperNode,
+		outputNodeToConnect: OutputNode,
+	): void {
+		outputNodeToConnect.setInputNodeWithoutInputImage(thisNode);
 	}
 }

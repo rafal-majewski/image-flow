@@ -4,16 +4,21 @@
 		position,
 		onAddMapperNodeRequest,
 		onAddFromUrlLoaderNodeRequest,
+		onAddFromFileLoaderNodeRequest,
 	}: Readonly<{
 		position: Coordinates;
 		onAddMapperNodeRequest: () => void;
 		onAddFromUrlLoaderNodeRequest: () => void;
+		onAddFromFileLoaderNodeRequest: () => void;
 	}> = $props();
 	function handleAddFromUrlLoaderNodeButtonClick(): void {
 		onAddFromUrlLoaderNodeRequest();
 	}
 	function handleAddMapperNodeButtonClick(): void {
 		onAddMapperNodeRequest();
+	}
+	function handleAddFromFileLoaderNodeButtonClick(): void {
+		onAddFromFileLoaderNodeRequest();
 	}
 </script>
 
@@ -26,6 +31,9 @@
 		>Add from URL loader</button
 	>
 	<button onclick={handleAddMapperNodeButtonClick}>Add mapper</button>
+	<button onclick={handleAddFromFileLoaderNodeButtonClick}
+		>Add from file loader</button
+	>
 </dialog>
 
 <style>

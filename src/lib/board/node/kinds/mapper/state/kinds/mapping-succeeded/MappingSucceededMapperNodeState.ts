@@ -1,6 +1,7 @@
+import type {OutputNode} from "../../../../../OutputNode.ts";
 import type {SupportedInputNode} from "../../../../../SupportedInputNode.ts";
-import type {SupportedOutputNode} from "../../../../../SupportedOutputNode.ts";
 import type {Mapper} from "../../../mapper/Mapper.ts";
+import type {MapperNode} from "../../../MapperNode.svelte.ts";
 import {MapperNodeState} from "../../MapperNodeState.ts";
 import {MappingInProgressMapperNodeState} from "../mapping-in-progress/MappingInProgressMapperNodeState.ts";
 import {NoInputImageMapperNodeState} from "../no-input-image/NoInputImageMapperNodeState.ts";
@@ -25,7 +26,7 @@ export class MappingSucceededMapperNodeState extends MapperNodeState {
 	public readonly outputImage: ImageData;
 	public override setMapper(
 		newMapper: Mapper,
-		outputNodes: readonly SupportedOutputNode[],
+		outputNodes: readonly OutputNode[],
 	): MappingSucceededMapperNodeState | MappingInProgressMapperNodeState {
 		const generator = newMapper.map(this.inputImage);
 		const generatorResult = generator.next();
@@ -52,33 +53,33 @@ export class MappingSucceededMapperNodeState extends MapperNodeState {
 			);
 		}
 	}
-	public unsetInputImage(
-		outputNodes: readonly SupportedOutputNode[],
+	public override unsetInputImage(
+		outputNodes: readonly OutputNode[],
 	): NoInputImageMapperNodeState {
 		for (const outputNode of outputNodes) {
 			outputNode.unsetInputImage();
 		}
 		return new NoInputImageMapperNodeState(this.inputNode, this.mapper);
 	}
-	public unsetInputNode(
-		outputNodes: readonly SupportedOutputNode[],
+	public override unsetInputNode(
+		outputNodes: readonly OutputNode[],
 	): NoInputNodeMapperNodeState {
 		for (const outputNode of outputNodes) {
 			outputNode.unsetInputImage();
 		}
 		return new NoInputNodeMapperNodeState(this.mapper);
 	}
-	public unsetMapper(
-		outputNodes: readonly SupportedOutputNode[],
+	public override unsetMapper(
+		outputNodes: readonly OutputNode[],
 	): NoMapperMapperNodeState {
 		for (const outputNode of outputNodes) {
 			outputNode.unsetInputImage();
 		}
 		return new NoMapperMapperNodeState(this.inputImage, this.inputNode);
 	}
-	public setInputImage(
+	public override setInputImage(
 		newInputImage: ImageData,
-		outputNodes: readonly SupportedOutputNode[],
+		outputNodes: readonly OutputNode[],
 	): MappingSucceededMapperNodeState | MappingInProgressMapperNodeState {
 		const generator = this.mapper.map(newInputImage);
 		const generatorResult = generator.next();
@@ -106,9 +107,9 @@ export class MappingSucceededMapperNodeState extends MapperNodeState {
 		}
 	}
 	public override setInputNodeWithInputImage(
-		newInputImage: ImageData,
 		newInputNode: SupportedInputNode,
-		outputNodes: readonly SupportedOutputNode[],
+		newInputImage: ImageData,
+		outputNodes: readonly OutputNode[],
 	): MappingInProgressMapperNodeState | MappingSucceededMapperNodeState {
 		const newGenerator = this.mapper.map(newInputImage);
 		const newGeneratorResult = newGenerator.next();
@@ -137,11 +138,27 @@ export class MappingSucceededMapperNodeState extends MapperNodeState {
 	}
 	public override setInputNodeWithoutInputImage(
 		newInputNode: SupportedInputNode,
-		outputNodes: readonly SupportedOutputNode[],
+		outputNodes: readonly OutputNode[],
 	): NoInputImageMapperNodeState {
 		for (const outputNode of outputNodes) {
 			outputNode.unsetInputImage();
 		}
 		return new NoInputImageMapperNodeState(newInputNode, this.mapper);
+	}
+	public override disconnect(
+		thisNode: MapperNode,
+		outputNodes: readonly OutputNode[],
+	): NoInputNodeMapperNodeState {
+		this.inputNode.deleteOutputNode(thisNode);
+		for (const outputNode of outputNodes) {
+			outputNode.unsetInputNode();
+		}
+		return new NoInputNodeMapperNodeState(this.mapper);
+	}
+	public override connectOutputNode(
+		thisNode: MapperNode,
+		outputNodeToConnect: OutputNode,
+	): void {
+		outputNodeToConnect.setInputNodeWithInputImage(thisNode, this.outputImage);
 	}
 }

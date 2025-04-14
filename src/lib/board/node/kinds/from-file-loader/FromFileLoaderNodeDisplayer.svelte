@@ -1,48 +1,33 @@
 <script lang="ts">
 	import type {Coordinates} from "../../../coordinates/Coordinates.ts";
 	import NodeDisplayer from "../../NodeDisplayer.svelte";
-	import {MapperNode} from "./MapperNode.svelte.ts";
+	import type {FromFileLoaderNode} from "./FromFileLoaderNode.svelte.ts";
 	import type {Node} from "../../Node.svelte.ts";
-	import MapperNodeStateDisplayer from "./state/MapperNodeStateDisplayer.svelte";
-	import type {Mapper} from "./mapper/Mapper.ts";
 	import type {SupportedBoardMode} from "../../../mode/SupportedBoardMode.ts";
+	import FromFileLoaderNodeStateDisplayer from "./state/FromFileLoaderNodeStateDisplayer.svelte";
 	const {
 		node,
 		onDeleteRequest,
 		onMouseLeftButtonDown,
 		onMouseLeftButtonUp,
-		onSetInputNodeRequest,
-		onSetOutputNodeRequest,
 		boardMode,
+		onSetOutputNodeRequest,
 	}: Readonly<{
-		node: MapperNode;
+		node: FromFileLoaderNode;
 		onDeleteRequest: (node: Node) => void;
 		onMouseLeftButtonDown: (
 			node: Node,
 			mouseClientPosition: Coordinates,
 		) => void;
 		onMouseLeftButtonUp: (node: Node) => void;
-		onSetInputNodeRequest: (
-			targetNode: MapperNode,
-			mouseClientPosition: Coordinates,
-		) => void;
-		onSetOutputNodeRequest: (
-			targetNode: MapperNode,
-			mouseClientPosition: Coordinates,
-		) => void;
 		boardMode: SupportedBoardMode | null;
+		onSetOutputNodeRequest: (
+			targetNode: FromFileLoaderNode,
+			mouseClientPosition: Coordinates,
+		) => void;
 	}> = $props();
-	function handleDoStepRequest(): void {
-		node.doStep();
-	}
-	function handleUnsetMapperRequest(): void {
-		node.unsetMapper();
-	}
-	function handleSetMapperRequest(mapper: Mapper): void {
-		node.setMapper(mapper);
-	}
-	function handleSetInputNodeRequest(mouseClientPosition: Coordinates): void {
-		onSetInputNodeRequest(node, mouseClientPosition);
+	function handleSetFileRequest(file: File): void {
+		node.setFile(file);
 	}
 	function handleSetOutputNodeRequest(mouseClientPosition: Coordinates): void {
 		onSetOutputNodeRequest(node, mouseClientPosition);
@@ -50,19 +35,16 @@
 </script>
 
 {#snippet stateDisplayer()}
-	<MapperNodeStateDisplayer
+	<FromFileLoaderNodeStateDisplayer
 		state={node.state}
-		onDoStepRequest={handleDoStepRequest}
-		onUnsetMapperRequest={handleUnsetMapperRequest}
-		onSetMapperRequest={handleSetMapperRequest}
+		onSetFileRequest={handleSetFileRequest}
 		{boardMode}
-		onSetInputNodeRequest={handleSetInputNodeRequest}
 		onSetOutputNodeRequest={handleSetOutputNodeRequest}
 	/>
 {/snippet}
 
 <NodeDisplayer
-	name="Mapper"
+	name="From file loader"
 	{node}
 	{onDeleteRequest}
 	{onMouseLeftButtonDown}

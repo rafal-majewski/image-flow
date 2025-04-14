@@ -14,6 +14,7 @@
 	import type {SupportedInputNode} from "./node/SupportedInputNode.ts";
 	import {MapperNode} from "./node/kinds/mapper/MapperNode.svelte.ts";
 	import {FromUrlLoaderNode} from "./node/kinds/from-url-loader/FromUrlLoaderNode.svelte.ts";
+	import {FromFileLoaderNode} from "./node/kinds/from-file-loader/FromFileLoaderNode.svelte.ts";
 	let board: HTMLElement;
 	let cameraPosition = $state<Coordinates>({x: 0, y: 0});
 	function computeInBoardPositionFromJustClientPosition(
@@ -41,6 +42,9 @@
 	}
 	function handleAddFromUrlLoaderNodeRequest(): void {
 		handleAddNodeRequest(FromUrlLoaderNode.create);
+	}
+	function handleAddFromFileLoaderNodeRequest(): void {
+		handleAddNodeRequest(FromFileLoaderNode.create);
 	}
 	function handleContextMenuOpen(event: MouseEvent): void {
 		if (event.target === board && mode === null) {
@@ -162,6 +166,7 @@
 			};
 		} else if (mode.kindName === "settingInputNode") {
 			nodeInRequest.addOutputNode(mode.data.targetNode);
+			nodeInRequest.connectOutputNode(mode.data.targetNode);
 			mode = null;
 		}
 	}
@@ -180,6 +185,7 @@
 			};
 		} else if (mode.kindName === "settingOutputNode") {
 			mode.data.sourceNode.addOutputNode(nodeInRequest);
+			mode.data.sourceNode.connectOutputNode(nodeInRequest);
 			mode = null;
 		}
 	}
@@ -236,6 +242,7 @@
 				position={mode.data.position}
 				onAddMapperNodeRequest={handleAddMapperNodeRequest}
 				onAddFromUrlLoaderNodeRequest={handleAddFromUrlLoaderNodeRequest}
+				onAddFromFileLoaderNodeRequest={handleAddFromFileLoaderNodeRequest}
 			/>
 		{/if}
 		<ul>

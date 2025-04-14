@@ -1,6 +1,7 @@
+import type {OutputNode} from "../../../../../OutputNode.ts";
 import type {SupportedInputNode} from "../../../../../SupportedInputNode.ts";
-import type {SupportedOutputNode} from "../../../../../SupportedOutputNode.ts";
 import type {Mapper} from "../../../mapper/Mapper.ts";
+import type {MapperNode} from "../../../MapperNode.svelte.ts";
 import {MapperNodeState} from "../../MapperNodeState.ts";
 import {MappingInProgressMapperNodeState} from "../mapping-in-progress/MappingInProgressMapperNodeState.ts";
 import {MappingSucceededMapperNodeState} from "../mapping-succeeded/MappingSucceededMapperNodeState.ts";
@@ -14,19 +15,19 @@ export class NoInputNodeMapperNodeState extends MapperNodeState {
 	public readonly mapper: Mapper;
 	public override setMapper(
 		newMapper: Mapper,
-		outputNodes: readonly SupportedInputNode[],
+		outputNodes: readonly OutputNode[],
 	): NoInputNodeMapperNodeState {
 		return new NoInputNodeMapperNodeState(newMapper);
 	}
-	public unsetMapper(
-		outputNodes: readonly SupportedInputNode[],
+	public override unsetMapper(
+		outputNodes: readonly OutputNode[],
 	): NoInputNodeAndNoMapperMapperNodeState {
 		return new NoInputNodeAndNoMapperMapperNodeState();
 	}
 	public override setInputNodeWithInputImage(
-		inputImage: ImageData,
 		inputNode: SupportedInputNode,
-		outputNodes: readonly SupportedOutputNode[],
+		inputImage: ImageData,
+		outputNodes: readonly OutputNode[],
 	): MappingSucceededMapperNodeState | MappingInProgressMapperNodeState {
 		const generator = this.mapper.map(inputImage);
 		const generatorResult = generator.next();
@@ -52,8 +53,35 @@ export class NoInputNodeMapperNodeState extends MapperNodeState {
 	}
 	public override setInputNodeWithoutInputImage(
 		inputNode: SupportedInputNode,
-		outputNodes: readonly SupportedInputNode[],
+		outputNodes: readonly OutputNode[],
 	): NoInputImageMapperNodeState {
 		return new NoInputImageMapperNodeState(inputNode, this.mapper);
+	}
+	public override disconnect(
+		thisNode: MapperNode,
+		outputNodes: readonly OutputNode[],
+	): this {
+		for (const outputNode of outputNodes) {
+			outputNode.unsetInputNode();
+		}
+		return this;
+	}
+	public override unsetInputNode(outputNodes: readonly OutputNode[]): this {
+		return this;
+	}
+	public override setInputImage(
+		inputImage: ImageData,
+		outputNodes: readonly OutputNode[],
+	): this {
+		return this;
+	}
+	public override unsetInputImage(outputNodes: readonly OutputNode[]): this {
+		return this;
+	}
+	public override connectOutputNode(
+		thisNode: MapperNode,
+		outputNodeToConnect: OutputNode,
+	): void {
+		outputNodeToConnect.setInputNodeWithoutInputImage(thisNode);
 	}
 }

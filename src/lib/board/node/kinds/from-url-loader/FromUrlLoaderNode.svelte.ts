@@ -1,24 +1,25 @@
 import type {Coordinates} from "../../../coordinates/Coordinates.ts";
+import type {InputNode} from "../../InputNode.ts";
 import {Node} from "../../Node.svelte.ts";
+import type {OutputNode} from "../../OutputNode.ts";
 import type {SupportedOutputNode} from "../../SupportedOutputNode.ts";
 import type {NodeId} from "../../id/NodeId.ts";
 import {checkIfUrlIsValid} from "./checking-if-url-is-valid/checkIfUrlIsValid.ts";
 import type {SupportedFromUrlLoaderNodeState} from "./state/SupportedFromUrlLoaderNodeState.ts";
 import {LoadingSucceededFromUrlLoaderNodeState} from "./state/kinds/loading-succeeded/LoadingSucceededFromUrlLoaderNodeState.ts";
 import {NoUrlFromUrlLoaderNodeState} from "./state/kinds/no-url/NoUrlFromUrlLoaderNodeState.ts";
-export class FromUrlLoaderNode extends Node {
+export class FromUrlLoaderNode extends Node implements InputNode {
 	private constructor(
 		id: NodeId,
-		outputNodes: readonly SupportedOutputNode[],
 		position: Coordinates,
+		outputNodes: readonly OutputNode[],
 		state: SupportedFromUrlLoaderNodeState,
 	) {
 		super(id, position);
 		this.outputNodes = outputNodes;
 		this.state = state;
 	}
-	public outputNodes: readonly SupportedOutputNode[] =
-		$state() as readonly SupportedOutputNode[];
+	public outputNodes: readonly OutputNode[] = $state() as readonly OutputNode[];
 	public state: SupportedFromUrlLoaderNodeState =
 		$state() as SupportedFromUrlLoaderNodeState;
 	public readonly status = $derived(this.state.status);
@@ -31,7 +32,6 @@ export class FromUrlLoaderNode extends Node {
 			this.state = loadingInProgressState;
 			const imageElement = new Image();
 			imageElement.crossOrigin = "Anonymous";
-			imageElement.src = url;
 			const isLoadedSuccessfully = await new Promise<boolean>((resolve) => {
 				imageElement.onload = () => {
 					resolve(true);
@@ -39,6 +39,7 @@ export class FromUrlLoaderNode extends Node {
 				imageElement.onerror = () => {
 					resolve(false);
 				};
+				imageElement.src = url;
 			});
 			if (this.state === loadingInProgressState) {
 				if (isLoadedSuccessfully) {
@@ -69,18 +70,15 @@ export class FromUrlLoaderNode extends Node {
 	}
 	public addOutputNode(outputNode: SupportedOutputNode): void {
 		this.outputNodes = [...this.outputNodes, outputNode];
-		// TODO: Make it a method on State
-		if (this.state instanceof LoadingSucceededFromUrlLoaderNodeState) {
-			outputNode.setInputNodeWithInputImage(this.state.image, this);
-		} else {
-			outputNode.setInputNode(this);
-		}
+	}
+	public connectOutputNode(outputNodeToConnect: SupportedOutputNode): void {
+		this.state.connectOutputNode(this, outputNodeToConnect);
 	}
 	public static create(id: NodeId, position: Coordinates): FromUrlLoaderNode {
 		return new FromUrlLoaderNode(
 			id,
-			[],
 			position,
+			[],
 			new NoUrlFromUrlLoaderNodeState(),
 		);
 	}
@@ -89,5 +87,10 @@ export class FromUrlLoaderNode extends Node {
 			outputNode.unsetInputNode();
 		}
 		this.outputNodes = [];
+	}
+	public deleteOutputNode(outputNodeToDelete: SupportedOutputNode): void {
+		this.outputNodes = this.outputNodes.filter(
+			(outputNode) => outputNode !== outputNodeToDelete,
+		);
 	}
 }

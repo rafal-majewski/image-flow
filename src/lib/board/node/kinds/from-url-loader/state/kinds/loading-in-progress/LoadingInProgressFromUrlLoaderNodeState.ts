@@ -1,4 +1,5 @@
-import type {SupportedOutputNode} from "../../../../../SupportedOutputNode.ts";
+import type {OutputNode} from "../../../../../OutputNode.ts";
+import type {FromUrlLoaderNode} from "../../../FromUrlLoaderNode.svelte.ts";
 import {FromUrlLoaderNodeState} from "../../FromUrlLoaderNodeState.ts";
 import {InvalidUrlFromUrlLoaderNodeState} from "../invalid-url/InvalidUrlFromUrlLoaderNodeState.ts";
 import {LoadingFailedFromUrlLoaderNodeState} from "../loading-failed/LoadingFailedFromUrlLoaderNodeState.ts";
@@ -12,7 +13,7 @@ export class LoadingInProgressFromUrlLoaderNodeState extends FromUrlLoaderNodeSt
 	}
 	public succeedLoading(
 		loadedImage: ImageData,
-		outputNodes: readonly SupportedOutputNode[],
+		outputNodes: readonly OutputNode[],
 	): LoadingSucceededFromUrlLoaderNodeState {
 		for (const outputNode of outputNodes) {
 			outputNode.setInputImage(loadedImage);
@@ -20,25 +21,31 @@ export class LoadingInProgressFromUrlLoaderNodeState extends FromUrlLoaderNodeSt
 		return new LoadingSucceededFromUrlLoaderNodeState(loadedImage, this.url);
 	}
 	public failLoading(
-		outputNodes: readonly SupportedOutputNode[],
+		outputNodes: readonly OutputNode[],
 	): LoadingFailedFromUrlLoaderNodeState {
 		return new LoadingFailedFromUrlLoaderNodeState(this.url);
 	}
 	public override setValidUrl(
 		newUrl: string,
-		outputNodes: readonly SupportedOutputNode[],
+		outputNodes: readonly OutputNode[],
 	): LoadingInProgressFromUrlLoaderNodeState {
 		return new LoadingInProgressFromUrlLoaderNodeState(newUrl);
 	}
 	public override setInvalidUrl(
 		newUrl: string,
-		outputNodes: readonly SupportedOutputNode[],
+		outputNodes: readonly OutputNode[],
 	): InvalidUrlFromUrlLoaderNodeState {
 		return new InvalidUrlFromUrlLoaderNodeState(newUrl);
 	}
 	public unsetUrl(
-		outputNodes: readonly SupportedOutputNode[],
+		outputNodes: readonly OutputNode[],
 	): NoUrlFromUrlLoaderNodeState {
 		return new NoUrlFromUrlLoaderNodeState();
+	}
+	public override connectOutputNode(
+		thisNode: FromUrlLoaderNode,
+		outputNodeToConnect: OutputNode,
+	): void {
+		outputNodeToConnect.setInputNodeWithoutInputImage(thisNode);
 	}
 }

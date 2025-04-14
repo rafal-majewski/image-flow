@@ -9,6 +9,8 @@
 	import type {SupportedBoardMode} from "../mode/SupportedBoardMode.ts";
 	import type {SupportedInputNode} from "./SupportedInputNode.ts";
 	import type {SupportedOutputNode} from "./SupportedOutputNode.ts";
+	import FromFileLoaderNodeDisplayer from "./kinds/from-file-loader/FromFileLoaderNodeDisplayer.svelte";
+	import {FromFileLoaderNode} from "./kinds/from-file-loader/FromFileLoaderNode.svelte.ts";
 	const {
 		node,
 		onDeleteRequest,
@@ -49,6 +51,15 @@
 	/>
 {:else if node instanceof FromUrlLoaderNode}
 	<FromUrlLoaderNodeDisplayer
+		{node}
+		{onDeleteRequest}
+		{onMouseLeftButtonDown}
+		{onMouseLeftButtonUp}
+		{boardMode}
+		{onSetOutputNodeRequest}
+	/>
+{:else if node instanceof FromFileLoaderNode}
+	<FromFileLoaderNodeDisplayer
 		{node}
 		{onDeleteRequest}
 		{onMouseLeftButtonDown}

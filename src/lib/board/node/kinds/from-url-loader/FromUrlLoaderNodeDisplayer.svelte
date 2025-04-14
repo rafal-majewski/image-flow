@@ -34,6 +34,15 @@
 	}
 </script>
 
+{#snippet stateDisplayer()}
+	<FromUrlLoaderNodeStateDisplayer
+		state={node.state}
+		onSetUrlRequest={handleSetUrlRequest}
+		{boardMode}
+		onSetOutputNodeRequest={handleSetOutputNodeRequest}
+	/>
+{/snippet}
+
 <NodeDisplayer
 	name="From URL loader"
 	{node}
@@ -42,11 +51,3 @@
 	{onMouseLeftButtonUp}
 	{stateDisplayer}
 />
-
-{#snippet stateDisplayer()}
-	<FromUrlLoaderNodeStateDisplayer
-		state={node.state}
-		onSetUrlRequest={handleSetUrlRequest}
-		{boardMode}
-		onSetOutputNodeRequest={handleSetOutputNodeRequest}
-	/>{/snippet}

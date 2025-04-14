@@ -1,7 +1,8 @@
+import type {OutputNode} from "../../../../../OutputNode.ts";
 import type {SupportedInputNode} from "../../../../../SupportedInputNode.ts";
 import type {SupportedNode} from "../../../../../SupportedNode.ts";
-import type {SupportedOutputNode} from "../../../../../SupportedOutputNode.ts";
 import type {Mapper} from "../../../mapper/Mapper.ts";
+import type {MapperNode} from "../../../MapperNode.svelte.ts";
 import {MapperNodeState} from "../../MapperNodeState.ts";
 import {MappingSucceededMapperNodeState} from "../mapping-succeeded/MappingSucceededMapperNodeState.ts";
 import {NoInputImageMapperNodeState} from "../no-input-image/NoInputImageMapperNodeState.ts";
@@ -29,7 +30,7 @@ export class MappingInProgressMapperNodeState extends MapperNodeState {
 	public readonly outputImage: ImageData;
 	public override setMapper(
 		newMapper: Mapper,
-		outputNodes: readonly SupportedOutputNode[],
+		outputNodes: readonly OutputNode[],
 	): MappingInProgressMapperNodeState | MappingSucceededMapperNodeState {
 		const newGenerator = newMapper.map(this.inputImage);
 		const newGeneratorResult = newGenerator.next();
@@ -53,24 +54,24 @@ export class MappingInProgressMapperNodeState extends MapperNodeState {
 			);
 		}
 	}
-	public unsetInputImage(
-		outputNodes: readonly SupportedOutputNode[],
+	public override unsetInputImage(
+		outputNodes: readonly OutputNode[],
 	): NoInputImageMapperNodeState {
 		return new NoInputImageMapperNodeState(this.inputNode, this.mapper);
 	}
-	public unsetInputNode(
-		outputNodes: readonly SupportedOutputNode[],
+	public override unsetInputNode(
+		outputNodes: readonly OutputNode[],
 	): NoInputNodeMapperNodeState {
 		return new NoInputNodeMapperNodeState(this.mapper);
 	}
-	public unsetMapper(
-		outputNodes: readonly SupportedOutputNode[],
+	public override unsetMapper(
+		outputNodes: readonly OutputNode[],
 	): NoMapperMapperNodeState {
 		return new NoMapperMapperNodeState(this.inputImage, this.inputNode);
 	}
-	public setInputImage(
+	public override setInputImage(
 		newInputImage: ImageData,
-		outputNodes: readonly SupportedOutputNode[],
+		outputNodes: readonly OutputNode[],
 	): MappingSucceededMapperNodeState | MappingInProgressMapperNodeState {
 		const newGenerator = this.mapper.map(newInputImage);
 		const newGeneratorResult = newGenerator.next();
@@ -95,10 +96,11 @@ export class MappingInProgressMapperNodeState extends MapperNodeState {
 		}
 	}
 	public override setInputNodeWithInputImage(
-		newInputImage: ImageData,
 		newInputNode: SupportedInputNode,
-		outputNodes: readonly SupportedOutputNode[],
+		newInputImage: ImageData,
+		outputNodes: readonly OutputNode[],
 	): MappingInProgressMapperNodeState | MappingSucceededMapperNodeState {
+		this.inputNode.deleteOutputNode;
 		const newGenerator = this.mapper.map(newInputImage);
 		const newGeneratorResult = newGenerator.next();
 		if (newGeneratorResult.done) {
@@ -122,7 +124,7 @@ export class MappingInProgressMapperNodeState extends MapperNodeState {
 		}
 	}
 	public doStep(
-		outputNodes: readonly SupportedOutputNode[],
+		outputNodes: readonly OutputNode[],
 	): MappingInProgressMapperNodeState | MappingSucceededMapperNodeState {
 		const generatorResult = this.generator.next();
 		if (generatorResult.done) {
@@ -147,8 +149,24 @@ export class MappingInProgressMapperNodeState extends MapperNodeState {
 	}
 	public override setInputNodeWithoutInputImage(
 		newInputNode: SupportedInputNode,
-		outputNodes: readonly SupportedOutputNode[],
+		outputNodes: readonly OutputNode[],
 	): NoInputImageMapperNodeState {
 		return new NoInputImageMapperNodeState(newInputNode, this.mapper);
+	}
+	public override disconnect(
+		thisNode: MapperNode,
+		outputNodes: readonly OutputNode[],
+	): NoInputNodeMapperNodeState {
+		this.inputNode.deleteOutputNode(thisNode);
+		for (const outputNode of outputNodes) {
+			outputNode.unsetInputNode();
+		}
+		return new NoInputNodeMapperNodeState(this.mapper);
+	}
+	public override connectOutputNode(
+		thisNode: MapperNode,
+		outputNodeToConnect: OutputNode,
+	): void {
+		outputNodeToConnect.setInputNodeWithoutInputImage(thisNode);
 	}
 }

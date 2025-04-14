@@ -1,5 +1,7 @@
+import type {OutputNode} from "../../../../../OutputNode.ts";
 import type {SupportedInputNode} from "../../../../../SupportedInputNode.ts";
 import type {Mapper} from "../../../mapper/Mapper.ts";
+import type {MapperNode} from "../../../MapperNode.svelte.ts";
 import {MapperNodeState} from "../../MapperNodeState.ts";
 import {NoInputImageAndNoMapperMapperNodeState} from "../no-input-image-and-no-mapper/NoInputImageAndNoMapperMapperNodeState.ts";
 import {NoInputNodeMapperNodeState} from "../no-input-node/NoInputNodeMapperNodeState.ts";
@@ -10,21 +12,51 @@ export class NoInputNodeAndNoMapperMapperNodeState extends MapperNodeState {
 	}
 	public override setMapper(
 		mapper: Mapper,
-		outputNodes: readonly SupportedInputNode[],
+		outputNodes: readonly OutputNode[],
 	): NoInputNodeMapperNodeState {
 		return new NoInputNodeMapperNodeState(mapper);
 	}
 	public override setInputNodeWithInputImage(
-		inputImage: ImageData,
 		inputNode: SupportedInputNode,
-		outputNodes: readonly SupportedInputNode[],
+		inputImage: ImageData,
+		outputNodes: readonly OutputNode[],
 	): NoMapperMapperNodeState {
 		return new NoMapperMapperNodeState(inputImage, inputNode);
 	}
 	public override setInputNodeWithoutInputImage(
 		inputNode: SupportedInputNode,
-		outputNodes: readonly SupportedInputNode[],
+		outputNodes: readonly OutputNode[],
 	): NoInputImageAndNoMapperMapperNodeState {
 		return new NoInputImageAndNoMapperMapperNodeState(inputNode);
+	}
+	public override disconnect(
+		thisNode: MapperNode,
+		outputNodes: readonly OutputNode[],
+	): this {
+		for (const outputNode of outputNodes) {
+			outputNode.unsetInputNode();
+		}
+		return this;
+	}
+	public override setInputImage(
+		inputImage: ImageData,
+		outputNodes: readonly OutputNode[],
+	): this {
+		return this;
+	}
+	public override unsetInputNode(outputNodes: readonly OutputNode[]): this {
+		return this;
+	}
+	public override unsetInputImage(outputNodes: readonly OutputNode[]): this {
+		return this;
+	}
+	public override unsetMapper(outputNodes: readonly OutputNode[]): this {
+		return this;
+	}
+	public override connectOutputNode(
+		thisNode: MapperNode,
+		outputNodeToConnect: OutputNode,
+	): void {
+		outputNodeToConnect.setInputNodeWithoutInputImage(thisNode);
 	}
 }

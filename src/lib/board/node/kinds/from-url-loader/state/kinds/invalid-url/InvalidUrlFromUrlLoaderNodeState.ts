@@ -1,4 +1,5 @@
-import type {SupportedOutputNode} from "../../../../../SupportedOutputNode.ts";
+import type {OutputNode} from "../../../../../OutputNode.ts";
+import type {FromUrlLoaderNode} from "../../../FromUrlLoaderNode.svelte.ts";
 import {FromUrlLoaderNodeState} from "../../FromUrlLoaderNodeState.ts";
 import {LoadingInProgressFromUrlLoaderNodeState} from "../loading-in-progress/LoadingInProgressFromUrlLoaderNodeState.ts";
 import {NoUrlFromUrlLoaderNodeState} from "../no-url/NoUrlFromUrlLoaderNodeState.ts";
@@ -10,19 +11,25 @@ export class InvalidUrlFromUrlLoaderNodeState extends FromUrlLoaderNodeState {
 	}
 	public override setValidUrl(
 		newUrl: string,
-		outputNodes: readonly SupportedOutputNode[],
+		outputNodes: readonly OutputNode[],
 	): LoadingInProgressFromUrlLoaderNodeState {
 		return new LoadingInProgressFromUrlLoaderNodeState(newUrl);
 	}
 	public override setInvalidUrl(
 		newUrl: string,
-		outputNodes: readonly SupportedOutputNode[],
+		outputNodes: readonly OutputNode[],
 	): InvalidUrlFromUrlLoaderNodeState {
 		return new InvalidUrlFromUrlLoaderNodeState(newUrl);
 	}
 	public unsetUrl(
-		outputNodes: readonly SupportedOutputNode[],
+		outputNodes: readonly OutputNode[],
 	): NoUrlFromUrlLoaderNodeState {
 		return new NoUrlFromUrlLoaderNodeState();
+	}
+	public override connectOutputNode(
+		thisNode: FromUrlLoaderNode,
+		outputNodeToConnect: OutputNode,
+	): void {
+		outputNodeToConnect.setInputNodeWithoutInputImage(thisNode);
 	}
 }
