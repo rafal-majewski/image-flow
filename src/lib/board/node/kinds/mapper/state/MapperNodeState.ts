@@ -40,6 +40,6 @@ export abstract class MapperNodeState {
 	): MapperNodeState;
 	public abstract connectOutputNode(
 		thisNode: MapperNode,
-		outputNode: OutputNode,
+		outputNodeToAdd: OutputNode,
 	): void;
 }

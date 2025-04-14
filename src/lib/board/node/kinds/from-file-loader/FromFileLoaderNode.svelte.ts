@@ -1,11 +1,10 @@
 import type {Coordinates} from "../../../coordinates/Coordinates.ts";
 import type {NodeId} from "../../id/NodeId.ts";
-import type {SupportedOutputNode} from "../../SupportedOutputNode.ts";
+import type {OutputNode} from "../../OutputNode.ts";
 import {Node} from "../../Node.svelte.ts";
 import {NoFileFromFileLoaderNodeState} from "./state/kinds/no-file/NoFileFromFileLoaderNodeState.ts";
 import type {SupportedFromFileLoaderNodeState} from "./state/SupportedFromFileLoaderNodeState.ts";
 import type {InputNode} from "../../InputNode.ts";
-import type {OutputNode} from "../../OutputNode.ts";
 export class FromFileLoaderNode extends Node implements InputNode {
 	private constructor(
 		id: NodeId,
@@ -60,10 +59,10 @@ export class FromFileLoaderNode extends Node implements InputNode {
 			}
 		}
 	}
-	public addOutputNode(outputNode: SupportedOutputNode): void {
-		this.outputNodes = [...this.outputNodes, outputNode];
+	public addOutputNode(outputNodeToAdd: OutputNode): void {
+		this.outputNodes = [...this.outputNodes, outputNodeToAdd];
 	}
-	public connectOutputNode(outputNodeToConnect: SupportedOutputNode): void {
+	public connectOutputNode(outputNodeToConnect: OutputNode): void {
 		this.state.connectOutputNode(this, outputNodeToConnect);
 	}
 	public static create(id: NodeId, position: Coordinates): FromFileLoaderNode {
@@ -80,7 +79,7 @@ export class FromFileLoaderNode extends Node implements InputNode {
 		}
 		this.outputNodes = [];
 	}
-	public deleteOutputNode(outputNodeToDelete: SupportedOutputNode): void {
+	public deleteOutputNode(outputNodeToDelete: OutputNode): void {
 		outputNodeToDelete.unsetInputNode();
 		this.outputNodes = this.outputNodes.filter(
 			(outputNode) => outputNode !== outputNodeToDelete,

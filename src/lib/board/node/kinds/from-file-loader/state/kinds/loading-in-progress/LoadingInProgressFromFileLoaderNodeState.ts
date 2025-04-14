@@ -1,5 +1,4 @@
 import type {OutputNode} from "../../../../../OutputNode.ts";
-import type {SupportedOutputNode} from "../../../../../SupportedOutputNode.ts";
 import type {FromFileLoaderNode} from "../../../FromFileLoaderNode.svelte.ts";
 import {FromFileLoaderNodeState} from "../../FromFileLoaderNodeState.ts";
 import {LoadingSucceededFromFileLoaderNodeState} from "../loading-succeeded/LoadingSucceededFromFileLoaderNodeState.ts";

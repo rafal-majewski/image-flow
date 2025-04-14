@@ -1,8 +1,7 @@
 import type {Coordinates} from "../../../coordinates/Coordinates.ts";
 import {Node} from "../../Node.svelte.ts";
-import type {OutputNode} from "../../OutputNode.ts";
 import type {SupportedInputNode} from "../../SupportedInputNode.ts";
-import type {SupportedOutputNode} from "../../SupportedOutputNode.ts";
+import type {OutputNode} from "../../OutputNode.ts";
 import type {NodeId} from "../../id/NodeId.ts";
 import type {Mapper} from "./mapper/Mapper.ts";
 import type {SupportedMapperNodeState} from "./state/SupportedMapperNodeState.ts";
@@ -25,10 +24,10 @@ export class MapperNode extends Node {
 	public outputNodes: readonly OutputNode[] = $state() as readonly OutputNode[];
 	public state: SupportedMapperNodeState = $state() as SupportedMapperNodeState;
 	public readonly status = $derived(this.state.status);
-	public addOutputNode(outputNodeToAdd: SupportedOutputNode): void {
+	public addOutputNode(outputNodeToAdd: OutputNode): void {
 		this.outputNodes = [...this.outputNodes, outputNodeToAdd];
 	}
-	public connectOutputNode(outputNodeToConnect: SupportedOutputNode): void {
+	public connectOutputNode(outputNodeToConnect: OutputNode): void {
 		this.state.connectOutputNode(this, outputNodeToConnect);
 	}
 	public unsetMapper(): void {
@@ -96,7 +95,7 @@ export class MapperNode extends Node {
 	public setInputImage(inputImage: ImageData): void {
 		this.state = this.state.setInputImage(inputImage, this.outputNodes);
 	}
-	public deleteOutputNode(outputNodeToDelete: SupportedOutputNode): void {
+	public deleteOutputNode(outputNodeToDelete: OutputNode): void {
 		this.outputNodes = this.outputNodes.filter(
 			(outputNode) => outputNode !== outputNodeToDelete,
 		);
