@@ -21,10 +21,6 @@ export abstract class MapperNodeState {
 		inputNode: InputNode,
 		outputNodes: readonly OutputNode[],
 	): MapperNodeState;
-	public abstract disconnect(
-		thisNode: MapperNode,
-		outputNodes: readonly OutputNode[],
-	): MapperNodeState;
 	public abstract setInputImage(
 		inputImage: ImageData,
 		outputNodes: readonly OutputNode[],
@@ -45,5 +41,8 @@ export abstract class MapperNodeState {
 	public abstract doSteps(
 		stepCountLeft: number,
 		outputNodes: readonly OutputNode[],
+	): MapperNodeState;
+	public abstract disconnectFromInputNode(
+		thisNode: MapperNode,
 	): MapperNodeState;
 }

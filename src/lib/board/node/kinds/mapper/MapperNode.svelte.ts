@@ -48,7 +48,10 @@ export class MapperNode extends Node implements InputNode, OutputNode {
 		);
 	}
 	public override disconnect(): void {
-		this.state = this.state.disconnect(this, this.outputNodes);
+		for (const outputNode of this.outputNodes) {
+			outputNode.unsetInputNode();
+		}
+		this.state = this.state.disconnectFromInputNode(this);
 		this.outputNodes = [];
 	}
 	public setInputNodeWithInputImage(

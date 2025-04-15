@@ -70,14 +70,10 @@ export class NoMapperMapperNodeState extends MapperNodeState {
 	): NoInputImageAndNoMapperMapperNodeState {
 		return new NoInputImageAndNoMapperMapperNodeState(newInputNode);
 	}
-	public override disconnect(
+	public override disconnectFromInputNode(
 		thisNode: MapperNode,
-		outputNodes: readonly OutputNode[],
 	): NoInputNodeAndNoMapperMapperNodeState {
 		this.inputNode.deleteOutputNode(thisNode);
-		for (const outputNode of outputNodes) {
-			outputNode.unsetInputNode();
-		}
 		return new NoInputNodeAndNoMapperMapperNodeState();
 	}
 	public override unsetMapper(outputNodes: readonly OutputNode[]): this {

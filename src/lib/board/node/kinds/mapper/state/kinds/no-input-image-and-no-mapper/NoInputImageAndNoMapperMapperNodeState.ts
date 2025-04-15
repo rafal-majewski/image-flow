@@ -5,6 +5,7 @@ import type {MapperNode} from "../../../MapperNode.svelte.ts";
 import {MapperNodeState} from "../../MapperNodeState.ts";
 import {NoInputImageMapperNodeState} from "../no-input-image/NoInputImageMapperNodeState.ts";
 import {NoInputNodeAndNoMapperMapperNodeState} from "../no-input-node-and-no-mapper/NoInputNodeAndNoMapperMapperNodeState.ts";
+import {NoInputNodeMapperNodeState} from "../no-input-node/NoInputNodeMapperNodeState.ts";
 import {NoMapperMapperNodeState} from "../no-mapper/NoMapperMapperNodeState.ts";
 export class NoInputImageAndNoMapperMapperNodeState extends MapperNodeState {
 	public constructor(inputNode: SupportedInputNode) {
@@ -42,14 +43,10 @@ export class NoInputImageAndNoMapperMapperNodeState extends MapperNodeState {
 	): NoInputImageAndNoMapperMapperNodeState {
 		return new NoInputImageAndNoMapperMapperNodeState(newInputNode);
 	}
-	public override disconnect(
+	public override disconnectFromInputNode(
 		thisNode: MapperNode,
-		outputNodes: readonly OutputNode[],
 	): NoInputNodeAndNoMapperMapperNodeState {
 		this.inputNode.deleteOutputNode(thisNode);
-		for (const outputNode of outputNodes) {
-			outputNode.unsetInputNode();
-		}
 		return new NoInputNodeAndNoMapperMapperNodeState();
 	}
 	public override unsetInputImage(outputNodes: readonly OutputNode[]): this {

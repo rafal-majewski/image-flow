@@ -145,14 +145,10 @@ export class MappingSucceededMapperNodeState extends MapperNodeState {
 		}
 		return new NoInputImageMapperNodeState(newInputNode, this.mapper);
 	}
-	public override disconnect(
+	public override disconnectFromInputNode(
 		thisNode: MapperNode,
-		outputNodes: readonly OutputNode[],
 	): NoInputNodeMapperNodeState {
 		this.inputNode.deleteOutputNode(thisNode);
-		for (const outputNode of outputNodes) {
-			outputNode.unsetInputNode();
-		}
 		return new NoInputNodeMapperNodeState(this.mapper);
 	}
 	public override connectOutputNode(

@@ -74,7 +74,9 @@ export class FromFileLoaderNode extends Node implements InputNode {
 		);
 	}
 	public override disconnect(): void {
-		this.state = this.state.disconnect(this, this.outputNodes);
+		for (const outputNode of this.outputNodes) {
+			outputNode.unsetInputNode();
+		}
 		this.outputNodes = [];
 	}
 	public deleteOutputNode(outputNodeToDelete: OutputNode): void {
