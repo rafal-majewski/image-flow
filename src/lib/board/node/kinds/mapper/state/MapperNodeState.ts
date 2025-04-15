@@ -42,4 +42,8 @@ export abstract class MapperNodeState {
 		thisNode: MapperNode,
 		outputNodeToAdd: OutputNode,
 	): void;
+	public abstract doSteps(
+		stepCountLeft: number,
+		outputNodes: readonly OutputNode[],
+	): MapperNodeState;
 }

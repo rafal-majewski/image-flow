@@ -161,4 +161,10 @@ export class MappingSucceededMapperNodeState extends MapperNodeState {
 	): void {
 		outputNodeToConnect.setInputNodeWithInputImage(thisNode, this.outputImage);
 	}
+	public override doSteps(
+		stepCountLeft: number,
+		outputNodes: readonly OutputNode[],
+	): this {
+		return this;
+	}
 }

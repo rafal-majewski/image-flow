@@ -5,12 +5,9 @@ import type {OutputNode} from "../../OutputNode.ts";
 import type {NodeId} from "../../id/NodeId.ts";
 import type {Mapper} from "./mapper/Mapper.ts";
 import type {SupportedMapperNodeState} from "./state/SupportedMapperNodeState.ts";
-import {MappingInProgressMapperNodeState} from "./state/kinds/mapping-in-progress/MappingInProgressMapperNodeState.ts";
-import {MappingSucceededMapperNodeState} from "./state/kinds/mapping-succeeded/MappingSucceededMapperNodeState.ts";
-import {NoInputImageMapperNodeState} from "./state/kinds/no-input-image/NoInputImageMapperNodeState.ts";
 import {NoInputNodeAndNoMapperMapperNodeState} from "./state/kinds/no-input-node-and-no-mapper/NoInputNodeAndNoMapperMapperNodeState.ts";
-import {NoInputNodeMapperNodeState} from "./state/kinds/no-input-node/NoInputNodeMapperNodeState.ts";
-export class MapperNode extends Node {
+import type {InputNode} from "../../InputNode.ts";
+export class MapperNode extends Node implements InputNode, OutputNode {
 	private constructor(
 		id: NodeId,
 		position: Coordinates,
@@ -31,14 +28,7 @@ export class MapperNode extends Node {
 		this.state.connectOutputNode(this, outputNodeToConnect);
 	}
 	public unsetMapper(): void {
-		if (
-			this.state instanceof MappingInProgressMapperNodeState
-			|| this.state instanceof MappingSucceededMapperNodeState
-			|| this.state instanceof NoInputImageMapperNodeState
-			|| this.state instanceof NoInputNodeMapperNodeState
-		) {
-			this.state = this.state.unsetMapper(this.outputNodes);
-		}
+		this.state = this.state.unsetMapper(this.outputNodes);
 	}
 	public setMapper(mapper: Mapper): void {
 		this.state = this.state.setMapper(mapper, this.outputNodes);
@@ -83,14 +73,8 @@ export class MapperNode extends Node {
 			this.outputNodes,
 		);
 	}
-	public doStep(): void {
-		for (let stepIndex = 0; stepIndex < 100; stepIndex += 1) {
-			if (this.state instanceof MappingInProgressMapperNodeState) {
-				this.state = this.state.doStep(this.outputNodes);
-			} else {
-				break;
-			}
-		}
+	public doSteps(): void {
+		this.state = this.state.doSteps(100, this.outputNodes);
 	}
 	public setInputImage(inputImage: ImageData): void {
 		this.state = this.state.setInputImage(inputImage, this.outputNodes);

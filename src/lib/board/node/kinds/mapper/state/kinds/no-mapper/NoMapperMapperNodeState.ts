@@ -89,4 +89,10 @@ export class NoMapperMapperNodeState extends MapperNodeState {
 	): void {
 		outputNodeToConnect.setInputNodeWithoutInputImage(thisNode);
 	}
+	public override doSteps(
+		stepCountLeft: number,
+		outputNodes: readonly OutputNode[],
+	): this {
+		return this;
+	}
 }

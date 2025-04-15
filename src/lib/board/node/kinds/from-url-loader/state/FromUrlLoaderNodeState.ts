@@ -18,4 +18,13 @@ export abstract class FromUrlLoaderNodeState {
 		thisNode: FromUrlLoaderNode,
 		outputNodeToConnect: OutputNode,
 	): void;
+	public disconnect(
+		thisNode: FromUrlLoaderNode,
+		outputNodes: readonly OutputNode[],
+	): this {
+		for (const outputNode of outputNodes) {
+			outputNode.unsetInputNode();
+		}
+		return this;
+	}
 }

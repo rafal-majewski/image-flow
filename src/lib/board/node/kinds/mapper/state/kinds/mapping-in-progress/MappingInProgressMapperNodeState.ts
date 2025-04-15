@@ -123,30 +123,6 @@ export class MappingInProgressMapperNodeState extends MapperNodeState {
 			);
 		}
 	}
-	public doStep(
-		outputNodes: readonly OutputNode[],
-	): MappingInProgressMapperNodeState | MappingSucceededMapperNodeState {
-		const generatorResult = this.generator.next();
-		if (generatorResult.done) {
-			for (const outputNode of outputNodes) {
-				outputNode.setInputImage(generatorResult.value);
-			}
-			return new MappingSucceededMapperNodeState(
-				this.inputImage,
-				this.inputNode,
-				this.mapper,
-				generatorResult.value,
-			);
-		} else {
-			return new MappingInProgressMapperNodeState(
-				this.generator,
-				this.inputImage,
-				this.inputNode,
-				this.mapper,
-				generatorResult.value,
-			);
-		}
-	}
 	public override setInputNodeWithoutInputImage(
 		newInputNode: SupportedInputNode,
 		outputNodes: readonly OutputNode[],
@@ -168,5 +144,35 @@ export class MappingInProgressMapperNodeState extends MapperNodeState {
 		outputNodeToConnect: OutputNode,
 	): void {
 		outputNodeToConnect.setInputNodeWithoutInputImage(thisNode);
+	}
+	public override doSteps(
+		stepCountLeft: number,
+		outputNodes: readonly OutputNode[],
+	): this | MappingSucceededMapperNodeState | MappingInProgressMapperNodeState {
+		if (stepCountLeft > 0) {
+			const generatorResult = this.generator.next();
+			if (generatorResult.done) {
+				for (const outputNode of outputNodes) {
+					outputNode.setInputImage(generatorResult.value);
+				}
+				return new MappingSucceededMapperNodeState(
+					this.inputImage,
+					this.inputNode,
+					this.mapper,
+					generatorResult.value,
+				);
+			} else {
+				const newState = new MappingInProgressMapperNodeState(
+					this.generator,
+					this.inputImage,
+					this.inputNode,
+					this.mapper,
+					generatorResult.value,
+				);
+				return newState.doSteps(stepCountLeft - 1, outputNodes);
+			}
+		} else {
+			return this;
+		}
 	}
 }

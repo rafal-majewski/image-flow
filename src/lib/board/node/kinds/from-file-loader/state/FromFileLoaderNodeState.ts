@@ -14,4 +14,13 @@ export abstract class FromFileLoaderNodeState {
 		thisNode: FromFileLoaderNode,
 		outputNodeToConnect: OutputNode,
 	): void;
+	public disconnect(
+		thisNode: FromFileLoaderNode,
+		outputNodes: readonly OutputNode[],
+	): this {
+		for (const outputNode of outputNodes) {
+			outputNode.unsetInputNode();
+		}
+		return this;
+	}
 }

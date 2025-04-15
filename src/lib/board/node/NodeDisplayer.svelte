@@ -38,7 +38,7 @@
 <section
 	style:top="{node.position.y}px"
 	style:left="{node.position.x}px"
-	class:error={node.status === "errored"}
+	class:errored={node.status === "errored"}
 	class:processing={node.status === "working"}
 	class:done={node.status === "done"}
 	class:unconfigured={node.status === "unconfigured"}

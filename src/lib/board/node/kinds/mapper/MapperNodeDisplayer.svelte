@@ -33,7 +33,7 @@
 		boardMode: SupportedBoardMode | null;
 	}> = $props();
 	function handleDoStepRequest(): void {
-		node.doStep();
+		node.doSteps();
 	}
 	function handleUnsetMapperRequest(): void {
 		node.unsetMapper();
