@@ -25,6 +25,7 @@ export class NoInputNodeMapperNodeState extends MapperNodeState {
 		return new NoInputNodeAndNoMapperMapperNodeState();
 	}
 	public override setInputNodeWithInputImage(
+		thisNode: MapperNode,
 		inputNode: SupportedInputNode,
 		inputImage: ImageData,
 		outputNodes: readonly OutputNode[],
@@ -52,15 +53,16 @@ export class NoInputNodeMapperNodeState extends MapperNodeState {
 		}
 	}
 	public override setInputNodeWithoutInputImage(
+		thisNode: MapperNode,
 		inputNode: SupportedInputNode,
 		outputNodes: readonly OutputNode[],
 	): NoInputImageMapperNodeState {
 		return new NoInputImageMapperNodeState(inputNode, this.mapper);
 	}
-	public override disconnectFromInputNode(thisNode: MapperNode): this {
-		return this;
-	}
-	public override unsetInputNode(outputNodes: readonly OutputNode[]): this {
+	public override unsetInputNode(
+		thisNode: MapperNode,
+		outputNodes: readonly OutputNode[],
+	): this {
 		return this;
 	}
 	public override setInputImage(
@@ -78,10 +80,16 @@ export class NoInputNodeMapperNodeState extends MapperNodeState {
 	): void {
 		outputNodeToConnect.setInputNodeWithoutInputImage(thisNode);
 	}
-	public override doSteps(
+	public override doManualSteps(
 		stepCountLeft: number,
 		outputNodes: readonly OutputNode[],
 	): this {
+		return this;
+	}
+	public override doAnimatedStep(outputNodes: readonly OutputNode[]): this {
+		return this;
+	}
+	public override doInstantSteps(outputNodes: readonly OutputNode[]): this {
 		return this;
 	}
 }

@@ -20,8 +20,10 @@ export class NoInputImageAndNoMapperMapperNodeState extends MapperNodeState {
 		return new NoInputImageMapperNodeState(this.inputNode, mapper);
 	}
 	public override unsetInputNode(
+		thisNode: MapperNode,
 		outputNodes: readonly OutputNode[],
 	): NoInputNodeAndNoMapperMapperNodeState {
+		this.inputNode.deleteOutputNode(thisNode);
 		return new NoInputNodeAndNoMapperMapperNodeState();
 	}
 	public override setInputImage(
@@ -31,23 +33,21 @@ export class NoInputImageAndNoMapperMapperNodeState extends MapperNodeState {
 		return new NoMapperMapperNodeState(inputImage, this.inputNode);
 	}
 	public override setInputNodeWithInputImage(
+		thisNode: MapperNode,
 		newInputNode: SupportedInputNode,
 		newInputImage: ImageData,
 		outputNodes: readonly OutputNode[],
 	): NoMapperMapperNodeState {
+		this.inputNode.deleteOutputNode(thisNode);
 		return new NoMapperMapperNodeState(newInputImage, newInputNode);
 	}
 	public override setInputNodeWithoutInputImage(
+		thisNode: MapperNode,
 		newInputNode: SupportedInputNode,
 		outputNodes: readonly OutputNode[],
 	): NoInputImageAndNoMapperMapperNodeState {
-		return new NoInputImageAndNoMapperMapperNodeState(newInputNode);
-	}
-	public override disconnectFromInputNode(
-		thisNode: MapperNode,
-	): NoInputNodeAndNoMapperMapperNodeState {
 		this.inputNode.deleteOutputNode(thisNode);
-		return new NoInputNodeAndNoMapperMapperNodeState();
+		return new NoInputImageAndNoMapperMapperNodeState(newInputNode);
 	}
 	public override unsetInputImage(outputNodes: readonly OutputNode[]): this {
 		return this;
@@ -61,10 +61,16 @@ export class NoInputImageAndNoMapperMapperNodeState extends MapperNodeState {
 	): void {
 		outputNodeToConnect.setInputNodeWithoutInputImage(thisNode);
 	}
-	public override doSteps(
+	public override doManualSteps(
 		stepCountLeft: number,
 		outputNodes: readonly OutputNode[],
 	): this {
+		return this;
+	}
+	public override doAnimatedStep(outputNodes: readonly OutputNode[]): this {
+		return this;
+	}
+	public override doInstantSteps(outputNodes: readonly OutputNode[]): this {
 		return this;
 	}
 }

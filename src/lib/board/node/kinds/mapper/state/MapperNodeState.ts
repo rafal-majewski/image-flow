@@ -9,6 +9,7 @@ export abstract class MapperNodeState {
 		this.status = status;
 	}
 	public abstract setInputNodeWithInputImage(
+		thisNode: MapperNode,
 		inputNode: InputNode,
 		inputImage: ImageData,
 		outputNodes: readonly OutputNode[],
@@ -18,6 +19,7 @@ export abstract class MapperNodeState {
 		outputNodes: readonly OutputNode[],
 	): MapperNodeState;
 	public abstract setInputNodeWithoutInputImage(
+		thisNode: MapperNode,
 		inputNode: InputNode,
 		outputNodes: readonly OutputNode[],
 	): MapperNodeState;
@@ -26,6 +28,7 @@ export abstract class MapperNodeState {
 		outputNodes: readonly OutputNode[],
 	): MapperNodeState;
 	public abstract unsetInputNode(
+		thisNode: MapperNode,
 		outputNodes: readonly OutputNode[],
 	): MapperNodeState;
 	public abstract unsetInputImage(
@@ -38,11 +41,14 @@ export abstract class MapperNodeState {
 		thisNode: MapperNode,
 		outputNodeToAdd: OutputNode,
 	): void;
-	public abstract doSteps(
+	public abstract doManualSteps(
 		stepCountLeft: number,
 		outputNodes: readonly OutputNode[],
 	): MapperNodeState;
-	public abstract disconnectFromInputNode(
-		thisNode: MapperNode,
+	public abstract doAnimatedStep(
+		outputNodes: readonly OutputNode[],
+	): MapperNodeState;
+	public abstract doInstantSteps(
+		outputNodes: readonly OutputNode[],
 	): MapperNodeState;
 }

@@ -7,7 +7,7 @@ export abstract class Node {
 		this.position = position;
 	}
 	public readonly id: NodeId;
-	public position: Coordinates = $state() as Coordinates;
+	public position: Coordinates = $state.raw() as Coordinates;
 	public abstract readonly status: NodeStatus;
 	public abstract disconnect(): void;
 }

@@ -62,8 +62,10 @@ export class MappingSucceededMapperNodeState extends MapperNodeState {
 		return new NoInputImageMapperNodeState(this.inputNode, this.mapper);
 	}
 	public override unsetInputNode(
+		thisNode: MapperNode,
 		outputNodes: readonly OutputNode[],
 	): NoInputNodeMapperNodeState {
+		this.inputNode.deleteOutputNode(thisNode);
 		for (const outputNode of outputNodes) {
 			outputNode.unsetInputImage();
 		}
@@ -107,10 +109,12 @@ export class MappingSucceededMapperNodeState extends MapperNodeState {
 		}
 	}
 	public override setInputNodeWithInputImage(
+		thisNode: MapperNode,
 		newInputNode: SupportedInputNode,
 		newInputImage: ImageData,
 		outputNodes: readonly OutputNode[],
 	): MappingInProgressMapperNodeState | MappingSucceededMapperNodeState {
+		this.inputNode.deleteOutputNode(thisNode);
 		const newGenerator = this.mapper.map(newInputImage);
 		const newGeneratorResult = newGenerator.next();
 		if (newGeneratorResult.done) {
@@ -137,19 +141,15 @@ export class MappingSucceededMapperNodeState extends MapperNodeState {
 		}
 	}
 	public override setInputNodeWithoutInputImage(
+		thisNode: MapperNode,
 		newInputNode: SupportedInputNode,
 		outputNodes: readonly OutputNode[],
 	): NoInputImageMapperNodeState {
+		this.inputNode.deleteOutputNode(thisNode);
 		for (const outputNode of outputNodes) {
 			outputNode.unsetInputImage();
 		}
 		return new NoInputImageMapperNodeState(newInputNode, this.mapper);
-	}
-	public override disconnectFromInputNode(
-		thisNode: MapperNode,
-	): NoInputNodeMapperNodeState {
-		this.inputNode.deleteOutputNode(thisNode);
-		return new NoInputNodeMapperNodeState(this.mapper);
 	}
 	public override connectOutputNode(
 		thisNode: MapperNode,
@@ -157,10 +157,16 @@ export class MappingSucceededMapperNodeState extends MapperNodeState {
 	): void {
 		outputNodeToConnect.setInputNodeWithInputImage(thisNode, this.outputImage);
 	}
-	public override doSteps(
+	public override doManualSteps(
 		stepCountLeft: number,
 		outputNodes: readonly OutputNode[],
 	): this {
+		return this;
+	}
+	public override doAnimatedStep(outputNodes: readonly OutputNode[]): this {
+		return this;
+	}
+	public override doInstantSteps(outputNodes: readonly OutputNode[]): this {
 		return this;
 	}
 }

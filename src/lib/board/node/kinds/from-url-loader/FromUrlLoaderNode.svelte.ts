@@ -17,9 +17,10 @@ export class FromUrlLoaderNode extends Node implements InputNode {
 		this.outputNodes = outputNodes;
 		this.state = state;
 	}
-	public outputNodes: readonly OutputNode[] = $state() as readonly OutputNode[];
+	public outputNodes: readonly OutputNode[] =
+		$state.raw() as readonly OutputNode[];
 	public state: SupportedFromUrlLoaderNodeState =
-		$state() as SupportedFromUrlLoaderNodeState;
+		$state.raw() as SupportedFromUrlLoaderNodeState;
 	public readonly status = $derived(this.state.status);
 	public async setUrl(url: string): Promise<void> {
 		if (checkIfUrlIsValid(url)) {

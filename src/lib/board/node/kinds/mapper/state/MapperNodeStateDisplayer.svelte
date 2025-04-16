@@ -12,22 +12,30 @@
 	import {NoMapperMapperNodeState} from "./kinds/no-mapper/NoMapperMapperNodeState.ts";
 	import type {MapperNodeState} from "./MapperNodeState.ts";
 	import type {Mapper} from "../mapper/Mapper.ts";
+	import type {SupportedMapperNodeMode} from "../mode/SupportedMapperNodeMode.ts";
+	import type {NodeId} from "../../../id/NodeId.ts";
 	const {
 		state,
-		onDoStepRequest,
+		onDoManualStepsRequest,
 		onUnsetMapperRequest,
 		onSetMapperRequest,
 		onSetInputNodeRequest,
 		onSetOutputNodeRequest,
 		boardMode,
+		mode,
+		id,
+		onSetModeRequest,
 	}: Readonly<{
+		id: NodeId;
+		mode: SupportedMapperNodeMode;
 		state: MapperNodeState;
 		onSetInputNodeRequest: (mouseClientPosition: Coordinates) => void;
-		onDoStepRequest: () => void;
+		onDoManualStepsRequest: () => void;
 		onUnsetMapperRequest: () => void;
 		onSetMapperRequest: (mapper: Mapper) => void;
 		onSetOutputNodeRequest: (mouseClientPosition: Coordinates) => void;
 		boardMode: SupportedBoardMode | null;
+		onSetModeRequest: (mode: SupportedMapperNodeMode["kindName"]) => void;
 	}> = $props();
 	function handleSelectChange(
 		event: Event & Readonly<{currentTarget: HTMLSelectElement}>,
@@ -41,8 +49,8 @@
 			onSetMapperRequest(selectedMapper);
 		}
 	}
-	function handleDoStepButtonClick(): void {
-		onDoStepRequest();
+	function handleDoManualStepsButtonClick(): void {
+		onDoManualStepsRequest();
 	}
 	function handleSetInputNodeButtonClick(
 		event: MouseEvent & Readonly<{currentTarget: HTMLButtonElement}>,
@@ -53,6 +61,13 @@
 		event: MouseEvent & Readonly<{currentTarget: HTMLButtonElement}>,
 	): void {
 		onSetOutputNodeRequest({x: event.clientX, y: event.clientY});
+	}
+	function handleModeRadioInputChange(
+		event: Event & Readonly<{currentTarget: HTMLInputElement}>,
+	): void {
+		onSetModeRequest(
+			event.currentTarget.value as SupportedMapperNodeMode["kindName"],
+		);
 	}
 </script>
 
@@ -99,10 +114,69 @@
 		<Canvas image={state.outputImage} />
 	{:else if state instanceof MappingInProgressMapperNodeState}
 		<Canvas image={state.outputImage} />
-		<button onclick={handleDoStepButtonClick}>Do step</button>
+		{#if mode.kindName === "manual"}
+			<button onclick={handleDoManualStepsButtonClick}>Do steps</button>
+		{/if}
 	{:else if state instanceof NoInputImageAndNoMapperMapperNodeState}
 		<p>No input image and no mapper</p>
 	{:else if state instanceof NoInputNodeAndNoMapperMapperNodeState}
 		<p>No input node and no mapper</p>
 	{/if}
+	<fieldset>
+		<legend>Mode</legend>
+		{mode.kindName}
+		<div>
+			<label>
+				<input
+					type="radio"
+					name="{id}-mode"
+					value="manual"
+					checked={mode.kindName === "manual"}
+					onchange={handleModeRadioInputChange}
+				/>
+				Manual
+			</label>
+			<label>
+				<input
+					type="radio"
+					name="{id}-mode"
+					value="animated"
+					checked={mode.kindName === "animated"}
+					onchange={handleModeRadioInputChange}
+				/>
+				Animated
+			</label>
+			<label>
+				<input
+					type="radio"
+					name="{id}-mode"
+					value="instant"
+					checked={mode.kindName === "instant"}
+					onchange={handleModeRadioInputChange}
+				/>
+				Instant
+			</label>
+		</div>
+		{#if mode.kindName === "manual"}
+			<div>
+				<label>
+					Step count:
+					<input type="number" min="1" step="1" value={mode.data.stepCount} />
+				</label>
+			</div>
+		{:else if mode.kindName === "animated"}
+			<div>
+				<label>
+					Interval:
+					<input
+						type="number"
+						min="0.01"
+						step="0.01"
+						value={mode.data.intervalIntervalSeconds}
+					/>
+				</label>
+				<button>Pause/Unpause</button>
+			</div>
+		{/if}
+	</fieldset>
 </section>

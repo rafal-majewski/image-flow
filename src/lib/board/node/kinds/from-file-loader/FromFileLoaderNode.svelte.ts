@@ -16,9 +16,10 @@ export class FromFileLoaderNode extends Node implements InputNode {
 		this.outputNodes = outputNodes;
 		this.state = state;
 	}
-	public outputNodes: readonly OutputNode[] = $state() as readonly OutputNode[];
+	public outputNodes: readonly OutputNode[] =
+		$state.raw() as readonly OutputNode[];
 	public state: SupportedFromFileLoaderNodeState =
-		$state() as SupportedFromFileLoaderNodeState;
+		$state.raw() as SupportedFromFileLoaderNodeState;
 	public readonly status = $derived(this.state.status);
 	public async setFile(file: File): Promise<void> {
 		const loadingInProgressState = this.state.setFile(file, this.outputNodes);

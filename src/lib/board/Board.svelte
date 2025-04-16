@@ -15,6 +15,8 @@
 	import {MapperNode} from "./node/kinds/mapper/MapperNode.svelte.ts";
 	import {FromUrlLoaderNode} from "./node/kinds/from-url-loader/FromUrlLoaderNode.svelte.ts";
 	import {FromFileLoaderNode} from "./node/kinds/from-file-loader/FromFileLoaderNode.svelte.ts";
+	import type {InputNode} from "./node/InputNode.ts";
+	import type {OutputNode} from "./node/OutputNode.ts";
 	let board: HTMLElement;
 	let cameraPosition = $state<Coordinates>({x: 0, y: 0});
 	function computeInBoardPositionFromJustClientPosition(
@@ -221,6 +223,12 @@
 			}
 		}
 	}
+	function handleEdgeDeleteRequest(
+		inputNode: InputNode,
+		outputNode: OutputNode,
+	): void {
+		outputNode.unsetInputNode();
+	}
 </script>
 
 <section
@@ -260,7 +268,11 @@
 				</li>
 				{#each node.outputNodes as outputNode (`${node.id}->${outputNode.id}`)}
 					<li>
-						<EdgeDisplayer sourceNode={node} targetNode={outputNode} />
+						<EdgeDisplayer
+							inputNode={node}
+							{outputNode}
+							onDeleteRequest={handleEdgeDeleteRequest}
+						/>
 					</li>
 				{/each}
 			{/each}
