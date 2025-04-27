@@ -6,7 +6,6 @@
 	import MapperNodeStateDisplayer from "./state/MapperNodeStateDisplayer.svelte";
 	import type {Mapper} from "./mapper/Mapper.ts";
 	import type {SupportedBoardMode} from "../../../mode/SupportedBoardMode.ts";
-	import type {SupportedMapperNodeMode} from "./mode/SupportedMapperNodeMode.ts";
 	const {
 		node,
 		onDeleteRequest,
@@ -34,7 +33,7 @@
 		boardMode: SupportedBoardMode | null;
 	}> = $props();
 	function handleDoManualStepRequest(): void {
-		node.doManualSteps();
+		node.doManualStep();
 	}
 	function handleUnsetMapperRequest(): void {
 		node.unsetMapper();
@@ -42,14 +41,20 @@
 	function handleSetMapperRequest(mapper: Mapper): void {
 		node.setMapper(mapper);
 	}
-	function handleSetInputNodeRequest(mouseClientPosition: Coordinates): void {
+	function handleSetNodeRequest(mouseClientPosition: Coordinates): void {
 		onSetInputNodeRequest(node, mouseClientPosition);
 	}
 	function handleSetOutputNodeRequest(mouseClientPosition: Coordinates): void {
 		onSetOutputNodeRequest(node, mouseClientPosition);
 	}
-	function handleSetMode(mode: SupportedMapperNodeMode["kindName"]): void {
-		node.setMode(mode);
+	function handleMakeManualRequest(): void {
+		node.makeManual();
+	}
+	function handleMakeAnimatedRequest(): void {
+		node.makeAnimated();
+	}
+	function handleMakeInstantRequest(): void {
+		node.makeInstant();
 	}
 </script>
 
@@ -57,14 +62,15 @@
 	<MapperNodeStateDisplayer
 		id={node.id}
 		state={node.state}
-		mode={node.mode}
 		onDoManualStepsRequest={handleDoManualStepRequest}
 		onUnsetMapperRequest={handleUnsetMapperRequest}
 		onSetMapperRequest={handleSetMapperRequest}
 		{boardMode}
-		onSetInputNodeRequest={handleSetInputNodeRequest}
+		onSetNodeRequest={handleSetNodeRequest}
 		onSetOutputNodeRequest={handleSetOutputNodeRequest}
-		onSetModeRequest={handleSetMode}
+		onMakeManualRequest={handleMakeManualRequest}
+		onMakeAnimatedRequest={handleMakeAnimatedRequest}
+		onMakeInstantRequest={handleMakeInstantRequest}
 	/>
 {/snippet}
 

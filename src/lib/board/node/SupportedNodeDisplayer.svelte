@@ -7,7 +7,6 @@
 	import type {SupportedNode} from "./SupportedNode.ts";
 	import type {Node} from "./Node.svelte.ts";
 	import type {SupportedBoardMode} from "../mode/SupportedBoardMode.ts";
-	import type {SupportedInputNode} from "./SupportedInputNode.ts";
 	import type {SupportedOutputNode} from "./SupportedOutputNode.ts";
 	import FromFileLoaderNodeDisplayer from "./kinds/from-file-loader/FromFileLoaderNodeDisplayer.svelte";
 	import {FromFileLoaderNode} from "./kinds/from-file-loader/FromFileLoaderNode.svelte.ts";
@@ -33,7 +32,7 @@
 			mouseClientPosition: Coordinates,
 		) => void;
 		onSetOutputNodeRequest: (
-			targetNode: SupportedInputNode,
+			targetNode: SupportedNode,
 			mouseClientPosition: Coordinates,
 		) => void;
 	}> = $props();

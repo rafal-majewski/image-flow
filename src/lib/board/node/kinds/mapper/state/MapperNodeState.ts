@@ -1,8 +1,8 @@
-import type {InputNode} from "../../../InputNode.ts";
 import type {OutputNode} from "../../../OutputNode.ts";
 import type {NodeStatus} from "../../../status/NodeStatus.ts";
 import type {Mapper} from "../mapper/Mapper.ts";
 import type {MapperNode} from "../MapperNode.svelte.ts";
+import type {Node} from "../../../Node.svelte.ts";
 export abstract class MapperNodeState {
 	public readonly status: NodeStatus;
 	public constructor(status: NodeStatus) {
@@ -10,7 +10,7 @@ export abstract class MapperNodeState {
 	}
 	public abstract setInputNodeWithInputImage(
 		thisNode: MapperNode,
-		inputNode: InputNode,
+		inputNode: Node,
 		inputImage: ImageData,
 		outputNodes: readonly OutputNode[],
 	): MapperNodeState;
@@ -20,7 +20,7 @@ export abstract class MapperNodeState {
 	): MapperNodeState;
 	public abstract setInputNodeWithoutInputImage(
 		thisNode: MapperNode,
-		inputNode: InputNode,
+		inputNode: Node,
 		outputNodes: readonly OutputNode[],
 	): MapperNodeState;
 	public abstract setInputImage(
@@ -37,18 +37,21 @@ export abstract class MapperNodeState {
 	public abstract unsetMapper(
 		outputNodes: readonly OutputNode[],
 	): MapperNodeState;
-	public abstract connectOutputNode(
+	public abstract makeInstant(
+		outputNodes: readonly OutputNode[],
+	): MapperNodeState;
+	public abstract makeManual(
+		stepCount: number,
+		outputNodes: readonly OutputNode[],
+	): MapperNodeState;
+	public abstract makeAnimated(
+		intervalId: ReturnType<typeof setInterval>,
+		intervalIntervalSeconds: number,
+		outputNodes: readonly OutputNode[],
+	): MapperNodeState;
+	public abstract doStep(outputNodes: readonly OutputNode[]): MapperNodeState;
+	public abstract updateOutputNodeAfterAdding(
 		thisNode: MapperNode,
-		outputNodeToAdd: OutputNode,
+		outputNodeToUpdate: OutputNode,
 	): void;
-	public abstract doManualSteps(
-		stepCountLeft: number,
-		outputNodes: readonly OutputNode[],
-	): MapperNodeState;
-	public abstract doAnimatedStep(
-		outputNodes: readonly OutputNode[],
-	): MapperNodeState;
-	public abstract doInstantSteps(
-		outputNodes: readonly OutputNode[],
-	): MapperNodeState;
 }

@@ -2,15 +2,15 @@
 	import type {Coordinates} from "../../../../coordinates/Coordinates.ts";
 	import type {SupportedBoardMode} from "../../../../mode/SupportedBoardMode.ts";
 	import Canvas from "../../../Canvas.svelte";
+	import type {FromFileLoaderNodeState} from "./FromFileLoaderNodeState.ts";
 	import {LoadingSucceededFromFileLoaderNodeState} from "./kinds/loading-succeeded/LoadingSucceededFromFileLoaderNodeState.ts";
-	import type {SupportedFromFileLoaderNodeState} from "./SupportedFromFileLoaderNodeState.ts";
 	const {
 		state,
 		onSetFileRequest,
 		boardMode,
 		onSetOutputNodeRequest,
 	}: Readonly<{
-		state: SupportedFromFileLoaderNodeState;
+		state: FromFileLoaderNodeState;
 		onSetFileRequest: (file: File) => void;
 		boardMode: SupportedBoardMode | null;
 		onSetOutputNodeRequest: (mouseClientPosition: Coordinates) => void;

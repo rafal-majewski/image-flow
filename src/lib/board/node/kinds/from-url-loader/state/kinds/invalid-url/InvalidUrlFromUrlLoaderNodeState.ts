@@ -26,10 +26,10 @@ export class InvalidUrlFromUrlLoaderNodeState extends FromUrlLoaderNodeState {
 	): NoUrlFromUrlLoaderNodeState {
 		return new NoUrlFromUrlLoaderNodeState();
 	}
-	public override connectOutputNode(
+	public override updateOutputNodeAfterAdding(
 		thisNode: FromUrlLoaderNode,
-		outputNodeToConnect: OutputNode,
+		outputNodeToUpdate: OutputNode,
 	): void {
-		outputNodeToConnect.setInputNodeWithoutInputImage(thisNode);
+		outputNodeToUpdate.setInputNodeWithoutInputImage(thisNode);
 	}
 }

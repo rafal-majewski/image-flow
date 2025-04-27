@@ -10,8 +10,8 @@ export abstract class FromFileLoaderNodeState {
 		file: File,
 		outputNodes: readonly OutputNode[],
 	): FromFileLoaderNodeState;
-	public abstract connectOutputNode(
+	public abstract updateOutputNodeAfterAdding(
 		thisNode: FromFileLoaderNode,
-		outputNodeToConnect: OutputNode,
+		outputNodeToUpdate: OutputNode,
 	): void;
 }

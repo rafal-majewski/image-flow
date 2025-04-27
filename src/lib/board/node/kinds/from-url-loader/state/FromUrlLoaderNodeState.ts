@@ -14,8 +14,8 @@ export abstract class FromUrlLoaderNodeState {
 		url: string,
 		outputNodes: readonly OutputNode[],
 	): FromUrlLoaderNodeState;
-	public abstract connectOutputNode(
+	public abstract updateOutputNodeAfterAdding(
 		thisNode: FromUrlLoaderNode,
-		outputNodeToConnect: OutputNode,
+		outputNodeToUpdate: OutputNode,
 	): void;
 }

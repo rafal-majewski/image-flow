@@ -1,23 +1,13 @@
 import type {Coordinates} from "../../../coordinates/Coordinates.ts";
-import type {NodeId} from "../../id/NodeId.ts";
 import type {OutputNode} from "../../OutputNode.ts";
 import {Node} from "../../Node.svelte.ts";
 import {NoFileFromFileLoaderNodeState} from "./state/kinds/no-file/NoFileFromFileLoaderNodeState.ts";
 import type {SupportedFromFileLoaderNodeState} from "./state/SupportedFromFileLoaderNodeState.ts";
-import type {InputNode} from "../../InputNode.ts";
-export class FromFileLoaderNode extends Node implements InputNode {
-	private constructor(
-		id: NodeId,
-		position: Coordinates,
-		outputNodes: readonly OutputNode[],
-		state: SupportedFromFileLoaderNodeState,
-	) {
-		super(id, position);
-		this.outputNodes = outputNodes;
-		this.state = state;
+export class FromFileLoaderNode extends Node {
+	public constructor(position: Coordinates) {
+		super(position);
+		this.state = new NoFileFromFileLoaderNodeState();
 	}
-	public outputNodes: readonly OutputNode[] =
-		$state.raw() as readonly OutputNode[];
 	public state: SupportedFromFileLoaderNodeState =
 		$state.raw() as SupportedFromFileLoaderNodeState;
 	public readonly status = $derived(this.state.status);
@@ -60,29 +50,12 @@ export class FromFileLoaderNode extends Node implements InputNode {
 			}
 		}
 	}
-	public addOutputNode(outputNodeToAdd: OutputNode): void {
-		this.outputNodes = [...this.outputNodes, outputNodeToAdd];
-	}
-	public connectOutputNode(outputNodeToConnect: OutputNode): void {
-		this.state.connectOutputNode(this, outputNodeToConnect);
-	}
-	public static create(id: NodeId, position: Coordinates): FromFileLoaderNode {
-		return new FromFileLoaderNode(
-			id,
-			position,
-			[],
-			new NoFileFromFileLoaderNodeState(),
-		);
+	protected override updateOutputNodeAfterAdding(
+		outputNodeToUpdate: OutputNode,
+	): void {
+		this.state.updateOutputNodeAfterAdding(this, outputNodeToUpdate);
 	}
 	public override disconnect(): void {
-		for (const outputNode of this.outputNodes) {
-			outputNode.unsetInputNode();
-		}
-		this.outputNodes = [];
-	}
-	public deleteOutputNode(outputNodeToDelete: OutputNode): void {
-		this.outputNodes = this.outputNodes.filter(
-			(outputNode) => outputNode !== outputNodeToDelete,
-		);
+		throw new Error("Not implemented.");
 	}
 }

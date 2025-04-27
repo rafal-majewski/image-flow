@@ -19,10 +19,10 @@ export class LoadingSucceededFromFileLoaderNodeState extends FromFileLoaderNodeS
 		}
 		return new LoadingInProgressFromFileLoaderNodeState(newFile);
 	}
-	public override connectOutputNode(
+	public override updateOutputNodeAfterAdding(
 		thisNode: FromFileLoaderNode,
-		outputNodeToConnect: OutputNode,
+		outputNodeToUpdate: OutputNode,
 	): void {
-		outputNodeToConnect.setInputNodeWithInputImage(thisNode, this.image);
+		outputNodeToUpdate.setInputNodeWithInputImage(thisNode, this.image);
 	}
 }

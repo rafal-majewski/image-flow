@@ -38,10 +38,10 @@ export class LoadingSucceededFromUrlLoaderNodeState extends FromUrlLoaderNodeSta
 		}
 		return new NoUrlFromUrlLoaderNodeState();
 	}
-	public override connectOutputNode(
+	public override updateOutputNodeAfterAdding(
 		thisNode: FromUrlLoaderNode,
-		outputNodeToConnect: OutputNode,
+		outputNodeToUpdate: OutputNode,
 	): void {
-		outputNodeToConnect.setInputNodeWithInputImage(thisNode, this.image);
+		outputNodeToUpdate.setInputNodeWithInputImage(thisNode, this.image);
 	}
 }

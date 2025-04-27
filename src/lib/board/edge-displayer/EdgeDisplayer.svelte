@@ -1,15 +1,15 @@
 <script lang="ts">
 	import LineDisplayer from "../line-displayer/LineDisplayer.svelte";
-	import type {InputNode} from "../node/InputNode.ts";
+	import type {Node} from "../node/Node.svelte.ts";
 	import type {OutputNode} from "../node/OutputNode.ts";
 	const {
 		inputNode,
 		outputNode,
 		onDeleteRequest,
 	}: Readonly<{
-		inputNode: InputNode;
+		inputNode: Node;
 		outputNode: OutputNode;
-		onDeleteRequest: (inputNode: InputNode, outputNode: OutputNode) => void;
+		onDeleteRequest: (inputNode: Node, outputNode: OutputNode) => void;
 	}> = $props();
 	function handleDeleteButtonClick() {
 		onDeleteRequest(inputNode, outputNode);

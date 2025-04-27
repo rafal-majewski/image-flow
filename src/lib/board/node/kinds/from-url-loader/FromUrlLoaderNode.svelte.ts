@@ -1,24 +1,14 @@
 import type {Coordinates} from "../../../coordinates/Coordinates.ts";
-import type {InputNode} from "../../InputNode.ts";
 import {Node} from "../../Node.svelte.ts";
 import type {OutputNode} from "../../OutputNode.ts";
-import type {NodeId} from "../../id/NodeId.ts";
 import {checkIfUrlIsValid} from "./checking-if-url-is-valid/checkIfUrlIsValid.ts";
-import type {SupportedFromUrlLoaderNodeState} from "./state/SupportedFromUrlLoaderNodeState.ts";
 import {NoUrlFromUrlLoaderNodeState} from "./state/kinds/no-url/NoUrlFromUrlLoaderNodeState.ts";
-export class FromUrlLoaderNode extends Node implements InputNode {
-	private constructor(
-		id: NodeId,
-		position: Coordinates,
-		outputNodes: readonly OutputNode[],
-		state: SupportedFromUrlLoaderNodeState,
-	) {
-		super(id, position);
-		this.outputNodes = outputNodes;
-		this.state = state;
+import type {SupportedFromUrlLoaderNodeState} from "./state/SupportedFromUrlLoaderNodeState.ts";
+export class FromUrlLoaderNode extends Node {
+	public constructor(position: Coordinates) {
+		super(position);
+		this.state = new NoUrlFromUrlLoaderNodeState();
 	}
-	public outputNodes: readonly OutputNode[] =
-		$state.raw() as readonly OutputNode[];
 	public state: SupportedFromUrlLoaderNodeState =
 		$state.raw() as SupportedFromUrlLoaderNodeState;
 	public readonly status = $derived(this.state.status);
@@ -67,29 +57,12 @@ export class FromUrlLoaderNode extends Node implements InputNode {
 			this.state = this.state.setInvalidUrl(url, this.outputNodes);
 		}
 	}
-	public addOutputNode(outputNodeToAdd: OutputNode): void {
-		this.outputNodes = [...this.outputNodes, outputNodeToAdd];
-	}
-	public connectOutputNode(outputNodeToConnect: OutputNode): void {
-		this.state.connectOutputNode(this, outputNodeToConnect);
-	}
-	public static create(id: NodeId, position: Coordinates): FromUrlLoaderNode {
-		return new FromUrlLoaderNode(
-			id,
-			position,
-			[],
-			new NoUrlFromUrlLoaderNodeState(),
-		);
+	protected override updateOutputNodeAfterAdding(
+		outputNodeToUpdate: OutputNode,
+	): void {
+		this.state.updateOutputNodeAfterAdding(this, outputNodeToUpdate);
 	}
 	public override disconnect(): void {
-		for (const outputNode of this.outputNodes) {
-			outputNode.unsetInputNode();
-		}
-		this.outputNodes = [];
-	}
-	public deleteOutputNode(outputNodeToDelete: OutputNode): void {
-		this.outputNodes = this.outputNodes.filter(
-			(outputNode) => outputNode !== outputNodeToDelete,
-		);
+		throw new Error("Not implemented.");
 	}
 }

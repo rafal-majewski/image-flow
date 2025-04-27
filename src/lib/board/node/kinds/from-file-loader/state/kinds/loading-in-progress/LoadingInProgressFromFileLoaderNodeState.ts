@@ -23,10 +23,10 @@ export class LoadingInProgressFromFileLoaderNodeState extends FromFileLoaderNode
 	): LoadingInProgressFromFileLoaderNodeState {
 		return new LoadingInProgressFromFileLoaderNodeState(newFile);
 	}
-	public override connectOutputNode(
+	public override updateOutputNodeAfterAdding(
 		thisNode: FromFileLoaderNode,
-		outputNodeToConnect: OutputNode,
+		outputNodeToUpdate: OutputNode,
 	): void {
-		outputNodeToConnect.setInputNodeWithoutInputImage(thisNode);
+		outputNodeToUpdate.setInputNodeWithoutInputImage(thisNode);
 	}
 }

@@ -2,21 +2,18 @@
 	import {computeInBoardPositionFromClientPosition} from "./computing-in-board-position-from-client-position/computeInBoardPositionFromClientPosition.ts";
 	import type {Coordinates} from "./coordinates/Coordinates.ts";
 	import EdgeDisplayer from "./edge-displayer/EdgeDisplayer.svelte";
-	import type {SupportedNodeCreator} from "./node/SupportedNodeCreator.ts";
 	import Menu from "./main/Menu.svelte";
-	import type {SupportedNode} from "./node/SupportedNode.ts";
-	import {generateNodeId} from "./node/id/generation/generateNodeId.ts";
 	import type {SupportedBoardMode} from "./mode/SupportedBoardMode.ts";
 	import LineDisplayer from "./line-displayer/LineDisplayer.svelte";
 	import SupportedNodeDisplayer from "./node/SupportedNodeDisplayer.svelte";
 	import type {Node} from "./node/Node.svelte.ts";
 	import type {SupportedOutputNode} from "./node/SupportedOutputNode.ts";
-	import type {SupportedInputNode} from "./node/SupportedInputNode.ts";
+	import type {SupportedNode} from "./node/SupportedNode.ts";
 	import {MapperNode} from "./node/kinds/mapper/MapperNode.svelte.ts";
 	import {FromUrlLoaderNode} from "./node/kinds/from-url-loader/FromUrlLoaderNode.svelte.ts";
 	import {FromFileLoaderNode} from "./node/kinds/from-file-loader/FromFileLoaderNode.svelte.ts";
-	import type {InputNode} from "./node/InputNode.ts";
 	import type {OutputNode} from "./node/OutputNode.ts";
+	import type {SupportedNodeClass} from "./node/SupportedNodeClass.ts";
 	let board: HTMLElement;
 	let cameraPosition = $state<Coordinates>({x: 0, y: 0});
 	function computeInBoardPositionFromJustClientPosition(
@@ -32,21 +29,21 @@
 	let nodes = $state.raw<readonly SupportedNode[]>([]);
 	let mode = $state.raw<null | SupportedBoardMode>(null);
 	$inspect(mode);
-	function handleAddNodeRequest(newNodeCreator: SupportedNodeCreator): void {
+	function handleAddNodeRequest(newNodeClass: SupportedNodeClass): void {
 		if (mode !== null && mode.kindName === "addingNode") {
-			const newNode = newNodeCreator(generateNodeId(), mode.data.position);
+			const newNode = new newNodeClass(mode.data.position);
 			nodes = [...nodes, newNode];
 			mode = null;
 		}
 	}
 	function handleAddMapperNodeRequest(): void {
-		handleAddNodeRequest(MapperNode.create);
+		handleAddNodeRequest(MapperNode);
 	}
 	function handleAddFromUrlLoaderNodeRequest(): void {
-		handleAddNodeRequest(FromUrlLoaderNode.create);
+		handleAddNodeRequest(FromUrlLoaderNode);
 	}
 	function handleAddFromFileLoaderNodeRequest(): void {
-		handleAddNodeRequest(FromFileLoaderNode.create);
+		handleAddNodeRequest(FromFileLoaderNode);
 	}
 	function handleContextMenuOpen(event: MouseEvent): void {
 		if (event.target === board && mode === null) {
@@ -154,7 +151,7 @@
 		}
 	}
 	function handleSetOutputNodeToNodeRequest(
-		nodeInRequest: SupportedInputNode,
+		nodeInRequest: SupportedNode,
 		clientPosition: Coordinates,
 	): void {
 		if (mode === null) {
@@ -167,8 +164,7 @@
 				},
 			};
 		} else if (mode.kindName === "settingInputNode") {
-			nodeInRequest.addOutputNode(mode.data.targetNode);
-			nodeInRequest.connectOutputNode(mode.data.targetNode);
+			nodeInRequest.addAndUpdateOutputNode(mode.data.targetNode);
 			mode = null;
 		}
 	}
@@ -186,8 +182,7 @@
 				},
 			};
 		} else if (mode.kindName === "settingOutputNode") {
-			mode.data.sourceNode.addOutputNode(nodeInRequest);
-			mode.data.sourceNode.connectOutputNode(nodeInRequest);
+			mode.data.sourceNode.addAndUpdateOutputNode(nodeInRequest);
 			mode = null;
 		}
 	}
@@ -224,7 +219,7 @@
 		}
 	}
 	function handleEdgeDeleteRequest(
-		inputNode: InputNode,
+		inputNode: Node,
 		outputNode: OutputNode,
 	): void {
 		outputNode.unsetInputNode();
