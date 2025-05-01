@@ -3,76 +3,89 @@ import type {Node} from "../../../../../Node.svelte.ts";
 import type {Mapper} from "../../../mapper/Mapper.ts";
 import type {MapperNode} from "../../../MapperNode.svelte.ts";
 import {MapperNodeState} from "../../MapperNodeState.ts";
+import {ManualNoMapperMapperNodeState} from "../manual-no-mapper/ManualNoMapperMapperNodeState.ts";
+import {ManualNoInputNodeMapperNodeState} from "../manual-no-input-node/ManualNoInputNodeMapperNodeState.ts";
+import {ManualNoInputNodeImageAndNoMapperMapperNodeState} from "../manual-no-input-node-image-and-no-mapper/ManualNoInputNodeImageAndNoMapperMapperNodeState.ts";
+import {InstantNoInputNodeAndNoMapperMapperNodeState} from "../instant-no-input-node-and-no-mapper/InstantNoInputNodeAndNoMapperMapperNodeState.ts";
+import {AnimatedNoInputNodeAndNoMapperMapperNodeState} from "../animated-no-input-node-and-no-mapper/AnimatedNoInputNodeAndNoMapperMapperNodeState.ts";
 export class ManualNoInputNodeAndNoMapperMapperNodeState extends MapperNodeState {
 	public override setInputNodeWithImage(
 		thisNode: MapperNode,
 		inputNode: Node,
 		inputNodeImage: ImageData,
 		outputNodes: readonly OutputNode[],
-	): MapperNodeState {
-		throw new Error("Method not implemented.");
+	): ManualNoMapperMapperNodeState {
+		return new ManualNoMapperMapperNodeState(
+			inputNode,
+			inputNodeImage,
+			this.stepCount,
+		);
 	}
 	public override setMapper(
 		mapper: Mapper,
 		outputNodes: readonly OutputNode[],
-	): MapperNodeState {
-		throw new Error("Method not implemented.");
+	): ManualNoInputNodeMapperNodeState {
+		return new ManualNoInputNodeMapperNodeState(mapper, this.stepCount);
 	}
 	public override setInputNodeWithoutImage(
 		thisNode: MapperNode,
 		inputNode: Node,
 		outputNodes: readonly OutputNode[],
-	): MapperNodeState {
-		throw new Error("Method not implemented.");
+	): ManualNoInputNodeImageAndNoMapperMapperNodeState {
+		return new ManualNoInputNodeImageAndNoMapperMapperNodeState(
+			inputNode,
+			this.stepCount,
+		);
 	}
 	public override setInputNodeImage(
 		inputNodeImage: ImageData,
 		outputNodes: readonly OutputNode[],
-	): MapperNodeState {
-		throw new Error("Method not implemented.");
+	): this {
+		return this;
 	}
 	public override unsetInputNode(
 		thisNode: MapperNode,
 		outputNodes: readonly OutputNode[],
-	): MapperNodeState {
-		throw new Error("Method not implemented.");
+	): this {
+		return this;
 	}
 	public override unsetInputNodeImage(
 		outputNodes: readonly OutputNode[],
-	): MapperNodeState {
-		throw new Error("Method not implemented.");
+	): this {
+		return this;
 	}
-	public override unsetMapper(
-		outputNodes: readonly OutputNode[],
-	): MapperNodeState {
-		throw new Error("Method not implemented.");
+	public override unsetMapper(outputNodes: readonly OutputNode[]): this {
+		return this;
 	}
 	public override makeInstant(
 		outputNodes: readonly OutputNode[],
-	): MapperNodeState {
-		throw new Error("Method not implemented.");
+	): InstantNoInputNodeAndNoMapperMapperNodeState {
+		return new InstantNoInputNodeAndNoMapperMapperNodeState();
 	}
 	public override makeManual(
 		newStepCount: number,
 		outputNodes: readonly OutputNode[],
-	): MapperNodeState {
-		throw new Error("Method not implemented.");
+	): ManualNoInputNodeAndNoMapperMapperNodeState {
+		return new ManualNoInputNodeAndNoMapperMapperNodeState(newStepCount);
 	}
 	public override makeAnimated(
 		intervalId: ReturnType<typeof setInterval>,
 		intervalIntervalSeconds: number,
 		outputNodes: readonly OutputNode[],
-	): MapperNodeState {
-		throw new Error("Method not implemented.");
+	): AnimatedNoInputNodeAndNoMapperMapperNodeState {
+		return new AnimatedNoInputNodeAndNoMapperMapperNodeState(
+			intervalId,
+			intervalIntervalSeconds,
+		);
 	}
-	public override doStep(outputNodes: readonly OutputNode[]): MapperNodeState {
-		throw new Error("Method not implemented.");
+	public override doStep(outputNodes: readonly OutputNode[]): this {
+		return this;
 	}
 	public override updateOutputNodeAfterAdding(
 		thisNode: MapperNode,
 		outputNodeToUpdate: OutputNode,
 	): void {
-		throw new Error("Method not implemented.");
+		outputNodeToUpdate.setInputNodeWithoutImage(thisNode);
 	}
 	public constructor(stepCount: number) {
 		super("unconfigured");

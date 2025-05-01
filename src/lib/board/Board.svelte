@@ -64,15 +64,19 @@
 			switch (mode.kindName) {
 				case "movingCamera": {
 					cameraPosition = {
-						x: cameraPosition.x - event.movementX,
-						y: cameraPosition.y - event.movementY,
+						x: cameraPosition.x - event.movementX / window.devicePixelRatio,
+						y: cameraPosition.y - event.movementY / window.devicePixelRatio,
 					};
 					break;
 				}
 				case "movingNode": {
 					mode.data.node.position = {
-						x: mode.data.node.position.x + event.movementX,
-						y: mode.data.node.position.y + event.movementY,
+						x:
+							mode.data.node.position.x
+							+ event.movementX / window.devicePixelRatio,
+						y:
+							mode.data.node.position.y
+							+ event.movementY / window.devicePixelRatio,
 					};
 					break;
 				}

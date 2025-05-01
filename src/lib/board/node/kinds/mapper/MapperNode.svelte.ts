@@ -39,6 +39,7 @@ export class MapperNode extends Node implements OutputNode {
 		this.state = this.state.unsetMapper(this.outputNodes);
 	}
 	public setMapper(mapper: Mapper): void {
+		debugger;
 		this.state = this.state.setMapper(mapper, this.outputNodes);
 	}
 	public unsetInputNode(): void {
