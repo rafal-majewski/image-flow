@@ -17,7 +17,7 @@ export class LoadingSucceededFromUrlLoaderNodeState extends FromUrlLoaderNodeSta
 		outputNodes: readonly OutputNode[],
 	): LoadingInProgressFromUrlLoaderNodeState {
 		for (const outputNode of outputNodes) {
-			outputNode.unsetInputImage();
+			outputNode.unsetInputNodeImage();
 		}
 		return new LoadingInProgressFromUrlLoaderNodeState(newUrl);
 	}
@@ -26,7 +26,7 @@ export class LoadingSucceededFromUrlLoaderNodeState extends FromUrlLoaderNodeSta
 		outputNodes: readonly OutputNode[],
 	): InvalidUrlFromUrlLoaderNodeState {
 		for (const outputNode of outputNodes) {
-			outputNode.unsetInputImage();
+			outputNode.unsetInputNodeImage();
 		}
 		return new InvalidUrlFromUrlLoaderNodeState(newUrl);
 	}
@@ -34,7 +34,7 @@ export class LoadingSucceededFromUrlLoaderNodeState extends FromUrlLoaderNodeSta
 		outputNodes: readonly OutputNode[],
 	): NoUrlFromUrlLoaderNodeState {
 		for (const outputNode of outputNodes) {
-			outputNode.unsetInputImage();
+			outputNode.unsetInputNodeImage();
 		}
 		return new NoUrlFromUrlLoaderNodeState();
 	}
@@ -42,6 +42,6 @@ export class LoadingSucceededFromUrlLoaderNodeState extends FromUrlLoaderNodeSta
 		thisNode: FromUrlLoaderNode,
 		outputNodeToUpdate: OutputNode,
 	): void {
-		outputNodeToUpdate.setInputNodeWithInputImage(thisNode, this.image);
+		outputNodeToUpdate.setInputNodeWithImage(thisNode, this.image);
 	}
 }

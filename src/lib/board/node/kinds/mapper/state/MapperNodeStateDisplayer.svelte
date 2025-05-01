@@ -6,26 +6,26 @@
 	import type {NodeId} from "../../../id/NodeId.ts";
 	import type {Mapper} from "../mapper/Mapper.ts";
 	import type {MapperNodeState} from "./MapperNodeState.ts";
-	import {ManualNoInputImageMapperNodeState} from "./kinds/manual-no-input-image/ManualNoInputImageMapperNodeState.ts";
 	import {ManualNoInputNodeMapperNodeState} from "./kinds/manual-no-input-node/ManualNoInputNodeMapperNodeState.ts";
 	import {InstantNoInputNodeMapperNodeState} from "./kinds/instant-no-input-node/InstantNoInputNodeMapperNodeState.ts";
 	import {ManualMappingSucceededMapperNodeState} from "./kinds/manual-mapping-succeeded/ManualMappingSucceededMapperNodeState.ts";
 	import {ManualNoMapperMapperNodeState} from "./kinds/manual-no-mapper/ManualNoMapperMapperNodeState.ts";
 	import {InstantNoMapperMapperNodeState} from "./kinds/instant-no-mapper/InstantNoMapperMapperNodeState.ts";
 	import {InstantMappingSucceededMapperNodeState} from "./kinds/instant-mapping-succeeded/InstantMappingSucceededMapperNodeState.ts";
-	import {InstantNoInputImageMapperNodeState} from "./kinds/instant-no-input-image/InstantNoInputImageMapperNodeState.ts";
-	import {ManualMappingInProgressMapperNodeState} from "./kinds/manual-mapping-in-progress/ManualMappingInProgressMapperNodeState.ts";
-	import {ManualNoInputImageAndNoMapperMapperNodeState} from "./kinds/manual-no-input-image-and-no-mapper/ManualNoInputImageAndNoMapperMapperNodeState.ts";
-	import {ManualNoInputNodeAndNoMapperMapperNodeState} from "./kinds/manual-no-input-node-and-no-mapper/ManualNoInputNodeAndNoMapperMapperNodeState.ts";
-	import {InstantNoInputImageAndNoMapperMapperNodeState} from "./kinds/instant-no-input-image-and-no-mapper/InstantNoInputImageAndNoMapperMapperNodeState.ts";
-	import {InstantNoInputNodeAndNoMapperMapperNodeState} from "./kinds/instant-no-input-node-and-no-mapper/InstantNoInputNodeAndNoMapperMapperNodeState.ts";
-	import {AnimatedMappingInProgressMapperNodeState} from "./kinds/animated-mapping-in-progress/AnimatedMappingInProgressMapperNodeState.ts";
-	import {AnimatedMappingSucceededMapperNodeState} from "./kinds/animated-mapping-succeeded/AnimatedMappingSucceededMapperNodeState.ts";
-	import {AnimatedNoInputImageMapperNodeState} from "./kinds/animated-no-input-image/AnimatedNoInputImageMapperNodeState.ts";
-	import {AnimatedNoInputNodeMapperNodeState} from "./kinds/animated-no-input-node/AnimatedNoInputNodeMapperNodeState.ts";
-	import {AnimatedNoInputImageAndNoMapperMapperNodeState} from "./kinds/animated-no-input-image-and-no-mapper/AnimatedNoInputImageAndNoMapperMapperNodeState.ts";
 	import {AnimatedNoInputNodeAndNoMapperMapperNodeState} from "./kinds/animated-no-input-node-and-no-mapper/AnimatedNoInputNodeAndNoMapperMapperNodeState.ts";
 	import {AnimatedNoMapperMapperNodeState} from "./kinds/animated-no-mapper/AnimatedNoMapperMapperNodeState.ts";
+	import {AnimatedMappingInProgressMapperNodeState} from "./kinds/animated-mapping-in-progress/AnimatedMappingInProgressMapperNodeState.ts";
+	import {AnimatedMappingSucceededMapperNodeState} from "./kinds/animated-mapping-succeeded/AnimatedMappingSucceededMapperNodeState.ts";
+	import {AnimatedNoInputNodeImageAndNoMapperMapperNodeState} from "./kinds/animated-no-input-node-image-and-no-mapper/AnimatedNoInputNodeImageAndNoMapperMapperNodeState.ts";
+	import {AnimatedNoInputNodeImageMapperNodeState} from "./kinds/animated-no-input-node-image/AnimatedNoInputNodeImageMapperNodeState.ts";
+	import {AnimatedNoInputNodeMapperNodeState} from "./kinds/animated-no-input-node/AnimatedNoInputNodeMapperNodeState.ts";
+	import {InstantNoInputNodeAndNoMapperMapperNodeState} from "./kinds/instant-no-input-node-and-no-mapper/InstantNoInputNodeAndNoMapperMapperNodeState.ts";
+	import {InstantNoInputNodeImageAndNoMapperMapperNodeState} from "./kinds/instant-no-input-node-image-and-no-mapper/InstantNoInputNodeImageAndNoMapperMapperNodeState.ts";
+	import {InstantNoInputNodeImageMapperNodeState} from "./kinds/instant-no-input-node-image/InstantNoInputNodeImageMapperNodeState.ts";
+	import {ManualMappingInProgressMapperNodeState} from "./kinds/manual-mapping-in-progress/ManualMappingInProgressMapperNodeState.ts";
+	import {ManualNoInputNodeAndNoMapperMapperNodeState} from "./kinds/manual-no-input-node-and-no-mapper/ManualNoInputNodeAndNoMapperMapperNodeState.ts";
+	import {ManualNoInputNodeImageAndNoMapperMapperNodeState} from "./kinds/manual-no-input-node-image-and-no-mapper/ManualNoInputNodeImageAndNoMapperMapperNodeState.ts";
+	import {ManualNoInputNodeImageMapperNodeState} from "./kinds/manual-no-input-node-image/ManualNoInputNodeImageMapperNodeState.ts";
 	const {
 		state,
 		onDoManualStepsRequest,
@@ -92,13 +92,14 @@
 	<select onchange={handleSelectChange}>
 		<option
 			value="none"
-			selected={state instanceof AnimatedNoInputImageAndNoMapperMapperNodeState
+			selected={state
+				instanceof AnimatedNoInputNodeImageAndNoMapperMapperNodeState
 				|| state instanceof AnimatedNoInputNodeAndNoMapperMapperNodeState
 				|| state instanceof AnimatedNoMapperMapperNodeState
-				|| state instanceof InstantNoInputImageAndNoMapperMapperNodeState
+				|| state instanceof InstantNoInputNodeImageAndNoMapperMapperNodeState
 				|| state instanceof InstantNoInputNodeAndNoMapperMapperNodeState
 				|| state instanceof InstantNoMapperMapperNodeState
-				|| state instanceof ManualNoInputImageAndNoMapperMapperNodeState
+				|| state instanceof ManualNoInputNodeImageAndNoMapperMapperNodeState
 				|| state instanceof ManualNoInputNodeAndNoMapperMapperNodeState
 				|| state instanceof ManualNoMapperMapperNodeState}>No mapper</option
 		>
@@ -107,20 +108,20 @@
 				value={mapper.id}
 				selected={(state instanceof AnimatedMappingInProgressMapperNodeState
 					|| state instanceof AnimatedMappingSucceededMapperNodeState
-					|| state instanceof AnimatedNoInputImageMapperNodeState
+					|| state instanceof AnimatedNoInputNodeImageMapperNodeState
 					|| state instanceof AnimatedNoInputNodeMapperNodeState
 					|| state instanceof InstantMappingSucceededMapperNodeState
-					|| state instanceof InstantNoInputImageMapperNodeState
+					|| state instanceof InstantNoInputNodeImageMapperNodeState
 					|| state instanceof InstantNoInputNodeMapperNodeState
 					|| state instanceof ManualMappingInProgressMapperNodeState
 					|| state instanceof ManualMappingSucceededMapperNodeState
-					|| state instanceof ManualNoInputImageMapperNodeState
+					|| state instanceof ManualNoInputNodeImageMapperNodeState
 					|| state instanceof ManualNoInputNodeMapperNodeState)
 					&& state.mapper.id === mapper.id}>{mapper.name}</option
 			>
 		{/each}
 	</select>
-	{#if state instanceof AnimatedNoInputImageMapperNodeState || state instanceof InstantNoInputImageMapperNodeState || state instanceof ManualNoInputImageMapperNodeState}
+	{#if state instanceof AnimatedNoInputNodeImageMapperNodeState || state instanceof InstantNoInputNodeImageMapperNodeState || state instanceof ManualNoInputNodeImageMapperNodeState}
 		<p>No input image</p>
 	{:else if state instanceof AnimatedNoInputNodeMapperNodeState || state instanceof InstantNoInputNodeMapperNodeState || state instanceof ManualNoInputNodeMapperNodeState}
 		<p>No input node</p>
@@ -128,7 +129,7 @@
 		<p>No mapper</p>
 	{:else if state instanceof AnimatedMappingInProgressMapperNodeState || state instanceof AnimatedMappingSucceededMapperNodeState || state instanceof InstantMappingSucceededMapperNodeState || state instanceof ManualMappingInProgressMapperNodeState || state instanceof ManualMappingSucceededMapperNodeState}
 		<Canvas image={state.outputImage} />
-	{:else if state instanceof AnimatedNoInputImageAndNoMapperMapperNodeState || state instanceof InstantNoInputImageAndNoMapperMapperNodeState || state instanceof ManualNoInputImageAndNoMapperMapperNodeState}
+	{:else if state instanceof AnimatedNoInputNodeImageAndNoMapperMapperNodeState || state instanceof InstantNoInputNodeImageAndNoMapperMapperNodeState || state instanceof ManualNoInputNodeImageAndNoMapperMapperNodeState}
 		<p>No input image and no mapper</p>
 	{:else if state instanceof AnimatedNoInputNodeAndNoMapperMapperNodeState || state instanceof InstantNoInputNodeAndNoMapperMapperNodeState || state instanceof ManualNoInputNodeAndNoMapperMapperNodeState}
 		<p>No input node and no mapper</p>
@@ -143,13 +144,13 @@
 					value="manual"
 					checked={state instanceof ManualMappingInProgressMapperNodeState
 						|| state instanceof ManualMappingSucceededMapperNodeState
-						|| state instanceof ManualNoInputImageAndNoMapperMapperNodeState
-						|| state instanceof ManualNoInputImageMapperNodeState
+						|| state instanceof ManualNoInputNodeImageAndNoMapperMapperNodeState
+						|| state instanceof ManualNoInputNodeImageMapperNodeState
 						|| state instanceof ManualNoInputNodeAndNoMapperMapperNodeState
 						|| state instanceof ManualNoInputNodeMapperNodeState
 						|| state instanceof ManualNoMapperMapperNodeState}
 					onchange={onMakeManualRequest}
-				/>Manual{#if state instanceof ManualMappingInProgressMapperNodeState || state instanceof ManualMappingSucceededMapperNodeState || state instanceof ManualNoInputImageAndNoMapperMapperNodeState || state instanceof ManualNoInputImageMapperNodeState || state instanceof ManualNoInputNodeAndNoMapperMapperNodeState || state instanceof ManualNoInputNodeMapperNodeState || state instanceof ManualNoMapperMapperNodeState}
+				/>Manual{#if state instanceof ManualMappingInProgressMapperNodeState || state instanceof ManualMappingSucceededMapperNodeState || state instanceof ManualNoInputNodeImageAndNoMapperMapperNodeState || state instanceof ManualNoInputNodeImageMapperNodeState || state instanceof ManualNoInputNodeAndNoMapperMapperNodeState || state instanceof ManualNoInputNodeMapperNodeState || state instanceof ManualNoMapperMapperNodeState}
 					<div>
 						<label
 							>Step count:<input
@@ -170,13 +171,14 @@
 					value="animated"
 					checked={state instanceof AnimatedMappingInProgressMapperNodeState
 						|| state instanceof AnimatedMappingSucceededMapperNodeState
-						|| state instanceof AnimatedNoInputImageAndNoMapperMapperNodeState
-						|| state instanceof AnimatedNoInputImageMapperNodeState
+						|| state
+							instanceof AnimatedNoInputNodeImageAndNoMapperMapperNodeState
+						|| state instanceof AnimatedNoInputNodeImageMapperNodeState
 						|| state instanceof AnimatedNoInputNodeAndNoMapperMapperNodeState
 						|| state instanceof AnimatedNoInputNodeMapperNodeState
 						|| state instanceof AnimatedNoMapperMapperNodeState}
 					onchange={onMakeAnimatedRequest}
-				/>Animated{#if state instanceof AnimatedMappingInProgressMapperNodeState || state instanceof AnimatedMappingSucceededMapperNodeState || state instanceof AnimatedNoInputImageAndNoMapperMapperNodeState || state instanceof AnimatedNoInputImageMapperNodeState || state instanceof AnimatedNoInputNodeAndNoMapperMapperNodeState || state instanceof AnimatedNoInputNodeMapperNodeState || state instanceof AnimatedNoMapperMapperNodeState}
+				/>Animated{#if state instanceof AnimatedMappingInProgressMapperNodeState || state instanceof AnimatedMappingSucceededMapperNodeState || state instanceof AnimatedNoInputNodeImageAndNoMapperMapperNodeState || state instanceof AnimatedNoInputNodeImageMapperNodeState || state instanceof AnimatedNoInputNodeAndNoMapperMapperNodeState || state instanceof AnimatedNoInputNodeMapperNodeState || state instanceof AnimatedNoMapperMapperNodeState}
 					<div>
 						<label
 							>Interval:<input
@@ -196,8 +198,9 @@
 					name="{id}-mode"
 					value="instant"
 					checked={state instanceof InstantMappingSucceededMapperNodeState
-						|| state instanceof InstantNoInputImageAndNoMapperMapperNodeState
-						|| state instanceof InstantNoInputImageMapperNodeState
+						|| state
+							instanceof InstantNoInputNodeImageAndNoMapperMapperNodeState
+						|| state instanceof InstantNoInputNodeImageMapperNodeState
 						|| state instanceof InstantNoInputNodeAndNoMapperMapperNodeState
 						|| state instanceof InstantNoInputNodeMapperNodeState
 						|| state instanceof InstantNoMapperMapperNodeState}

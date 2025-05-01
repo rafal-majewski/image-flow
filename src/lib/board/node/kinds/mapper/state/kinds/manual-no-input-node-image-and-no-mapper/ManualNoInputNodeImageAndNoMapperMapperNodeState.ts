@@ -3,11 +3,11 @@ import type {Mapper} from "../../../mapper/Mapper.ts";
 import type {MapperNode} from "../../../MapperNode.svelte.ts";
 import {MapperNodeState} from "../../MapperNodeState.ts";
 import type {Node} from "../../../../../Node.svelte.ts";
-export class ManualNoInputImageMapperNodeState extends MapperNodeState {
-	public override setInputNodeWithInputImage(
+export class ManualNoInputNodeImageAndNoMapperMapperNodeState extends MapperNodeState {
+	public override setInputNodeWithImage(
 		thisNode: MapperNode,
 		inputNode: Node,
-		inputImage: ImageData,
+		inputNodeImage: ImageData,
 		outputNodes: readonly OutputNode[],
 	): MapperNodeState {
 		throw new Error("Method not implemented.");
@@ -18,15 +18,15 @@ export class ManualNoInputImageMapperNodeState extends MapperNodeState {
 	): MapperNodeState {
 		throw new Error("Method not implemented.");
 	}
-	public override setInputNodeWithoutInputImage(
+	public override setInputNodeWithoutImage(
 		thisNode: MapperNode,
 		inputNode: Node,
 		outputNodes: readonly OutputNode[],
 	): MapperNodeState {
 		throw new Error("Method not implemented.");
 	}
-	public override setInputImage(
-		inputImage: ImageData,
+	public override setInputNodeImage(
+		inputNodeImage: ImageData,
 		outputNodes: readonly OutputNode[],
 	): MapperNodeState {
 		throw new Error("Method not implemented.");
@@ -37,7 +37,7 @@ export class ManualNoInputImageMapperNodeState extends MapperNodeState {
 	): MapperNodeState {
 		throw new Error("Method not implemented.");
 	}
-	public override unsetInputImage(
+	public override unsetInputNodeImage(
 		outputNodes: readonly OutputNode[],
 	): MapperNodeState {
 		throw new Error("Method not implemented.");
@@ -74,13 +74,11 @@ export class ManualNoInputImageMapperNodeState extends MapperNodeState {
 	): void {
 		throw new Error("Method not implemented.");
 	}
-	public readonly mapper: Mapper;
-	private readonly inputNode: Node;
-	public constructor(inputNode: Node, mapper: Mapper, stepCount: number) {
-		super("idling");
+	public constructor(inputNode: Node, stepCount: number) {
+		super("unconfigured");
 		this.inputNode = inputNode;
-		this.mapper = mapper;
 		this.stepCount = stepCount;
 	}
+	private readonly inputNode: Node;
 	public readonly stepCount: number;
 }

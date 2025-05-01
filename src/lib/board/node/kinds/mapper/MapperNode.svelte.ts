@@ -44,29 +44,26 @@ export class MapperNode extends Node implements OutputNode {
 	public unsetInputNode(): void {
 		this.state = this.state.unsetInputNode(this, this.outputNodes);
 	}
-	public unsetInputImage(): void {
-		this.state = this.state.unsetInputImage(this.outputNodes);
+	public unsetInputNodeImage(): void {
+		this.state = this.state.unsetInputNodeImage(this.outputNodes);
 	}
-	public setInputNodeWithInputImage(
-		inputNode: Node,
-		inputImage: ImageData,
-	): void {
-		this.state = this.state.setInputNodeWithInputImage(
+	public setInputNodeWithImage(inputNode: Node, inputImage: ImageData): void {
+		this.state = this.state.setInputNodeWithImage(
 			this,
 			inputNode,
 			inputImage,
 			this.outputNodes,
 		);
 	}
-	public setInputNodeWithoutInputImage(inputNode: SupportedNode): void {
-		this.state = this.state.setInputNodeWithoutInputImage(
+	public setInputNodeWithoutImage(inputNode: SupportedNode): void {
+		this.state = this.state.setInputNodeWithoutImage(
 			this,
 			inputNode,
 			this.outputNodes,
 		);
 	}
-	public setInputImage(inputImage: ImageData): void {
-		this.state = this.state.setInputImage(inputImage, this.outputNodes);
+	public setInputNodeImage(inputImage: ImageData): void {
+		this.state = this.state.setInputNodeImage(inputImage, this.outputNodes);
 	}
 	protected override updateOutputNodeAfterAdding(
 		outputNodeToUpdate: OutputNode,

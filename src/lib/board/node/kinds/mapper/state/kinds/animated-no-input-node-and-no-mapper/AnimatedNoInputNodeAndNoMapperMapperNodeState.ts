@@ -3,80 +3,98 @@ import type {Node} from "../../../../../Node.svelte.ts";
 import type {Mapper} from "../../../mapper/Mapper.ts";
 import type {MapperNode} from "../../../MapperNode.svelte.ts";
 import {MapperNodeState} from "../../MapperNodeState.ts";
-import {AnimatedNoInputImageAndNoMapperMapperNodeState} from "../animated-no-input-image-and-no-mapper/AnimatedNoInputImageAndNoMapperMapperNodeState.ts";
 import {InstantNoInputNodeAndNoMapperMapperNodeState} from "../instant-no-input-node-and-no-mapper/InstantNoInputNodeAndNoMapperMapperNodeState.ts";
 import {AnimatedNoInputNodeMapperNodeState} from "../animated-no-input-node/AnimatedNoInputNodeMapperNodeState.ts";
 import {AnimatedNoMapperMapperNodeState} from "../animated-no-mapper/AnimatedNoMapperMapperNodeState.ts";
+import {ManualNoInputNodeAndNoMapperMapperNodeState} from "../manual-no-input-node-and-no-mapper/ManualNoInputNodeAndNoMapperMapperNodeState.ts";
+import {AnimatedNoInputNodeImageAndNoMapperMapperNodeState} from "../animated-no-input-node-image-and-no-mapper/AnimatedNoInputNodeImageAndNoMapperMapperNodeState.ts";
 export class AnimatedNoInputNodeAndNoMapperMapperNodeState extends MapperNodeState {
-	public override setInputNodeWithInputImage(
+	public override setInputNodeWithImage(
 		thisNode: MapperNode,
 		inputNode: Node,
-		inputImage: ImageData,
+		inputNodeImage: ImageData,
 		outputNodes: readonly OutputNode[],
-	): MapperNodeState {
-		throw new Error("Method not implemented.");
+	): AnimatedNoMapperMapperNodeState {
+		return new AnimatedNoMapperMapperNodeState(
+			inputNode,
+			inputNodeImage,
+			this.intervalId,
+			this.intervalIntervalSeconds,
+		);
 	}
 	public override setMapper(
 		mapper: Mapper,
 		outputNodes: readonly OutputNode[],
-	): MapperNodeState {
-		throw new Error("Method not implemented.");
+	): AnimatedNoInputNodeMapperNodeState {
+		return new AnimatedNoInputNodeMapperNodeState(
+			this.intervalId,
+			this.intervalIntervalSeconds,
+			mapper,
+		);
 	}
-	public override setInputNodeWithoutInputImage(
+	public override setInputNodeWithoutImage(
 		thisNode: MapperNode,
 		inputNode: Node,
 		outputNodes: readonly OutputNode[],
-	): MapperNodeState {
-		throw new Error("Method not implemented.");
+	): AnimatedNoInputNodeImageAndNoMapperMapperNodeState {
+		return new AnimatedNoInputNodeImageAndNoMapperMapperNodeState(
+			inputNode,
+			this.intervalId,
+			this.intervalIntervalSeconds,
+		);
 	}
-	public override setInputImage(
-		inputImage: ImageData,
+	public override setInputNodeImage(
+		inputNodeImage: ImageData,
 		outputNodes: readonly OutputNode[],
-	): MapperNodeState {
-		throw new Error("Method not implemented.");
+	): this {
+		return this;
 	}
 	public override unsetInputNode(
 		thisNode: MapperNode,
 		outputNodes: readonly OutputNode[],
-	): MapperNodeState {
-		throw new Error("Method not implemented.");
+	): this {
+		return this;
 	}
-	public override unsetInputImage(
+	public override unsetInputNodeImage(
 		outputNodes: readonly OutputNode[],
-	): MapperNodeState {
-		throw new Error("Method not implemented.");
+	): this {
+		return this;
 	}
-	public override unsetMapper(
-		outputNodes: readonly OutputNode[],
-	): MapperNodeState {
-		throw new Error("Method not implemented.");
+	public override unsetMapper(outputNodes: readonly OutputNode[]): this {
+		return this;
 	}
 	public override makeInstant(
 		outputNodes: readonly OutputNode[],
-	): MapperNodeState {
-		throw new Error("Method not implemented.");
+	): InstantNoInputNodeAndNoMapperMapperNodeState {
+		clearInterval(this.intervalId);
+		return new InstantNoInputNodeAndNoMapperMapperNodeState();
 	}
 	public override makeManual(
 		stepCount: number,
 		outputNodes: readonly OutputNode[],
-	): MapperNodeState {
-		throw new Error("Method not implemented.");
+	): ManualNoInputNodeAndNoMapperMapperNodeState {
+		clearInterval(this.intervalId);
+		return new ManualNoInputNodeAndNoMapperMapperNodeState(stepCount);
 	}
 	public override makeAnimated(
 		newIntervalId: ReturnType<typeof setInterval>,
 		newIntervalIntervalSeconds: number,
 		outputNodes: readonly OutputNode[],
 	): MapperNodeState {
-		throw new Error("Method not implemented.");
+		clearInterval(this.intervalId);
+		return new AnimatedNoInputNodeAndNoMapperMapperNodeState(
+			newIntervalId,
+			newIntervalIntervalSeconds,
+		);
 	}
-	public override doStep(outputNodes: readonly OutputNode[]): MapperNodeState {
-		throw new Error("Method not implemented.");
+	public override doStep(outputNodes: readonly OutputNode[]): this {
+		return this;
 	}
 	public override updateOutputNodeAfterAdding(
 		thisNode: MapperNode,
 		outputNodeToUpdate: OutputNode,
 	): void {
-		throw new Error("Method not implemented.");
+		outputNodeToUpdate.setInputNodeWithoutImage(thisNode);
 	}
 	public constructor(
 		intervalId: ReturnType<typeof setInterval>,

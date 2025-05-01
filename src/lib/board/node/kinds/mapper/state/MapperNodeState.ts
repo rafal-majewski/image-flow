@@ -8,30 +8,30 @@ export abstract class MapperNodeState {
 	public constructor(status: NodeStatus) {
 		this.status = status;
 	}
-	public abstract setInputNodeWithInputImage(
+	public abstract setInputNodeWithImage(
 		thisNode: MapperNode,
 		inputNode: Node,
-		inputImage: ImageData,
+		inputNodeImage: ImageData,
 		outputNodes: readonly OutputNode[],
 	): MapperNodeState;
 	public abstract setMapper(
 		mapper: Mapper,
 		outputNodes: readonly OutputNode[],
 	): MapperNodeState;
-	public abstract setInputNodeWithoutInputImage(
+	public abstract setInputNodeWithoutImage(
 		thisNode: MapperNode,
 		inputNode: Node,
 		outputNodes: readonly OutputNode[],
 	): MapperNodeState;
-	public abstract setInputImage(
-		inputImage: ImageData,
+	public abstract setInputNodeImage(
+		inputNodeImage: ImageData,
 		outputNodes: readonly OutputNode[],
 	): MapperNodeState;
 	public abstract unsetInputNode(
 		thisNode: MapperNode,
 		outputNodes: readonly OutputNode[],
 	): MapperNodeState;
-	public abstract unsetInputImage(
+	public abstract unsetInputNodeImage(
 		outputNodes: readonly OutputNode[],
 	): MapperNodeState;
 	public abstract unsetMapper(

@@ -13,7 +13,7 @@ export class LoadingInProgressFromFileLoaderNodeState extends FromFileLoaderNode
 		outputNodes: readonly OutputNode[],
 	): LoadingSucceededFromFileLoaderNodeState {
 		for (const outputNode of outputNodes) {
-			outputNode.setInputImage(loadedImage);
+			outputNode.setInputNodeImage(loadedImage);
 		}
 		return new LoadingSucceededFromFileLoaderNodeState(this.file, loadedImage);
 	}
@@ -27,6 +27,6 @@ export class LoadingInProgressFromFileLoaderNodeState extends FromFileLoaderNode
 		thisNode: FromFileLoaderNode,
 		outputNodeToUpdate: OutputNode,
 	): void {
-		outputNodeToUpdate.setInputNodeWithoutInputImage(thisNode);
+		outputNodeToUpdate.setInputNodeWithoutImage(thisNode);
 	}
 }

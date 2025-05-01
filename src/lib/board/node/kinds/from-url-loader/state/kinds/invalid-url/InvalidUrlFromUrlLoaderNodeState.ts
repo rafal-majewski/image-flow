@@ -30,6 +30,6 @@ export class InvalidUrlFromUrlLoaderNodeState extends FromUrlLoaderNodeState {
 		thisNode: FromUrlLoaderNode,
 		outputNodeToUpdate: OutputNode,
 	): void {
-		outputNodeToUpdate.setInputNodeWithoutInputImage(thisNode);
+		outputNodeToUpdate.setInputNodeWithoutImage(thisNode);
 	}
 }

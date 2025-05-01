@@ -8,7 +8,7 @@ export class NoUrlFromUrlLoaderNodeState extends FromUrlLoaderNodeState {
 		thisNode: FromUrlLoaderNode,
 		outputNodeToUpdate: OutputNode,
 	): void {
-		outputNodeToUpdate.setInputNodeWithoutInputImage(thisNode);
+		outputNodeToUpdate.setInputNodeWithoutImage(thisNode);
 	}
 	public constructor() {
 		super("unconfigured");

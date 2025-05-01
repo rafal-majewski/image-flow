@@ -31,6 +31,6 @@ export class LoadingFailedFromUrlLoaderNodeState extends FromUrlLoaderNodeState 
 		thisNode: FromUrlLoaderNode,
 		outputNodeToUpdate: OutputNode,
 	): void {
-		outputNodeToUpdate.setInputNodeWithoutInputImage(thisNode);
+		outputNodeToUpdate.setInputNodeWithoutImage(thisNode);
 	}
 }

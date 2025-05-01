@@ -3,82 +3,113 @@ import type {Mapper} from "../../../mapper/Mapper.ts";
 import type {MapperNode} from "../../../MapperNode.svelte.ts";
 import {MapperNodeState} from "../../MapperNodeState.ts";
 import type {Node} from "../../../../../Node.svelte.ts";
+import {InstantMappingSucceededMapperNodeState} from "../instant-mapping-succeeded/InstantMappingSucceededMapperNodeState.ts";
+import {InstantNoInputNodeImageAndNoMapperMapperNodeState} from "../instant-no-input-node-image-and-no-mapper/InstantNoInputNodeImageAndNoMapperMapperNodeState.ts";
+import {InstantNoInputNodeAndNoMapperMapperNodeState} from "../instant-no-input-node-and-no-mapper/InstantNoInputNodeAndNoMapperMapperNodeState.ts";
+import {ManualNoMapperMapperNodeState} from "../manual-no-mapper/ManualNoMapperMapperNodeState.ts";
+import {AnimatedNoMapperMapperNodeState} from "../animated-no-mapper/AnimatedNoMapperMapperNodeState.ts";
 export class InstantNoMapperMapperNodeState extends MapperNodeState {
-	public override setInputNodeWithInputImage(
+	public override setInputNodeWithImage(
 		thisNode: MapperNode,
-		inputNode: Node,
-		inputImage: ImageData,
+		newInputNode: Node,
+		newInputNodeImage: ImageData,
 		outputNodes: readonly OutputNode[],
-	): MapperNodeState {
-		throw new Error("Method not implemented.");
+	): InstantNoMapperMapperNodeState {
+		this.inputNode.deleteOutputNode(thisNode);
+		return new InstantNoMapperMapperNodeState(newInputNode, newInputNodeImage);
 	}
 	public override setMapper(
 		mapper: Mapper,
 		outputNodes: readonly OutputNode[],
-	): MapperNodeState {
-		throw new Error("Method not implemented.");
+	): InstantMappingSucceededMapperNodeState {
+		const generator = mapper.map(this.inputNodeImage);
+		for (;;) {
+			const generatorResult = generator.next();
+			if (generatorResult.done) {
+				for (const outputNode of outputNodes) {
+					outputNode.setInputNodeImage(generatorResult.value);
+				}
+				return new InstantMappingSucceededMapperNodeState(
+					this.inputNode,
+					this.inputNodeImage,
+					mapper,
+					generatorResult.value,
+				);
+			}
+		}
 	}
-	public override setInputNodeWithoutInputImage(
+	public override setInputNodeWithoutImage(
 		thisNode: MapperNode,
-		inputNode: Node,
+		newInputNode: Node,
 		outputNodes: readonly OutputNode[],
-	): MapperNodeState {
-		throw new Error("Method not implemented.");
+	): InstantNoInputNodeImageAndNoMapperMapperNodeState {
+		this.inputNode.deleteOutputNode(thisNode);
+		return new InstantNoInputNodeImageAndNoMapperMapperNodeState(newInputNode);
 	}
-	public override setInputImage(
-		inputImage: ImageData,
+	public override setInputNodeImage(
+		newInputNodeImage: ImageData,
 		outputNodes: readonly OutputNode[],
-	): MapperNodeState {
-		throw new Error("Method not implemented.");
+	): InstantNoMapperMapperNodeState {
+		return new InstantNoMapperMapperNodeState(
+			this.inputNode,
+			newInputNodeImage,
+		);
 	}
 	public override unsetInputNode(
 		thisNode: MapperNode,
 		outputNodes: readonly OutputNode[],
-	): MapperNodeState {
-		throw new Error("Method not implemented.");
+	): InstantNoInputNodeAndNoMapperMapperNodeState {
+		return new InstantNoInputNodeAndNoMapperMapperNodeState();
 	}
-	public override unsetInputImage(
+	public override unsetInputNodeImage(
 		outputNodes: readonly OutputNode[],
-	): MapperNodeState {
-		throw new Error("Method not implemented.");
+	): InstantNoInputNodeImageAndNoMapperMapperNodeState {
+		return new InstantNoInputNodeImageAndNoMapperMapperNodeState(
+			this.inputNode,
+		);
 	}
-	public override unsetMapper(
-		outputNodes: readonly OutputNode[],
-	): MapperNodeState {
-		throw new Error("Method not implemented.");
+	public override unsetMapper(outputNodes: readonly OutputNode[]): this {
+		return this;
 	}
-	public override makeInstant(
-		outputNodes: readonly OutputNode[],
-	): MapperNodeState {
-		throw new Error("Method not implemented.");
+	public override makeInstant(outputNodes: readonly OutputNode[]): this {
+		return this;
 	}
 	public override makeManual(
 		stepCount: number,
 		outputNodes: readonly OutputNode[],
-	): MapperNodeState {
-		throw new Error("Method not implemented.");
+	): ManualNoMapperMapperNodeState {
+		return new ManualNoMapperMapperNodeState(
+			this.inputNode,
+			this.inputNodeImage,
+			stepCount,
+		);
 	}
 	public override makeAnimated(
 		intervalId: ReturnType<typeof setInterval>,
 		intervalIntervalSeconds: number,
 		outputNodes: readonly OutputNode[],
-	): MapperNodeState {
-		throw new Error("Method not implemented.");
+	): AnimatedNoMapperMapperNodeState {
+		return new AnimatedNoMapperMapperNodeState(
+			this.inputNode,
+			this.inputNodeImage,
+			intervalId,
+			intervalIntervalSeconds,
+		);
 	}
-	public override doStep(outputNodes: readonly OutputNode[]): MapperNodeState {
-		throw new Error("Method not implemented.");
+	public override doStep(outputNodes: readonly OutputNode[]): this {
+		return this;
 	}
 	public override updateOutputNodeAfterAdding(
 		thisNode: MapperNode,
 		outputNodeToUpdate: OutputNode,
 	): void {
-		throw new Error("Method not implemented.");
+		outputNodeToUpdate.setInputNodeWithoutImage(thisNode);
 	}
-	private readonly inputImage: ImageData;
+	private readonly inputNodeImage: ImageData;
 	private readonly inputNode: Node;
-	public constructor(inputImage: ImageData, inputNode: Node) {
+	public constructor(inputNode: Node, inputNodeImage: ImageData) {
 		super("unconfigured");
-		this.inputImage = inputImage;
 		this.inputNode = inputNode;
+		this.inputNodeImage = inputNodeImage;
 	}
 }

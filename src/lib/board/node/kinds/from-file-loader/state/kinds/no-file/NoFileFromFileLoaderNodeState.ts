@@ -16,6 +16,6 @@ export class NoFileFromFileLoaderNodeState extends FromFileLoaderNodeState {
 		thisNode: FromFileLoaderNode,
 		outputNodeToUpdate: OutputNode,
 	): void {
-		outputNodeToUpdate.setInputNodeWithoutInputImage(thisNode);
+		outputNodeToUpdate.setInputNodeWithoutImage(thisNode);
 	}
 }

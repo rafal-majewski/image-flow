@@ -16,7 +16,7 @@ export class LoadingInProgressFromUrlLoaderNodeState extends FromUrlLoaderNodeSt
 		outputNodes: readonly OutputNode[],
 	): LoadingSucceededFromUrlLoaderNodeState {
 		for (const outputNode of outputNodes) {
-			outputNode.setInputImage(loadedImage);
+			outputNode.setInputNodeImage(loadedImage);
 		}
 		return new LoadingSucceededFromUrlLoaderNodeState(loadedImage, this.url);
 	}
@@ -46,6 +46,6 @@ export class LoadingInProgressFromUrlLoaderNodeState extends FromUrlLoaderNodeSt
 		thisNode: FromUrlLoaderNode,
 		outputNodeToUpdate: OutputNode,
 	): void {
-		outputNodeToUpdate.setInputNodeWithoutInputImage(thisNode);
+		outputNodeToUpdate.setInputNodeWithoutImage(thisNode);
 	}
 }

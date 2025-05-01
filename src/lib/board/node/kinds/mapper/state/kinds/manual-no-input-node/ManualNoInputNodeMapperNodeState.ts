@@ -4,10 +4,10 @@ import type {MapperNode} from "../../../MapperNode.svelte.ts";
 import {MapperNodeState} from "../../MapperNodeState.ts";
 import type {Node} from "../../../../../Node.svelte.ts";
 export class ManualNoInputNodeMapperNodeState extends MapperNodeState {
-	public override setInputNodeWithInputImage(
+	public override setInputNodeWithImage(
 		thisNode: MapperNode,
 		inputNode: Node,
-		inputImage: ImageData,
+		inputNodeImage: ImageData,
 		outputNodes: readonly OutputNode[],
 	): MapperNodeState {
 		throw new Error("Method not implemented.");
@@ -18,15 +18,15 @@ export class ManualNoInputNodeMapperNodeState extends MapperNodeState {
 	): MapperNodeState {
 		throw new Error("Method not implemented.");
 	}
-	public override setInputNodeWithoutInputImage(
+	public override setInputNodeWithoutImage(
 		thisNode: MapperNode,
 		inputNode: Node,
 		outputNodes: readonly OutputNode[],
 	): MapperNodeState {
 		throw new Error("Method not implemented.");
 	}
-	public override setInputImage(
-		inputImage: ImageData,
+	public override setInputNodeImage(
+		inputNodeImage: ImageData,
 		outputNodes: readonly OutputNode[],
 	): MapperNodeState {
 		throw new Error("Method not implemented.");
@@ -37,7 +37,7 @@ export class ManualNoInputNodeMapperNodeState extends MapperNodeState {
 	): MapperNodeState {
 		throw new Error("Method not implemented.");
 	}
-	public override unsetInputImage(
+	public override unsetInputNodeImage(
 		outputNodes: readonly OutputNode[],
 	): MapperNodeState {
 		throw new Error("Method not implemented.");
@@ -72,7 +72,7 @@ export class ManualNoInputNodeMapperNodeState extends MapperNodeState {
 		thisNode: MapperNode,
 		outputNodeToUpdate: OutputNode,
 	): void {
-		throw new Error("Method not implemented.");
+		outputNodeToUpdate.setInputNodeWithoutImage(thisNode);
 	}
 	public constructor(mapper: Mapper, stepCount: number) {
 		super("unconfigured");

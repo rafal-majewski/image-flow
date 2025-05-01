@@ -2,20 +2,20 @@ import type {OutputNode} from "../../../../../OutputNode.ts";
 import type {Mapper} from "../../../mapper/Mapper.ts";
 import type {MapperNode} from "../../../MapperNode.svelte.ts";
 import {MapperNodeState} from "../../MapperNodeState.ts";
-import type {Node} from "../../../../../Node.svelte.ts";
-import {AnimatedMappingInProgressMapperNodeState} from "../animated-mapping-in-progress/AnimatedMappingInProgressMapperNodeState.ts";
-import {AnimatedMappingSucceededMapperNodeState} from "../animated-mapping-succeeded/AnimatedMappingSucceededMapperNodeState.ts";
 import {AnimatedNoInputNodeAndNoMapperMapperNodeState} from "../animated-no-input-node-and-no-mapper/AnimatedNoInputNodeAndNoMapperMapperNodeState.ts";
-import {InstantNoMapperMapperNodeState} from "../instant-no-mapper/InstantNoMapperMapperNodeState.ts";
-import {ManualNoMapperMapperNodeState} from "../manual-no-mapper/ManualNoMapperMapperNodeState.ts";
-import {AnimatedNoInputNodeImageAndNoMapperMapperNodeState} from "../animated-no-input-node-image-and-no-mapper/AnimatedNoInputNodeImageAndNoMapperMapperNodeState.ts";
-export class AnimatedNoMapperMapperNodeState extends MapperNodeState {
+import {AnimatedNoMapperMapperNodeState} from "../animated-no-mapper/AnimatedNoMapperMapperNodeState.ts";
+import type {Node} from "../../../../../Node.svelte.ts";
+import {ManualNoInputNodeImageAndNoMapperMapperNodeState} from "../manual-no-input-node-image-and-no-mapper/ManualNoInputNodeImageAndNoMapperMapperNodeState.ts";
+import {InstantNoInputNodeImageAndNoMapperMapperNodeState} from "../instant-no-input-node-image-and-no-mapper/InstantNoInputNodeImageAndNoMapperMapperNodeState.ts";
+import {AnimatedNoInputNodeImageMapperNodeState} from "../animated-no-input-node-image/AnimatedNoInputNodeImageMapperNodeState.ts";
+export class AnimatedNoInputNodeImageAndNoMapperMapperNodeState extends MapperNodeState {
 	public override setInputNodeWithImage(
 		thisNode: MapperNode,
 		newInputNode: Node,
 		newInputNodeImage: ImageData,
 		outputNodes: readonly OutputNode[],
 	): AnimatedNoMapperMapperNodeState {
+		this.inputNode.deleteOutputNode(thisNode);
 		return new AnimatedNoMapperMapperNodeState(
 			newInputNode,
 			newInputNodeImage,
@@ -26,40 +26,20 @@ export class AnimatedNoMapperMapperNodeState extends MapperNodeState {
 	public override setMapper(
 		mapper: Mapper,
 		outputNodes: readonly OutputNode[],
-	):
-		| AnimatedMappingInProgressMapperNodeState
-		| AnimatedMappingSucceededMapperNodeState {
-		const generator = mapper.map(this.inputNodeImage);
-		const generatorResult = generator.next();
-		if (generatorResult.done) {
-			for (const outputNode of outputNodes) {
-				outputNode.setInputNodeImage(generatorResult.value);
-			}
-			return new AnimatedMappingSucceededMapperNodeState(
-				this.inputNode,
-				this.inputNodeImage,
-				this.intervalId,
-				this.intervalIntervalSeconds,
-				mapper,
-				generatorResult.value,
-			);
-		} else {
-			return new AnimatedMappingInProgressMapperNodeState(
-				generator,
-				this.inputNode,
-				this.inputNodeImage,
-				this.intervalId,
-				this.intervalIntervalSeconds,
-				mapper,
-				generatorResult.value,
-			);
-		}
+	): AnimatedNoInputNodeImageMapperNodeState {
+		return new AnimatedNoInputNodeImageMapperNodeState(
+			this.inputNode,
+			this.intervalId,
+			this.intervalIntervalSeconds,
+			mapper,
+		);
 	}
 	public override setInputNodeWithoutImage(
 		thisNode: MapperNode,
 		newInputNode: Node,
 		outputNodes: readonly OutputNode[],
 	): AnimatedNoInputNodeImageAndNoMapperMapperNodeState {
+		this.inputNode.deleteOutputNode(thisNode);
 		return new AnimatedNoInputNodeImageAndNoMapperMapperNodeState(
 			newInputNode,
 			this.intervalId,
@@ -67,12 +47,12 @@ export class AnimatedNoMapperMapperNodeState extends MapperNodeState {
 		);
 	}
 	public override setInputNodeImage(
-		newInputNodeImage: ImageData,
+		inputNodeImage: ImageData,
 		outputNodes: readonly OutputNode[],
 	): AnimatedNoMapperMapperNodeState {
 		return new AnimatedNoMapperMapperNodeState(
 			this.inputNode,
-			newInputNodeImage,
+			inputNodeImage,
 			this.intervalId,
 			this.intervalIntervalSeconds,
 		);
@@ -80,7 +60,8 @@ export class AnimatedNoMapperMapperNodeState extends MapperNodeState {
 	public override unsetInputNode(
 		thisNode: MapperNode,
 		outputNodes: readonly OutputNode[],
-	): AnimatedNoInputNodeAndNoMapperMapperNodeState {
+	): MapperNodeState {
+		this.inputNode.deleteOutputNode(thisNode);
 		return new AnimatedNoInputNodeAndNoMapperMapperNodeState(
 			this.intervalId,
 			this.intervalIntervalSeconds,
@@ -88,33 +69,27 @@ export class AnimatedNoMapperMapperNodeState extends MapperNodeState {
 	}
 	public override unsetInputNodeImage(
 		outputNodes: readonly OutputNode[],
-	): AnimatedNoInputNodeImageAndNoMapperMapperNodeState {
-		return new AnimatedNoInputNodeImageAndNoMapperMapperNodeState(
-			this.inputNode,
-			this.intervalId,
-			this.intervalIntervalSeconds,
-		);
+	): this {
+		return this;
 	}
 	public override unsetMapper(outputNodes: readonly OutputNode[]): this {
 		return this;
 	}
 	public override makeInstant(
 		outputNodes: readonly OutputNode[],
-	): InstantNoMapperMapperNodeState {
+	): InstantNoInputNodeImageAndNoMapperMapperNodeState {
 		clearInterval(this.intervalId);
-		return new InstantNoMapperMapperNodeState(
+		return new InstantNoInputNodeImageAndNoMapperMapperNodeState(
 			this.inputNode,
-			this.inputNodeImage,
 		);
 	}
 	public override makeManual(
 		stepCount: number,
 		outputNodes: readonly OutputNode[],
-	): ManualNoMapperMapperNodeState {
+	): ManualNoInputNodeImageAndNoMapperMapperNodeState {
 		clearInterval(this.intervalId);
-		return new ManualNoMapperMapperNodeState(
+		return new ManualNoInputNodeImageAndNoMapperMapperNodeState(
 			this.inputNode,
-			this.inputNodeImage,
 			stepCount,
 		);
 	}
@@ -122,11 +97,10 @@ export class AnimatedNoMapperMapperNodeState extends MapperNodeState {
 		newIntervalId: ReturnType<typeof setInterval>,
 		newIntervalIntervalSeconds: number,
 		outputNodes: readonly OutputNode[],
-	): AnimatedNoMapperMapperNodeState {
+	): AnimatedNoInputNodeImageAndNoMapperMapperNodeState {
 		clearInterval(this.intervalId);
-		return new AnimatedNoMapperMapperNodeState(
+		return new AnimatedNoInputNodeImageAndNoMapperMapperNodeState(
 			this.inputNode,
-			this.inputNodeImage,
 			newIntervalId,
 			newIntervalIntervalSeconds,
 		);
@@ -142,18 +116,15 @@ export class AnimatedNoMapperMapperNodeState extends MapperNodeState {
 	}
 	public constructor(
 		inputNode: Node,
-		inputNodeImage: ImageData,
 		intervalId: ReturnType<typeof setInterval>,
 		intervalIntervalSeconds: number,
 	) {
 		super("unconfigured");
 		this.inputNode = inputNode;
-		this.inputNodeImage = inputNodeImage;
 		this.intervalId = intervalId;
 		this.intervalIntervalSeconds = intervalIntervalSeconds;
 	}
-	private readonly inputNodeImage: ImageData;
-	private readonly inputNode: Node;
 	private readonly intervalId: ReturnType<typeof setInterval>;
 	public readonly intervalIntervalSeconds: number;
+	private readonly inputNode: Node;
 }

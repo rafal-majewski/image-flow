@@ -1,8 +1,8 @@
 import type {Node} from "./Node.svelte.ts";
 export interface OutputNode extends Node {
-	setInputNodeWithInputImage(inputNode: Node, inputImage: ImageData): void;
-	setInputNodeWithoutInputImage(inputNode: Node): void;
-	setInputImage(inputImage: ImageData): void;
-	unsetInputImage(): void;
+	setInputNodeWithImage(inputNode: Node, inputNodeImage: ImageData): void;
+	setInputNodeWithoutImage(inputNode: Node): void;
+	setInputNodeImage(inputImage: ImageData): void;
+	unsetInputNodeImage(): void;
 	unsetInputNode(): void;
 }

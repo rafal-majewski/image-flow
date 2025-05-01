@@ -6,24 +6,24 @@ import type {Node} from "../../../../../Node.svelte.ts";
 import {InstantMappingSucceededMapperNodeState} from "../instant-mapping-succeeded/InstantMappingSucceededMapperNodeState.ts";
 import {ManualMappingInProgressMapperNodeState} from "../manual-mapping-in-progress/ManualMappingInProgressMapperNodeState.ts";
 import {AnimatedMappingSucceededMapperNodeState} from "../animated-mapping-succeeded/AnimatedMappingSucceededMapperNodeState.ts";
-import {AnimatedNoInputImageMapperNodeState} from "../animated-no-input-image/AnimatedNoInputImageMapperNodeState.ts";
 import {AnimatedNoInputNodeMapperNodeState} from "../animated-no-input-node/AnimatedNoInputNodeMapperNodeState.ts";
 import {AnimatedNoMapperMapperNodeState} from "../animated-no-mapper/AnimatedNoMapperMapperNodeState.ts";
+import {AnimatedNoInputNodeImageMapperNodeState} from "../animated-no-input-node-image/AnimatedNoInputNodeImageMapperNodeState.ts";
 export class AnimatedMappingInProgressMapperNodeState extends MapperNodeState {
 	public override makeInstant(
 		outputNodes: readonly OutputNode[],
 	): InstantMappingSucceededMapperNodeState {
 		clearInterval(this.intervalId);
-		const newGenerator = this.mapper.map(this.inputImage);
+		const newGenerator = this.mapper.map(this.inputNodeImage);
 		for (;;) {
 			const newGeneratorResult = newGenerator.next();
 			if (newGeneratorResult.done) {
 				for (const outputNode of outputNodes) {
-					outputNode.setInputImage(newGeneratorResult.value);
+					outputNode.setInputNodeImage(newGeneratorResult.value);
 				}
 				return new InstantMappingSucceededMapperNodeState(
-					this.inputImage,
 					this.inputNode,
+					this.inputNodeImage,
 					this.mapper,
 					newGeneratorResult.value,
 				);
@@ -37,8 +37,8 @@ export class AnimatedMappingInProgressMapperNodeState extends MapperNodeState {
 		clearInterval(this.intervalId);
 		return new ManualMappingInProgressMapperNodeState(
 			this.generator,
-			this.inputImage,
 			this.inputNode,
+			this.inputNodeImage,
 			this.mapper,
 			this.outputImage,
 			stepCount,
@@ -52,27 +52,54 @@ export class AnimatedMappingInProgressMapperNodeState extends MapperNodeState {
 		clearInterval(this.intervalId);
 		return new AnimatedMappingInProgressMapperNodeState(
 			this.generator,
-			this.inputImage,
 			this.inputNode,
+			this.inputNodeImage,
 			newIntervalId,
 			newIntervalIntervalSeconds,
 			this.mapper,
 			this.outputImage,
 		);
 	}
-	public override doStep(outputNodes: readonly OutputNode[]): this {
-		return this;
+	public override doStep(
+		outputNodes: readonly OutputNode[],
+	):
+		| AnimatedMappingInProgressMapperNodeState
+		| AnimatedMappingSucceededMapperNodeState {
+		const generatorResult = this.generator.next();
+		if (generatorResult.done) {
+			for (const outputNode of outputNodes) {
+				outputNode.setInputNodeImage(generatorResult.value);
+			}
+			return new AnimatedMappingSucceededMapperNodeState(
+				this.inputNode,
+				this.inputNodeImage,
+				this.intervalId,
+				this.intervalIntervalSeconds,
+				this.mapper,
+				generatorResult.value,
+			);
+		} else {
+			return new AnimatedMappingInProgressMapperNodeState(
+				this.generator,
+				this.inputNode,
+				this.inputNodeImage,
+				this.intervalId,
+				this.intervalIntervalSeconds,
+				this.mapper,
+				generatorResult.value,
+			);
+		}
 	}
 	public override updateOutputNodeAfterAdding(
 		thisNode: MapperNode,
 		outputNodeToUpdate: OutputNode,
 	): void {
-		outputNodeToUpdate.setInputNodeWithoutInputImage(thisNode);
+		outputNodeToUpdate.setInputNodeWithoutImage(thisNode);
 	}
 	public constructor(
 		generator: Generator<ImageData, ImageData, void>,
-		inputImage: ImageData,
 		inputNode: Node,
+		inputNodeImage: ImageData,
 		intervalId: ReturnType<typeof setInterval>,
 		intervalIntervalSeconds: number,
 		mapper: Mapper,
@@ -80,15 +107,15 @@ export class AnimatedMappingInProgressMapperNodeState extends MapperNodeState {
 	) {
 		super("working");
 		this.generator = generator;
-		this.inputImage = inputImage;
 		this.inputNode = inputNode;
+		this.inputNodeImage = inputNodeImage;
 		this.intervalId = intervalId;
 		this.intervalIntervalSeconds = intervalIntervalSeconds;
 		this.mapper = mapper;
 		this.outputImage = outputImage;
 	}
 	private readonly generator: Generator<ImageData, ImageData, void>;
-	private readonly inputImage: ImageData;
+	private readonly inputNodeImage: ImageData;
 	private readonly inputNode: Node;
 	private readonly intervalId: ReturnType<typeof setInterval>;
 	public readonly intervalIntervalSeconds: number;
@@ -100,15 +127,15 @@ export class AnimatedMappingInProgressMapperNodeState extends MapperNodeState {
 	):
 		| AnimatedMappingInProgressMapperNodeState
 		| AnimatedMappingSucceededMapperNodeState {
-		const newGenerator = newMapper.map(this.inputImage);
+		const newGenerator = newMapper.map(this.inputNodeImage);
 		const newGeneratorResult = newGenerator.next();
 		if (newGeneratorResult.done) {
 			for (const outputNode of outputNodes) {
-				outputNode.setInputImage(newGeneratorResult.value);
+				outputNode.setInputNodeImage(newGeneratorResult.value);
 			}
 			return new AnimatedMappingSucceededMapperNodeState(
-				this.inputImage,
 				this.inputNode,
+				this.inputNodeImage,
 				this.intervalId,
 				this.intervalIntervalSeconds,
 				newMapper,
@@ -117,8 +144,8 @@ export class AnimatedMappingInProgressMapperNodeState extends MapperNodeState {
 		} else {
 			return new AnimatedMappingInProgressMapperNodeState(
 				newGenerator,
-				this.inputImage,
 				this.inputNode,
+				this.inputNodeImage,
 				this.intervalId,
 				this.intervalIntervalSeconds,
 				newMapper,
@@ -126,10 +153,10 @@ export class AnimatedMappingInProgressMapperNodeState extends MapperNodeState {
 			);
 		}
 	}
-	public override unsetInputImage(
+	public override unsetInputNodeImage(
 		outputNodes: readonly OutputNode[],
-	): AnimatedNoInputImageMapperNodeState {
-		return new AnimatedNoInputImageMapperNodeState(
+	): AnimatedNoInputNodeImageMapperNodeState {
+		return new AnimatedNoInputNodeImageMapperNodeState(
 			this.inputNode,
 			this.intervalId,
 			this.intervalIntervalSeconds,
@@ -151,27 +178,27 @@ export class AnimatedMappingInProgressMapperNodeState extends MapperNodeState {
 		outputNodes: readonly OutputNode[],
 	): AnimatedNoMapperMapperNodeState {
 		return new AnimatedNoMapperMapperNodeState(
-			this.inputImage,
 			this.inputNode,
+			this.inputNodeImage,
 			this.intervalId,
 			this.intervalIntervalSeconds,
 		);
 	}
-	public override setInputImage(
-		newInputImage: ImageData,
+	public override setInputNodeImage(
+		newInputNodeImage: ImageData,
 		outputNodes: readonly OutputNode[],
 	):
 		| AnimatedMappingSucceededMapperNodeState
 		| AnimatedMappingInProgressMapperNodeState {
-		const newGenerator = this.mapper.map(newInputImage);
+		const newGenerator = this.mapper.map(newInputNodeImage);
 		const newGeneratorResult = newGenerator.next();
 		if (newGeneratorResult.done) {
 			for (const outputNode of outputNodes) {
-				outputNode.setInputImage(newGeneratorResult.value);
+				outputNode.setInputNodeImage(newGeneratorResult.value);
 			}
 			return new AnimatedMappingSucceededMapperNodeState(
-				newInputImage,
 				this.inputNode,
+				newInputNodeImage,
 				this.intervalId,
 				this.intervalIntervalSeconds,
 				this.mapper,
@@ -180,8 +207,8 @@ export class AnimatedMappingInProgressMapperNodeState extends MapperNodeState {
 		} else {
 			return new AnimatedMappingInProgressMapperNodeState(
 				newGenerator,
-				newInputImage,
 				this.inputNode,
+				newInputNodeImage,
 				this.intervalId,
 				this.intervalIntervalSeconds,
 				this.mapper,
@@ -189,24 +216,24 @@ export class AnimatedMappingInProgressMapperNodeState extends MapperNodeState {
 			);
 		}
 	}
-	public override setInputNodeWithInputImage(
+	public override setInputNodeWithImage(
 		thisNode: MapperNode,
 		newInputNode: Node,
-		newInputImage: ImageData,
+		newInputNodeImage: ImageData,
 		outputNodes: readonly OutputNode[],
 	):
 		| AnimatedMappingInProgressMapperNodeState
 		| AnimatedMappingSucceededMapperNodeState {
 		this.inputNode.deleteOutputNode(thisNode);
-		const newGenerator = this.mapper.map(newInputImage);
+		const newGenerator = this.mapper.map(newInputNodeImage);
 		const newGeneratorResult = newGenerator.next();
 		if (newGeneratorResult.done) {
 			for (const outputNode of outputNodes) {
-				outputNode.setInputImage(newGeneratorResult.value);
+				outputNode.setInputNodeImage(newGeneratorResult.value);
 			}
 			return new AnimatedMappingSucceededMapperNodeState(
-				newInputImage,
 				newInputNode,
+				newInputNodeImage,
 				this.intervalId,
 				this.intervalIntervalSeconds,
 				this.mapper,
@@ -215,8 +242,8 @@ export class AnimatedMappingInProgressMapperNodeState extends MapperNodeState {
 		} else {
 			return new AnimatedMappingInProgressMapperNodeState(
 				newGenerator,
-				newInputImage,
 				newInputNode,
+				newInputNodeImage,
 				this.intervalId,
 				this.intervalIntervalSeconds,
 				this.mapper,
@@ -224,13 +251,13 @@ export class AnimatedMappingInProgressMapperNodeState extends MapperNodeState {
 			);
 		}
 	}
-	public override setInputNodeWithoutInputImage(
+	public override setInputNodeWithoutImage(
 		thisNode: MapperNode,
 		newInputNode: Node,
 		outputNodes: readonly OutputNode[],
-	): AnimatedNoInputImageMapperNodeState {
+	): AnimatedNoInputNodeImageMapperNodeState {
 		this.inputNode.deleteOutputNode(thisNode);
-		return new AnimatedNoInputImageMapperNodeState(
+		return new AnimatedNoInputNodeImageMapperNodeState(
 			newInputNode,
 			this.intervalId,
 			this.intervalIntervalSeconds,
