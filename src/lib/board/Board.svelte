@@ -28,7 +28,6 @@
 	}
 	let nodes = $state.raw<readonly SupportedNode[]>([]);
 	let mode = $state.raw<null | SupportedBoardMode>(null);
-	$inspect(mode);
 	function handleAddNodeRequest(newNodeClass: SupportedNodeClass): void {
 		if (mode !== null && mode.kindName === "addingNode") {
 			const newNode = new newNodeClass(mode.data.position);

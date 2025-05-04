@@ -76,7 +76,10 @@ export class AnimatedMappingInProgressMapperNodeState extends MapperNodeState {
 			this.outputImage,
 		);
 	}
-	public override doManualSteps(
+	public override doManualSteps(outputNodes: readonly OutputNode[]): this {
+		return this;
+	}
+	public override doAnimatedStep(
 		outputNodes: readonly OutputNode[],
 	):
 		| AnimatedMappingInProgressMapperNodeState
@@ -105,9 +108,6 @@ export class AnimatedMappingInProgressMapperNodeState extends MapperNodeState {
 				generatorResult.value,
 			);
 		}
-	}
-	public override doAnimatedStep(outputNodes: readonly OutputNode[]): this {
-		return this;
 	}
 	public override updateOutputNodeAfterAdding(
 		thisNode: MapperNode,
