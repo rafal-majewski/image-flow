@@ -10,6 +10,23 @@ import {ManualNoMapperMapperNodeState} from "../manual-no-mapper/ManualNoMapperM
 import {InstantMappingSucceededMapperNodeState} from "../instant-mapping-succeeded/InstantMappingSucceededMapperNodeState.ts";
 import {AnimatedMappingSucceededMapperNodeState} from "../animated-mapping-succeeded/AnimatedMappingSucceededMapperNodeState.ts";
 export class ManualMappingSucceededMapperNodeState extends MapperNodeState {
+	public override setStepCount(
+		newStepCount: number,
+	): ManualMappingSucceededMapperNodeState {
+		return new ManualMappingSucceededMapperNodeState(
+			this.inputNode,
+			this.inputNodeImage,
+			this.mapper,
+			this.outputImage,
+			newStepCount,
+		);
+	}
+	public override setIntervalInterval(
+		intervalId: ReturnType<typeof setInterval>,
+		intervalIntervalSeconds: number,
+	): this {
+		return this;
+	}
 	public override setInputNodeWithImage(
 		thisNode: MapperNode,
 		newInputNode: Node,
@@ -52,7 +69,7 @@ export class ManualMappingSucceededMapperNodeState extends MapperNodeState {
 	):
 		| ManualMappingInProgressMapperNodeState
 		| ManualMappingSucceededMapperNodeState {
-		const newGenerator = this.mapper.map(this.inputNodeImage);
+		const newGenerator = newMapper.map(this.inputNodeImage);
 		const newGeneratorResult = newGenerator.next();
 		if (newGeneratorResult.done) {
 			return new ManualMappingSucceededMapperNodeState(
@@ -170,7 +187,6 @@ export class ManualMappingSucceededMapperNodeState extends MapperNodeState {
 	}
 	public override makeManual(
 		newStepCount: number,
-		outputNodes: readonly OutputNode[],
 	): ManualMappingSucceededMapperNodeState {
 		return new ManualMappingSucceededMapperNodeState(
 			this.inputNode,
@@ -183,7 +199,6 @@ export class ManualMappingSucceededMapperNodeState extends MapperNodeState {
 	public override makeAnimated(
 		intervalId: ReturnType<typeof setInterval>,
 		intervalIntervalSeconds: number,
-		outputNodes: readonly OutputNode[],
 	): AnimatedMappingSucceededMapperNodeState {
 		return new AnimatedMappingSucceededMapperNodeState(
 			this.inputNode,
@@ -194,7 +209,10 @@ export class ManualMappingSucceededMapperNodeState extends MapperNodeState {
 			this.outputImage,
 		);
 	}
-	public override doStep(outputNodes: readonly OutputNode[]): this {
+	public override doManualSteps(outputNodes: readonly OutputNode[]): this {
+		return this;
+	}
+	public override doAnimatedStep(outputNodes: readonly OutputNode[]): this {
 		return this;
 	}
 	public override updateOutputNodeAfterAdding(

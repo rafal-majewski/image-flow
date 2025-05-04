@@ -30,10 +30,9 @@ export abstract class Node {
 			(node) => node !== outputNodeToDelete,
 		);
 	}
-	public deleteAndUpdateOutputNode(
-		outputNodeToDeleteAndUpdate: OutputNode,
-	): void {
-		this.deleteOutputNode(outputNodeToDeleteAndUpdate);
-		outputNodeToDeleteAndUpdate.unsetInputNode();
+	protected disconnectOutputNodes(): void {
+		for (const outputNode of this.outputNodes) {
+			outputNode.unsetInputNode();
+		}
 	}
 }

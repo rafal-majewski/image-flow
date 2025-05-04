@@ -38,6 +38,8 @@
 		onMakeManualRequest,
 		onMakeAnimatedRequest,
 		onMakeInstantRequest,
+		onSetStepCountRequest,
+		onSetIntervalIntervalRequest,
 	}: Readonly<{
 		id: NodeId;
 		state: MapperNodeState;
@@ -50,6 +52,8 @@
 		onMakeManualRequest: () => void;
 		onMakeAnimatedRequest: () => void;
 		onMakeInstantRequest: () => void;
+		onSetStepCountRequest: (stepCount: number) => void;
+		onSetIntervalIntervalRequest: (intervalIntervalSeconds: number) => void;
 	}> = $props();
 	function handleSelectChange(
 		event: Event & Readonly<{currentTarget: HTMLSelectElement}>,
@@ -75,6 +79,16 @@
 		event: MouseEvent & Readonly<{currentTarget: HTMLButtonElement}>,
 	): void {
 		onSetOutputNodeRequest({x: event.clientX, y: event.clientY});
+	}
+	function handleStepCountInputChange(
+		event: Event & Readonly<{currentTarget: HTMLInputElement}>,
+	): void {
+		onSetStepCountRequest(Number.parseInt(event.currentTarget.value, 10));
+	}
+	function handleIntervalIntervalInputChange(
+		event: Event & Readonly<{currentTarget: HTMLInputElement}>,
+	): void {
+		onSetIntervalIntervalRequest(Number.parseFloat(event.currentTarget.value));
 	}
 </script>
 
@@ -158,6 +172,7 @@
 								min="1"
 								step="1"
 								value={state.stepCount}
+								onchange={handleStepCountInputChange}
 							/>
 						</label>
 						<button onclick={handleDoManualStepsButtonClick}>Do steps</button>
@@ -181,14 +196,14 @@
 				/>Animated{#if state instanceof AnimatedMappingInProgressMapperNodeState || state instanceof AnimatedMappingSucceededMapperNodeState || state instanceof AnimatedNoInputNodeImageAndNoMapperMapperNodeState || state instanceof AnimatedNoInputNodeImageMapperNodeState || state instanceof AnimatedNoInputNodeAndNoMapperMapperNodeState || state instanceof AnimatedNoInputNodeMapperNodeState || state instanceof AnimatedNoMapperMapperNodeState}
 					<div>
 						<label
-							>Interval:<input
+							>Interval (seconds):<input
 								type="number"
-								min="0.01"
-								step="0.01"
+								min="0.0001"
+								step="0.0001"
 								value={state.intervalIntervalSeconds}
+								onchange={handleIntervalIntervalInputChange}
 							/>
 						</label>
-						<button>Pause/Unpause</button>
 					</div>
 				{/if}
 			</label>

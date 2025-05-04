@@ -40,18 +40,24 @@ export abstract class MapperNodeState {
 	public abstract makeInstant(
 		outputNodes: readonly OutputNode[],
 	): MapperNodeState;
-	public abstract makeManual(
-		stepCount: number,
-		outputNodes: readonly OutputNode[],
-	): MapperNodeState;
+	public abstract makeManual(stepCount: number): MapperNodeState;
 	public abstract makeAnimated(
 		intervalId: ReturnType<typeof setInterval>,
 		intervalIntervalSeconds: number,
+	): MapperNodeState;
+	public abstract doAnimatedStep(
 		outputNodes: readonly OutputNode[],
 	): MapperNodeState;
-	public abstract doStep(outputNodes: readonly OutputNode[]): MapperNodeState;
+	public abstract doManualSteps(
+		outputNodes: readonly OutputNode[],
+	): MapperNodeState;
 	public abstract updateOutputNodeAfterAdding(
 		thisNode: MapperNode,
 		outputNodeToUpdate: OutputNode,
 	): void;
+	public abstract setStepCount(stepCount: number): MapperNodeState;
+	public abstract setIntervalInterval(
+		intervalId: ReturnType<typeof setInterval>,
+		intervalIntervalSeconds: number,
+	): MapperNodeState;
 }

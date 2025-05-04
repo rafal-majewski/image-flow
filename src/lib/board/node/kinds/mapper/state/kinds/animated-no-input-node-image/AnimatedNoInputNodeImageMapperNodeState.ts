@@ -10,6 +10,21 @@ import {AnimatedNoInputNodeMapperNodeState} from "../animated-no-input-node/Anim
 import {InstantNoInputNodeImageMapperNodeState} from "../instant-no-input-node-image/InstantNoInputNodeImageMapperNodeState.ts";
 import {ManualNoInputNodeImageMapperNodeState} from "../manual-no-input-node-image/ManualNoInputNodeImageMapperNodeState.ts";
 export class AnimatedNoInputNodeImageMapperNodeState extends MapperNodeState {
+	public override setStepCount(stepCount: number): this {
+		return this;
+	}
+	public override setIntervalInterval(
+		newIntervalId: ReturnType<typeof setInterval>,
+		newIntervalIntervalSeconds: number,
+	): AnimatedNoInputNodeImageMapperNodeState {
+		clearInterval(this.intervalId);
+		return new AnimatedNoInputNodeImageMapperNodeState(
+			this.inputNode,
+			newIntervalId,
+			newIntervalIntervalSeconds,
+			this.mapper,
+		);
+	}
 	public override setInputNodeWithImage(
 		thisNode: MapperNode,
 		newInputNode: Node,
@@ -137,7 +152,6 @@ export class AnimatedNoInputNodeImageMapperNodeState extends MapperNodeState {
 	}
 	public override makeManual(
 		stepCount: number,
-		outputNodes: readonly OutputNode[],
 	): ManualNoInputNodeImageMapperNodeState {
 		clearInterval(this.intervalId);
 		return new ManualNoInputNodeImageMapperNodeState(
@@ -149,7 +163,6 @@ export class AnimatedNoInputNodeImageMapperNodeState extends MapperNodeState {
 	public override makeAnimated(
 		newIntervalId: ReturnType<typeof setInterval>,
 		newIntervalIntervalSeconds: number,
-		outputNodes: readonly OutputNode[],
 	): AnimatedNoInputNodeImageMapperNodeState {
 		clearInterval(this.intervalId);
 		return new AnimatedNoInputNodeImageMapperNodeState(
@@ -159,7 +172,10 @@ export class AnimatedNoInputNodeImageMapperNodeState extends MapperNodeState {
 			this.mapper,
 		);
 	}
-	public override doStep(outputNodes: readonly OutputNode[]): this {
+	public override doManualSteps(outputNodes: readonly OutputNode[]): this {
+		return this;
+	}
+	public override doAnimatedStep(outputNodes: readonly OutputNode[]): this {
 		return this;
 	}
 	public override updateOutputNodeAfterAdding(

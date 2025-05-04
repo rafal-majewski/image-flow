@@ -10,6 +10,21 @@ import {InstantNoMapperMapperNodeState} from "../instant-no-mapper/InstantNoMapp
 import {ManualNoMapperMapperNodeState} from "../manual-no-mapper/ManualNoMapperMapperNodeState.ts";
 import {AnimatedNoInputNodeImageAndNoMapperMapperNodeState} from "../animated-no-input-node-image-and-no-mapper/AnimatedNoInputNodeImageAndNoMapperMapperNodeState.ts";
 export class AnimatedNoMapperMapperNodeState extends MapperNodeState {
+	public override setStepCount(stepCount: number): this {
+		return this;
+	}
+	public override setIntervalInterval(
+		newIntervalId: ReturnType<typeof setInterval>,
+		newIntervalIntervalSeconds: number,
+	): AnimatedNoMapperMapperNodeState {
+		clearInterval(this.intervalId);
+		return new AnimatedNoMapperMapperNodeState(
+			this.inputNode,
+			this.inputNodeImage,
+			newIntervalId,
+			newIntervalIntervalSeconds,
+		);
+	}
 	public override setInputNodeWithImage(
 		thisNode: MapperNode,
 		newInputNode: Node,
@@ -107,10 +122,7 @@ export class AnimatedNoMapperMapperNodeState extends MapperNodeState {
 			this.inputNodeImage,
 		);
 	}
-	public override makeManual(
-		stepCount: number,
-		outputNodes: readonly OutputNode[],
-	): ManualNoMapperMapperNodeState {
+	public override makeManual(stepCount: number): ManualNoMapperMapperNodeState {
 		clearInterval(this.intervalId);
 		return new ManualNoMapperMapperNodeState(
 			this.inputNode,
@@ -121,7 +133,6 @@ export class AnimatedNoMapperMapperNodeState extends MapperNodeState {
 	public override makeAnimated(
 		newIntervalId: ReturnType<typeof setInterval>,
 		newIntervalIntervalSeconds: number,
-		outputNodes: readonly OutputNode[],
 	): AnimatedNoMapperMapperNodeState {
 		clearInterval(this.intervalId);
 		return new AnimatedNoMapperMapperNodeState(
@@ -131,7 +142,10 @@ export class AnimatedNoMapperMapperNodeState extends MapperNodeState {
 			newIntervalIntervalSeconds,
 		);
 	}
-	public override doStep(outputNodes: readonly OutputNode[]): this {
+	public override doManualSteps(outputNodes: readonly OutputNode[]): this {
+		return this;
+	}
+	public override doAnimatedStep(outputNodes: readonly OutputNode[]): this {
 		return this;
 	}
 	public override updateOutputNodeAfterAdding(

@@ -63,6 +63,6 @@ export class FromUrlLoaderNode extends Node {
 		this.state.updateOutputNodeAfterAdding(this, outputNodeToUpdate);
 	}
 	public override disconnect(): void {
-		throw new Error("Not implemented.");
+		this.disconnectOutputNodes();
 	}
 }

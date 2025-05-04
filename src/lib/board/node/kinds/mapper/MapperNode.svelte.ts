@@ -10,22 +10,21 @@ export class MapperNode extends Node implements OutputNode {
 		super(position);
 		this.state = new ManualNoInputNodeAndNoMapperMapperNodeState(1);
 	}
-	public doManualStep(): void {
-		this.state = this.state.doStep(this.outputNodes);
+	public doManualSteps(): void {
+		this.state = this.state.doManualSteps(this.outputNodes);
 	}
 	public makeManual(): void {
-		this.state = this.state.makeManual(1, this.outputNodes);
+		this.state = this.state.makeManual(1);
+	}
+	public setStepCount(stepCount: number): void {
+		this.state = this.state.setStepCount(stepCount);
 	}
 	public makeAnimated(): void {
-		const intervalIntervalSeconds = 10;
+		const intervalIntervalSeconds = 0.001;
 		const intervalId = setInterval(() => {
-			this.state = this.state.doStep(this.outputNodes);
+			this.state = this.state.doAnimatedStep(this.outputNodes);
 		}, intervalIntervalSeconds * 1000);
-		this.state = this.state.makeAnimated(
-			intervalId,
-			intervalIntervalSeconds,
-			this.outputNodes,
-		);
+		this.state = this.state.makeAnimated(intervalId, intervalIntervalSeconds);
 	}
 	public makeInstant(): void {
 		this.state = this.state.makeInstant(this.outputNodes);
@@ -33,13 +32,13 @@ export class MapperNode extends Node implements OutputNode {
 	public state: MapperNodeState = $state.raw() as MapperNodeState;
 	public override readonly status = $derived(this.state.status);
 	public override disconnect(): void {
-		throw new Error("Not implemented.");
+		this.disconnectOutputNodes();
+		this.unsetInputNode();
 	}
 	public unsetMapper(): void {
 		this.state = this.state.unsetMapper(this.outputNodes);
 	}
 	public setMapper(mapper: Mapper): void {
-		debugger;
 		this.state = this.state.setMapper(mapper, this.outputNodes);
 	}
 	public unsetInputNode(): void {
@@ -70,5 +69,14 @@ export class MapperNode extends Node implements OutputNode {
 		outputNodeToUpdate: OutputNode,
 	): void {
 		this.state.updateOutputNodeAfterAdding(this, outputNodeToUpdate);
+	}
+	public setIntervalInterval(intervalIntervalSeconds: number): void {
+		const intervalId = setInterval(() => {
+			this.state = this.state.doAnimatedStep(this.outputNodes);
+		}, intervalIntervalSeconds * 1000);
+		this.state = this.state.setIntervalInterval(
+			intervalId,
+			intervalIntervalSeconds,
+		);
 	}
 }

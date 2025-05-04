@@ -9,6 +9,17 @@ import {ManualNoInputNodeImageAndNoMapperMapperNodeState} from "../manual-no-inp
 import {InstantNoInputNodeAndNoMapperMapperNodeState} from "../instant-no-input-node-and-no-mapper/InstantNoInputNodeAndNoMapperMapperNodeState.ts";
 import {AnimatedNoInputNodeAndNoMapperMapperNodeState} from "../animated-no-input-node-and-no-mapper/AnimatedNoInputNodeAndNoMapperMapperNodeState.ts";
 export class ManualNoInputNodeAndNoMapperMapperNodeState extends MapperNodeState {
+	public override setStepCount(
+		newStepCount: number,
+	): ManualNoInputNodeAndNoMapperMapperNodeState {
+		return new ManualNoInputNodeAndNoMapperMapperNodeState(newStepCount);
+	}
+	public override setIntervalInterval(
+		intervalId: ReturnType<typeof setInterval>,
+		intervalIntervalSeconds: number,
+	): this {
+		return this;
+	}
 	public override setInputNodeWithImage(
 		thisNode: MapperNode,
 		inputNode: Node,
@@ -64,21 +75,22 @@ export class ManualNoInputNodeAndNoMapperMapperNodeState extends MapperNodeState
 	}
 	public override makeManual(
 		newStepCount: number,
-		outputNodes: readonly OutputNode[],
 	): ManualNoInputNodeAndNoMapperMapperNodeState {
 		return new ManualNoInputNodeAndNoMapperMapperNodeState(newStepCount);
 	}
 	public override makeAnimated(
 		intervalId: ReturnType<typeof setInterval>,
 		intervalIntervalSeconds: number,
-		outputNodes: readonly OutputNode[],
 	): AnimatedNoInputNodeAndNoMapperMapperNodeState {
 		return new AnimatedNoInputNodeAndNoMapperMapperNodeState(
 			intervalId,
 			intervalIntervalSeconds,
 		);
 	}
-	public override doStep(outputNodes: readonly OutputNode[]): this {
+	public override doManualSteps(outputNodes: readonly OutputNode[]): this {
+		return this;
+	}
+	public override doAnimatedStep(outputNodes: readonly OutputNode[]): this {
 		return this;
 	}
 	public override updateOutputNodeAfterAdding(

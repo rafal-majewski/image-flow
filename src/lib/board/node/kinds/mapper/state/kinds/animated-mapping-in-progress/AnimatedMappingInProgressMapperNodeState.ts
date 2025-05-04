@@ -10,6 +10,24 @@ import {AnimatedNoInputNodeMapperNodeState} from "../animated-no-input-node/Anim
 import {AnimatedNoMapperMapperNodeState} from "../animated-no-mapper/AnimatedNoMapperMapperNodeState.ts";
 import {AnimatedNoInputNodeImageMapperNodeState} from "../animated-no-input-node-image/AnimatedNoInputNodeImageMapperNodeState.ts";
 export class AnimatedMappingInProgressMapperNodeState extends MapperNodeState {
+	public override setStepCount(stepCount: number): this {
+		return this;
+	}
+	public override setIntervalInterval(
+		newIntervalId: ReturnType<typeof setInterval>,
+		newIntervalIntervalSeconds: number,
+	): AnimatedMappingInProgressMapperNodeState {
+		clearInterval(this.intervalId);
+		return new AnimatedMappingInProgressMapperNodeState(
+			this.generator,
+			this.inputNode,
+			this.inputNodeImage,
+			newIntervalId,
+			newIntervalIntervalSeconds,
+			this.mapper,
+			this.outputImage,
+		);
+	}
 	public override makeInstant(
 		outputNodes: readonly OutputNode[],
 	): InstantMappingSucceededMapperNodeState {
@@ -32,7 +50,6 @@ export class AnimatedMappingInProgressMapperNodeState extends MapperNodeState {
 	}
 	public override makeManual(
 		stepCount: number,
-		outputNodes: readonly OutputNode[],
 	): ManualMappingInProgressMapperNodeState {
 		clearInterval(this.intervalId);
 		return new ManualMappingInProgressMapperNodeState(
@@ -47,7 +64,6 @@ export class AnimatedMappingInProgressMapperNodeState extends MapperNodeState {
 	public override makeAnimated(
 		newIntervalId: ReturnType<typeof setInterval>,
 		newIntervalIntervalSeconds: number,
-		outputNodes: readonly OutputNode[],
 	): AnimatedMappingInProgressMapperNodeState {
 		clearInterval(this.intervalId);
 		return new AnimatedMappingInProgressMapperNodeState(
@@ -60,7 +76,7 @@ export class AnimatedMappingInProgressMapperNodeState extends MapperNodeState {
 			this.outputImage,
 		);
 	}
-	public override doStep(
+	public override doManualSteps(
 		outputNodes: readonly OutputNode[],
 	):
 		| AnimatedMappingInProgressMapperNodeState
@@ -89,6 +105,9 @@ export class AnimatedMappingInProgressMapperNodeState extends MapperNodeState {
 				generatorResult.value,
 			);
 		}
+	}
+	public override doAnimatedStep(outputNodes: readonly OutputNode[]): this {
+		return this;
 	}
 	public override updateOutputNodeAfterAdding(
 		thisNode: MapperNode,

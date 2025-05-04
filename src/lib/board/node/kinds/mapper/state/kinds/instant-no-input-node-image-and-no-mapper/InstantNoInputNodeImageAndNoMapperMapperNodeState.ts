@@ -8,6 +8,15 @@ import {InstantNoInputNodeImageMapperNodeState} from "../instant-no-input-node-i
 import {ManualNoInputNodeImageAndNoMapperMapperNodeState} from "../manual-no-input-node-image-and-no-mapper/ManualNoInputNodeImageAndNoMapperMapperNodeState.ts";
 import {AnimatedNoInputNodeImageAndNoMapperMapperNodeState} from "../animated-no-input-node-image-and-no-mapper/AnimatedNoInputNodeImageAndNoMapperMapperNodeState.ts";
 export class InstantNoInputNodeImageAndNoMapperMapperNodeState extends MapperNodeState {
+	public override setStepCount(stepCount: number): this {
+		return this;
+	}
+	public override setIntervalInterval(
+		intervalId: ReturnType<typeof setInterval>,
+		intervalIntervalSeconds: number,
+	): this {
+		return this;
+	}
 	public override setInputNodeWithImage(
 		thisNode: MapperNode,
 		newInputNode: Node,
@@ -58,7 +67,6 @@ export class InstantNoInputNodeImageAndNoMapperMapperNodeState extends MapperNod
 	}
 	public override makeManual(
 		stepCount: number,
-		outputNodes: readonly OutputNode[],
 	): ManualNoInputNodeImageAndNoMapperMapperNodeState {
 		return new ManualNoInputNodeImageAndNoMapperMapperNodeState(
 			this.inputNode,
@@ -68,7 +76,6 @@ export class InstantNoInputNodeImageAndNoMapperMapperNodeState extends MapperNod
 	public override makeAnimated(
 		intervalId: ReturnType<typeof setInterval>,
 		intervalIntervalSeconds: number,
-		outputNodes: readonly OutputNode[],
 	): AnimatedNoInputNodeImageAndNoMapperMapperNodeState {
 		return new AnimatedNoInputNodeImageAndNoMapperMapperNodeState(
 			this.inputNode,
@@ -76,7 +83,10 @@ export class InstantNoInputNodeImageAndNoMapperMapperNodeState extends MapperNod
 			intervalIntervalSeconds,
 		);
 	}
-	public override doStep(outputNodes: readonly OutputNode[]): this {
+	public override doManualSteps(outputNodes: readonly OutputNode[]): this {
+		return this;
+	}
+	public override doAnimatedStep(outputNodes: readonly OutputNode[]): this {
 		return this;
 	}
 	public override updateOutputNodeAfterAdding(

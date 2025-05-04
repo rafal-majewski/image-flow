@@ -10,6 +10,20 @@ import {InstantNoInputNodeMapperNodeState} from "../instant-no-input-node/Instan
 import {ManualNoInputNodeMapperNodeState} from "../manual-no-input-node/ManualNoInputNodeMapperNodeState.ts";
 import {AnimatedNoInputNodeImageMapperNodeState} from "../animated-no-input-node-image/AnimatedNoInputNodeImageMapperNodeState.ts";
 export class AnimatedNoInputNodeMapperNodeState extends MapperNodeState {
+	public override setStepCount(stepCount: number): this {
+		return this;
+	}
+	public override setIntervalInterval(
+		newIntervalId: ReturnType<typeof setInterval>,
+		newIntervalIntervalSeconds: number,
+	): AnimatedNoInputNodeMapperNodeState {
+		clearInterval(this.intervalId);
+		return new AnimatedNoInputNodeMapperNodeState(
+			newIntervalId,
+			newIntervalIntervalSeconds,
+			this.mapper,
+		);
+	}
 	public override setInputNodeWithImage(
 		thisNode: MapperNode,
 		inputNode: Node,
@@ -99,7 +113,6 @@ export class AnimatedNoInputNodeMapperNodeState extends MapperNodeState {
 	}
 	public override makeManual(
 		stepCount: number,
-		outputNodes: readonly OutputNode[],
 	): ManualNoInputNodeMapperNodeState {
 		clearInterval(this.intervalId);
 		return new ManualNoInputNodeMapperNodeState(this.mapper, stepCount);
@@ -107,7 +120,6 @@ export class AnimatedNoInputNodeMapperNodeState extends MapperNodeState {
 	public override makeAnimated(
 		newIntervalId: ReturnType<typeof setInterval>,
 		newIntervalIntervalSeconds: number,
-		outputNodes: readonly OutputNode[],
 	): AnimatedNoInputNodeMapperNodeState {
 		clearInterval(this.intervalId);
 		return new AnimatedNoInputNodeMapperNodeState(
@@ -116,7 +128,10 @@ export class AnimatedNoInputNodeMapperNodeState extends MapperNodeState {
 			this.mapper,
 		);
 	}
-	public override doStep(outputNodes: readonly OutputNode[]): this {
+	public override doManualSteps(outputNodes: readonly OutputNode[]): this {
+		return this;
+	}
+	public override doAnimatedStep(outputNodes: readonly OutputNode[]): this {
 		return this;
 	}
 	public override updateOutputNodeAfterAdding(

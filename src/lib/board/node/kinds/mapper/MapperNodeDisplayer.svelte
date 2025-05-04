@@ -32,8 +32,8 @@
 		) => void;
 		boardMode: SupportedBoardMode | null;
 	}> = $props();
-	function handleDoManualStepRequest(): void {
-		node.doManualStep();
+	function handleDoManualStepsRequest(): void {
+		node.doManualSteps();
 	}
 	function handleUnsetMapperRequest(): void {
 		node.unsetMapper();
@@ -56,13 +56,21 @@
 	function handleMakeInstantRequest(): void {
 		node.makeInstant();
 	}
+	function handleSetStepCountRequest(stepCount: number): void {
+		node.setStepCount(stepCount);
+	}
+	function handleSetIntervalIntervalRequest(
+		intervalIntervalSeconds: number,
+	): void {
+		node.setIntervalInterval(intervalIntervalSeconds);
+	}
 </script>
 
 {#snippet stateDisplayer()}
 	<MapperNodeStateDisplayer
 		id={node.id}
 		state={node.state}
-		onDoManualStepsRequest={handleDoManualStepRequest}
+		onDoManualStepsRequest={handleDoManualStepsRequest}
 		onUnsetMapperRequest={handleUnsetMapperRequest}
 		onSetMapperRequest={handleSetMapperRequest}
 		{boardMode}
@@ -71,6 +79,8 @@
 		onMakeManualRequest={handleMakeManualRequest}
 		onMakeAnimatedRequest={handleMakeAnimatedRequest}
 		onMakeInstantRequest={handleMakeInstantRequest}
+		onSetStepCountRequest={handleSetStepCountRequest}
+		onSetIntervalIntervalRequest={handleSetIntervalIntervalRequest}
 	/>
 {/snippet}
 
