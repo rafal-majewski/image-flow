@@ -1,6 +1,5 @@
 import type {Coordinates} from "../../../coordinates/Coordinates.ts";
 import {Node} from "../../Node.svelte.ts";
-import type {SupportedNode} from "../../SupportedNode.ts";
 import type {OutputNode} from "../../OutputNode.ts";
 import type {Mapper} from "./mapper/Mapper.ts";
 import {ManualNoInputNodeAndNoMapperMapperNodeState} from "./state/kinds/manual-no-input-node-and-no-mapper/ManualNoInputNodeAndNoMapperMapperNodeState.ts";
@@ -55,7 +54,7 @@ export class MapperNode extends Node implements OutputNode {
 			this.outputNodes,
 		);
 	}
-	public setInputNodeWithoutImage(inputNode: SupportedNode): void {
+	public setInputNodeWithoutImage(inputNode: Node): void {
 		this.state = this.state.setInputNodeWithoutImage(
 			this,
 			inputNode,

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type {Snippet} from "svelte";
-	import type {Coordinates} from "../coordinates/Coordinates.ts";
-	import type {Node} from "./Node.svelte.ts";
+	import type {Coordinates} from "../../coordinates/Coordinates.ts";
+	import type {Node} from "../Node.svelte.ts";
 	const {
 		node,
 		onDeleteRequest,

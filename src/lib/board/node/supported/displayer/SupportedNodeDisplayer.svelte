@@ -1,15 +1,15 @@
 <script lang="ts">
-	import type {Coordinates} from "../coordinates/Coordinates.ts";
-	import {FromUrlLoaderNode} from "./kinds/from-url-loader/FromUrlLoaderNode.svelte.ts";
-	import FromUrlLoaderNodeDisplayer from "./kinds/from-url-loader/FromUrlLoaderNodeDisplayer.svelte";
-	import {MapperNode} from "./kinds/mapper/MapperNode.svelte.ts";
-	import MapperNodeDisplayer from "./kinds/mapper/MapperNodeDisplayer.svelte";
-	import type {SupportedNode} from "./SupportedNode.ts";
-	import type {Node} from "./Node.svelte.ts";
-	import type {SupportedBoardMode} from "../mode/SupportedBoardMode.ts";
-	import type {SupportedOutputNode} from "./SupportedOutputNode.ts";
-	import FromFileLoaderNodeDisplayer from "./kinds/from-file-loader/FromFileLoaderNodeDisplayer.svelte";
-	import {FromFileLoaderNode} from "./kinds/from-file-loader/FromFileLoaderNode.svelte.ts";
+	import type {Coordinates} from "../../../coordinates/Coordinates.ts";
+	import {FromUrlLoaderNode} from "../../kinds/from-url-loader/FromUrlLoaderNode.svelte.ts";
+	import FromUrlLoaderNodeDisplayer from "../../kinds/from-url-loader/displayer/FromUrlLoaderNodeDisplayer.svelte";
+	import {MapperNode} from "../../kinds/mapper/MapperNode.svelte.ts";
+	import MapperNodeDisplayer from "../../kinds/mapper/displayer/MapperNodeDisplayer.svelte";
+	import type {SupportedNode} from "../SupportedNode.ts";
+	import type {Node} from "../../Node.svelte.ts";
+	import type {SupportedBoardMode} from "../../../mode/SupportedBoardMode.ts";
+	import FromFileLoaderNodeDisplayer from "../../kinds/from-file-loader/displayer/FromFileLoaderNodeDisplayer.svelte";
+	import {FromFileLoaderNode} from "../../kinds/from-file-loader/FromFileLoaderNode.svelte.ts";
+	import type {OutputNode} from "../../OutputNode.ts";
 	const {
 		node,
 		onDeleteRequest,
@@ -28,11 +28,11 @@
 		onMouseLeftButtonUp: (node: Node) => void;
 		boardMode: SupportedBoardMode | null;
 		onSetInputNodeRequest: (
-			targetNode: SupportedOutputNode,
+			targetNode: OutputNode,
 			mouseClientPosition: Coordinates,
 		) => void;
 		onSetOutputNodeRequest: (
-			targetNode: SupportedNode,
+			targetNode: Node,
 			mouseClientPosition: Coordinates,
 		) => void;
 	}> = $props();

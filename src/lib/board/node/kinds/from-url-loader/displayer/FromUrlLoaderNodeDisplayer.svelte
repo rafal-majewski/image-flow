@@ -1,10 +1,10 @@
 <script lang="ts">
-	import type {Coordinates} from "../../../coordinates/Coordinates.ts";
-	import NodeDisplayer from "../../NodeDisplayer.svelte";
-	import type {FromUrlLoaderNode} from "./FromUrlLoaderNode.svelte.ts";
-	import type {Node} from "../../Node.svelte.ts";
-	import type {SupportedBoardMode} from "../../../mode/SupportedBoardMode.ts";
-	import FromUrlLoaderNodeStateDisplayer from "./state/FromUrlLoaderNodeStateDisplayer.svelte";
+	import type {Coordinates} from "../../../../coordinates/Coordinates.ts";
+	import NodeDisplayer from "../../../displayer/NodeDisplayer.svelte";
+	import type {FromUrlLoaderNode} from "../FromUrlLoaderNode.svelte.ts";
+	import type {Node} from "../../../Node.svelte.ts";
+	import type {SupportedBoardMode} from "../../../../mode/SupportedBoardMode.ts";
+	import FromUrlLoaderNodeStateDisplayer from "../state/FromUrlLoaderNodeStateDisplayer.svelte";
 	const {
 		node,
 		onDeleteRequest,

@@ -1,6 +1,7 @@
-import type {Node} from "../../../node/Node.svelte.ts";
-import type {BoardMode} from "../../BoardMode.ts";
-export type MovingNodeBoardMode = BoardMode<
-	"movingNode",
-	Readonly<{node: Node}>
+import type {BoardModeWithData} from "../../types/with-data/BoardModeWithData.ts";
+import type {MovingNodeBoardModeData} from "./data/MovingNodeBoardModeData.ts";
+import type {movingNodeBoardModeKindName} from "./kind-name/movingNodeBoardModeKindName.ts";
+export type MovingNodeBoardMode = BoardModeWithData<
+	typeof movingNodeBoardModeKindName,
+	MovingNodeBoardModeData
 >;

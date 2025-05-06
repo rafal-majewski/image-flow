@@ -1,6 +1,7 @@
-import type {Coordinates} from "../../../coordinates/Coordinates.ts";
-import type {BoardMode} from "../../BoardMode.ts";
-export type AddingNodeBoardMode = BoardMode<
-	"addingNode",
-	Readonly<{position: Coordinates}>
+import type {BoardModeWithData} from "../../types/with-data/BoardModeWithData.ts";
+import type {AddingNodeBoardModeData} from "./data/AddingNodeBoardModeData.ts";
+import type {addingNodeBoardModeKindName} from "./kind-name/addingNodeBoardModeKindName.ts";
+export type AddingNodeBoardMode = BoardModeWithData<
+	typeof addingNodeBoardModeKindName,
+	AddingNodeBoardModeData
 >;

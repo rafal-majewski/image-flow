@@ -5,15 +5,19 @@
 	import Menu from "./main/Menu.svelte";
 	import type {SupportedBoardMode} from "./mode/SupportedBoardMode.ts";
 	import LineDisplayer from "./line-displayer/LineDisplayer.svelte";
-	import SupportedNodeDisplayer from "./node/SupportedNodeDisplayer.svelte";
+	import SupportedNodeDisplayer from "./node/supported/displayer/SupportedNodeDisplayer.svelte";
 	import type {Node} from "./node/Node.svelte.ts";
-	import type {SupportedOutputNode} from "./node/SupportedOutputNode.ts";
-	import type {SupportedNode} from "./node/SupportedNode.ts";
+	import type {SupportedNode} from "./node/supported/SupportedNode.ts";
 	import {MapperNode} from "./node/kinds/mapper/MapperNode.svelte.ts";
 	import {FromUrlLoaderNode} from "./node/kinds/from-url-loader/FromUrlLoaderNode.svelte.ts";
 	import {FromFileLoaderNode} from "./node/kinds/from-file-loader/FromFileLoaderNode.svelte.ts";
 	import type {OutputNode} from "./node/OutputNode.ts";
-	import type {SupportedNodeClass} from "./node/SupportedNodeClass.ts";
+	import type {SupportedNodeClass} from "./node/supported/class/SupportedNodeClass.ts";
+	import {createSettingOutputNodeBoardMode} from "./mode/kinds/setting-output-node/creating/createSettingOutputNodeBoardMode.ts";
+	import {createSettingInputNodeBoardMode} from "./mode/kinds/setting-input-node/creating/createSettingInputNodeBoardMode.ts";
+	import {movingCameraBoardMode} from "./mode/kinds/moving-camera/instance/movingCameraBoardMode.ts";
+	import {createMovingNodeBoardMode} from "./mode/kinds/moving-node/creating/createMovingNodeBoardMode.ts";
+	import {createAddingNodeBoardMode} from "./mode/kinds/adding-node/creating/createAddingNodeBoardMode.ts";
 	let board: HTMLElement;
 	let cameraPosition = $state<Coordinates>({x: 0, y: 0});
 	function computeInBoardPositionFromJustClientPosition(
@@ -47,15 +51,12 @@
 	function handleContextMenuOpen(event: MouseEvent): void {
 		if (event.target === board && mode === null) {
 			event.preventDefault();
-			mode = {
-				kindName: "addingNode",
-				data: {
-					position: computeInBoardPositionFromJustClientPosition({
-						x: event.clientX,
-						y: event.clientY,
-					}),
-				},
-			};
+			mode = createAddingNodeBoardMode(
+				computeInBoardPositionFromJustClientPosition({
+					x: event.clientX,
+					y: event.clientY,
+				}),
+			);
 		}
 	}
 	function handleMouseMove(event: MouseEvent): void {
@@ -80,29 +81,23 @@
 					break;
 				}
 				case "settingOutputNode": {
-					mode = {
-						...mode,
-						data: {
-							...mode.data,
-							targetPosition: computeInBoardPositionFromJustClientPosition({
-								x: event.clientX,
-								y: event.clientY,
-							}),
-						},
-					};
+					mode = createSettingOutputNodeBoardMode(
+						mode.data.sourceNode,
+						computeInBoardPositionFromJustClientPosition({
+							x: event.clientX,
+							y: event.clientY,
+						}),
+					);
 					break;
 				}
 				case "settingInputNode": {
-					mode = {
-						...mode,
-						data: {
-							...mode.data,
-							sourcePosition: computeInBoardPositionFromJustClientPosition({
-								x: event.clientX,
-								y: event.clientY,
-							}),
-						},
-					};
+					mode = createSettingOutputNodeBoardMode(
+						mode.data.targetNode,
+						computeInBoardPositionFromJustClientPosition({
+							x: event.clientX,
+							y: event.clientY,
+						}),
+					);
 					break;
 				}
 			}
@@ -114,7 +109,7 @@
 			&& event.button === 0
 			&& (mode === null || mode.kindName === "addingNode")
 		) {
-			mode = {kindName: "movingCamera"};
+			mode = movingCameraBoardMode;
 		}
 	}
 	function handleMouseUp(event: MouseEvent): void {
@@ -133,57 +128,32 @@
 	}
 	function handleMouseLeft(): void {
 		if (mode !== null) {
-			switch (mode.kindName) {
-				case "movingNode": {
-					mode = null;
-					break;
-				}
-				case "movingCamera": {
-					mode = null;
-					break;
-				}
-				case "settingOutputNode": {
-					mode = null;
-					break;
-				}
-				case "settingInputNode": {
-					mode = null;
-					break;
-				}
-			}
+			mode = null;
 		}
 	}
 	function handleSetOutputNodeToNodeRequest(
-		nodeInRequest: SupportedNode,
+		nodeInRequest: Node,
 		clientPosition: Coordinates,
 	): void {
 		if (mode === null) {
-			mode = {
-				kindName: "settingOutputNode",
-				data: {
-					sourceNode: nodeInRequest,
-					targetPosition:
-						computeInBoardPositionFromJustClientPosition(clientPosition),
-				},
-			};
+			mode = createSettingOutputNodeBoardMode(
+				nodeInRequest,
+				computeInBoardPositionFromJustClientPosition(clientPosition),
+			);
 		} else if (mode.kindName === "settingInputNode") {
 			nodeInRequest.addAndUpdateOutputNode(mode.data.targetNode);
 			mode = null;
 		}
 	}
 	function handleSetInputNodeToNodeRequest(
-		nodeInRequest: SupportedOutputNode,
+		nodeInRequest: OutputNode,
 		clientPosition: Coordinates,
 	): void {
 		if (mode === null) {
-			mode = {
-				kindName: "settingInputNode",
-				data: {
-					targetNode: nodeInRequest,
-					sourcePosition:
-						computeInBoardPositionFromJustClientPosition(clientPosition),
-				},
-			};
+			mode = createSettingInputNodeBoardMode(
+				nodeInRequest,
+				computeInBoardPositionFromJustClientPosition(clientPosition),
+			);
 		} else if (mode.kindName === "settingOutputNode") {
 			mode.data.sourceNode.addAndUpdateOutputNode(nodeInRequest);
 			mode = null;
@@ -191,7 +161,7 @@
 	}
 	function handleMouseLeftButtonDownedOnNode(node: Node): void {
 		if (mode === null) {
-			mode = {kindName: "movingNode", data: {node}};
+			mode = createMovingNodeBoardMode(node);
 		}
 	}
 	function handleMouseLeftButtonUppedOnNode(): void {}

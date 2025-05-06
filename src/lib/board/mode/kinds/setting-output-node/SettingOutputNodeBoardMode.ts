@@ -1,7 +1,7 @@
-import type {Coordinates} from "../../../coordinates/Coordinates.ts";
-import type {SupportedNode} from "../../../node/SupportedNode.ts";
-import type {BoardMode} from "../../BoardMode.ts";
-export type SettingOutputNodeBoardMode = BoardMode<
-	"settingOutputNode",
-	Readonly<{sourceNode: SupportedNode; targetPosition: Coordinates}>
+import type {BoardModeWithData} from "../../types/with-data/BoardModeWithData.ts";
+import type {SettingOutputNodeBoardModeData} from "./data/SettingOutputNodeBoardModeData.ts";
+import type {settingOutputNodeBoardModeKindName} from "./kind-name/settingOutputNodeBoardModeKindName.ts";
+export type SettingOutputNodeBoardMode = BoardModeWithData<
+	typeof settingOutputNodeBoardModeKindName,
+	SettingOutputNodeBoardModeData
 >;

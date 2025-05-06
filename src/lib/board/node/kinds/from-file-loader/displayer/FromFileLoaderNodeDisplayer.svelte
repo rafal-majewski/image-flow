@@ -1,10 +1,10 @@
 <script lang="ts">
-	import type {Coordinates} from "../../../coordinates/Coordinates.ts";
-	import NodeDisplayer from "../../NodeDisplayer.svelte";
-	import type {FromFileLoaderNode} from "./FromFileLoaderNode.svelte.ts";
-	import type {Node} from "../../Node.svelte.ts";
-	import type {SupportedBoardMode} from "../../../mode/SupportedBoardMode.ts";
-	import FromFileLoaderNodeStateDisplayer from "./state/FromFileLoaderNodeStateDisplayer.svelte";
+	import type {Coordinates} from "../../../../coordinates/Coordinates.ts";
+	import NodeDisplayer from "../../../displayer/NodeDisplayer.svelte";
+	import type {FromFileLoaderNode} from "../FromFileLoaderNode.svelte.ts";
+	import type {Node} from "../../../Node.svelte.ts";
+	import type {SupportedBoardMode} from "../../../../mode/SupportedBoardMode.ts";
+	import FromFileLoaderNodeStateDisplayer from "../state/FromFileLoaderNodeStateDisplayer.svelte";
 	const {
 		node,
 		onDeleteRequest,

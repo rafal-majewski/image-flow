@@ -1,7 +1,7 @@
-import type {Coordinates} from "../../../coordinates/Coordinates.ts";
-import type {MapperNode} from "../../../node/kinds/mapper/MapperNode.svelte.ts";
-import type {BoardMode} from "../../BoardMode.ts";
-export type SettingInputNodeBoardMode = BoardMode<
-	"settingInputNode",
-	Readonly<{targetNode: MapperNode; sourcePosition: Coordinates}>
+import type {BoardModeWithData} from "../../types/with-data/BoardModeWithData.ts";
+import type {SettingInputNodeBoardModeData} from "./data/SettingInputNodeBoardModeData.ts";
+import type {settingInputNodeBoardModeKindName} from "./kind-name/settingInputNodeBoardModeKindName.ts";
+export type SettingInputNodeBoardMode = BoardModeWithData<
+	typeof settingInputNodeBoardModeKindName,
+	SettingInputNodeBoardModeData
 >;

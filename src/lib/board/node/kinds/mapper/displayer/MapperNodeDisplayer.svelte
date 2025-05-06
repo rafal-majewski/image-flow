@@ -1,11 +1,11 @@
 <script lang="ts">
-	import type {Coordinates} from "../../../coordinates/Coordinates.ts";
-	import NodeDisplayer from "../../NodeDisplayer.svelte";
-	import {MapperNode} from "./MapperNode.svelte.ts";
-	import type {Node} from "../../Node.svelte.ts";
-	import MapperNodeStateDisplayer from "./state/MapperNodeStateDisplayer.svelte";
-	import type {Mapper} from "./mapper/Mapper.ts";
-	import type {SupportedBoardMode} from "../../../mode/SupportedBoardMode.ts";
+	import type {Coordinates} from "../../../../coordinates/Coordinates.ts";
+	import NodeDisplayer from "../../../displayer/NodeDisplayer.svelte";
+	import {MapperNode} from "../MapperNode.svelte.ts";
+	import type {Node} from "../../../Node.svelte.ts";
+	import MapperNodeStateDisplayer from "../state/displayer/MapperNodeStateDisplayer.svelte";
+	import type {Mapper} from "../mapper/Mapper.ts";
+	import type {SupportedBoardMode} from "../../../../mode/SupportedBoardMode.ts";
 	const {
 		node,
 		onDeleteRequest,
