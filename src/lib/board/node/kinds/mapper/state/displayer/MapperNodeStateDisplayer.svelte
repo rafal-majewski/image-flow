@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type {Coordinates} from "../../../../../coordinates/Coordinates.ts";
-	import type {SupportedBoardMode} from "../../../../../mode/SupportedBoardMode.ts";
+	import type {SupportedBoardMode} from "../../../../../mode/supported/SupportedBoardMode.ts";
 	import Canvas from "../../../../Canvas.svelte";
 	import {supportedMappers} from "../../supportedMappers.ts";
 	import type {NodeId} from "../../../../id/NodeId.ts";
@@ -26,7 +26,7 @@
 	import {ManualNoInputNodeAndNoMapperMapperNodeState} from "../kinds/manual-no-input-node-and-no-mapper/ManualNoInputNodeAndNoMapperMapperNodeState.ts";
 	import {ManualNoInputNodeImageAndNoMapperMapperNodeState} from "../kinds/manual-no-input-node-image-and-no-mapper/ManualNoInputNodeImageAndNoMapperMapperNodeState.ts";
 	import {ManualNoInputNodeImageMapperNodeState} from "../kinds/manual-no-input-node-image/ManualNoInputNodeImageMapperNodeState.ts";
-	import SupportedMapperDisplayer from "../../mapper/supported/displayer/SupportedMapperDisplayer.svelte";
+	import SupportedMapperDisplayer from "../../mapper/supported-displayer/SupportedMapperDisplayer.svelte";
 	const {
 		state,
 		onDoManualStepsRequest,

@@ -1,6 +1,8 @@
 import type {OutputNode} from "../../../OutputNode.ts";
 import type {NodeStatus} from "../../../status/NodeStatus.ts";
 import type {FromUrlLoaderNode} from "../FromUrlLoaderNode.svelte.ts";
+import type {InvalidUrlFromUrlLoaderNodeState} from "./kinds/invalid-url/InvalidUrlFromUrlLoaderNodeState.ts";
+import type {LoadingInProgressFromUrlLoaderNodeState} from "./kinds/loading-in-progress/LoadingInProgressFromUrlLoaderNodeState.ts";
 export abstract class FromUrlLoaderNodeState {
 	public readonly status: NodeStatus;
 	public constructor(status: NodeStatus) {
@@ -9,11 +11,11 @@ export abstract class FromUrlLoaderNodeState {
 	public abstract setValidUrl(
 		url: string,
 		outputNodes: readonly OutputNode[],
-	): FromUrlLoaderNodeState;
+	): LoadingInProgressFromUrlLoaderNodeState;
 	public abstract setInvalidUrl(
 		url: string,
 		outputNodes: readonly OutputNode[],
-	): FromUrlLoaderNodeState;
+	): InvalidUrlFromUrlLoaderNodeState;
 	public abstract updateOutputNodeAfterAdding(
 		thisNode: FromUrlLoaderNode,
 		outputNodeToUpdate: OutputNode,

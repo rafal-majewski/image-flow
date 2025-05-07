@@ -5,7 +5,7 @@
 	import type {Node} from "../../../Node.svelte.ts";
 	import MapperNodeStateDisplayer from "../state/displayer/MapperNodeStateDisplayer.svelte";
 	import type {Mapper} from "../mapper/Mapper.ts";
-	import type {SupportedBoardMode} from "../../../../mode/SupportedBoardMode.ts";
+	import type {SupportedBoardMode} from "../../../../mode/supported/SupportedBoardMode.ts";
 	const {
 		node,
 		onDeleteRequest,

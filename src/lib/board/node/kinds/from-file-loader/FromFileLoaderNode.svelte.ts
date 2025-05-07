@@ -2,14 +2,14 @@ import type {Coordinates} from "../../../coordinates/Coordinates.ts";
 import type {OutputNode} from "../../OutputNode.ts";
 import {Node} from "../../Node.svelte.ts";
 import {NoFileFromFileLoaderNodeState} from "./state/kinds/no-file/NoFileFromFileLoaderNodeState.ts";
-import type {SupportedFromFileLoaderNodeState} from "./state/SupportedFromFileLoaderNodeState.ts";
+import type {FromFileLoaderNodeState} from "./state/FromFileLoaderNodeState.ts";
 export class FromFileLoaderNode extends Node {
 	public constructor(position: Coordinates) {
 		super(position);
 		this.state = new NoFileFromFileLoaderNodeState();
 	}
-	public state: SupportedFromFileLoaderNodeState =
-		$state.raw() as SupportedFromFileLoaderNodeState;
+	public state: FromFileLoaderNodeState =
+		$state.raw() as FromFileLoaderNodeState;
 	public readonly status = $derived(this.state.status);
 	public async setFile(file: File): Promise<void> {
 		const loadingInProgressState = this.state.setFile(file, this.outputNodes);

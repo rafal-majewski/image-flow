@@ -1,9 +1,9 @@
 <script lang="ts">
-	import type {Coordinates} from "../../../../coordinates/Coordinates.ts";
-	import type {SupportedBoardMode} from "../../../../mode/SupportedBoardMode.ts";
-	import Canvas from "../../../Canvas.svelte";
-	import type {FromFileLoaderNodeState} from "./FromFileLoaderNodeState.ts";
-	import {LoadingSucceededFromFileLoaderNodeState} from "./kinds/loading-succeeded/LoadingSucceededFromFileLoaderNodeState.ts";
+	import type {Coordinates} from "../../../../../coordinates/Coordinates.ts";
+	import type {SupportedBoardMode} from "../../../../../mode/supported/SupportedBoardMode.ts";
+	import Canvas from "../../../../Canvas.svelte";
+	import type {FromFileLoaderNodeState} from "../FromFileLoaderNodeState.ts";
+	import {LoadingSucceededFromFileLoaderNodeState} from "../kinds/loading-succeeded/LoadingSucceededFromFileLoaderNodeState.ts";
 	const {
 		state,
 		onSetFileRequest,

@@ -1,19 +1,21 @@
 import type {Coordinates} from "../../../../../../coordinates/Coordinates.ts";
+import {createDiscreteRgbColorFromComponent} from "../../../color/types/discrete/kinds/rgb/creating-from-component/createDiscreteRgbColorFromComponent.ts";
+import {readRgbColorFromImage} from "../../../reading-rgb-color-from-image/readRgbColorFromImage.ts";
 import {readRgbaColorFromImage} from "../../../reading-rgba-color-from-image/readRgbaColorFromImage.ts";
 import {Mapper} from "../../Mapper.ts";
-export class AveragingBlurMapper extends Mapper {
+export class AverageBlurringMapper extends Mapper {
 	public readonly mixFactor: number;
 	public readonly radius: number;
 	public constructor(mixFactor: number, radius: number) {
-		super("averaging-blur", "Averaging blur");
+		super("average-blurring", "Average blurring");
 		this.mixFactor = mixFactor;
 		this.radius = radius;
 	}
-	public withNewMixFactor(newMixFactor: number): AveragingBlurMapper {
-		return new AveragingBlurMapper(newMixFactor, this.radius);
+	public withNewMixFactor(newMixFactor: number): AverageBlurringMapper {
+		return new AverageBlurringMapper(newMixFactor, this.radius);
 	}
-	public withNewRadius(newRadius: number): AveragingBlurMapper {
-		return new AveragingBlurMapper(this.mixFactor, newRadius);
+	public withNewRadius(newRadius: number): AverageBlurringMapper {
+		return new AverageBlurringMapper(this.mixFactor, newRadius);
 	}
 	public *map(inputImage: ImageData): Generator<ImageData, ImageData, void> {
 		const outputImage = new ImageData(inputImage.width, inputImage.height);
@@ -24,11 +26,7 @@ export class AveragingBlurMapper extends Mapper {
 		) {
 			yield outputImage;
 			const color = readRgbaColorFromImage(inputImage, byteIndex);
-			let blurredColor: RgbColor = {
-				red: 0 as ColorComponent,
-				green: 0 as ColorComponent,
-				blue: 0 as ColorComponent,
-			};
+			let blurredColor = createDiscreteRgbColorFromComponent(0);
 			const position: Coordinates = {
 				x: (byteIndex / 4) % inputImage.width,
 				y: Math.floor(byteIndex / 4 / inputImage.width),
@@ -55,11 +53,10 @@ export class AveragingBlurMapper extends Mapper {
 						) {
 							const neighborByteIndex =
 								(neighborPositionY * inputImage.width + neighborPositionX) * 4;
-							const neighborColor: RgbColor = {
-								red: inputImage.data[neighborByteIndex] as ColorComponent,
-								green: inputImage.data[neighborByteIndex + 1] as ColorComponent,
-								blue: inputImage.data[neighborByteIndex + 2] as ColorComponent,
-							};
+							const neighborColor = readRgbColorFromImage(
+								inputImage,
+								neighborByteIndex,
+							);
 							blurredColor = {
 								red: blurredColor.red + neighborColor.red,
 								green: blurredColor.green + neighborColor.green,

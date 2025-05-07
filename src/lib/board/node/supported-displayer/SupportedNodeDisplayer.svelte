@@ -1,15 +1,14 @@
 <script lang="ts">
-	import type {Coordinates} from "../../../coordinates/Coordinates.ts";
-	import {FromUrlLoaderNode} from "../../kinds/from-url-loader/FromUrlLoaderNode.svelte.ts";
-	import FromUrlLoaderNodeDisplayer from "../../kinds/from-url-loader/displayer/FromUrlLoaderNodeDisplayer.svelte";
-	import {MapperNode} from "../../kinds/mapper/MapperNode.svelte.ts";
-	import MapperNodeDisplayer from "../../kinds/mapper/displayer/MapperNodeDisplayer.svelte";
-	import type {SupportedNode} from "../SupportedNode.ts";
-	import type {Node} from "../../Node.svelte.ts";
-	import type {SupportedBoardMode} from "../../../mode/SupportedBoardMode.ts";
-	import FromFileLoaderNodeDisplayer from "../../kinds/from-file-loader/displayer/FromFileLoaderNodeDisplayer.svelte";
-	import {FromFileLoaderNode} from "../../kinds/from-file-loader/FromFileLoaderNode.svelte.ts";
-	import type {OutputNode} from "../../OutputNode.ts";
+	import type {Coordinates} from "../../coordinates/Coordinates.ts";
+	import {FromUrlLoaderNode} from "../kinds/from-url-loader/FromUrlLoaderNode.svelte.ts";
+	import FromUrlLoaderNodeDisplayer from "../kinds/from-url-loader/displayer/FromUrlLoaderNodeDisplayer.svelte";
+	import {MapperNode} from "../kinds/mapper/MapperNode.svelte.ts";
+	import MapperNodeDisplayer from "../kinds/mapper/displayer/MapperNodeDisplayer.svelte";
+	import type {Node} from "../Node.svelte.ts";
+	import type {SupportedBoardMode} from "../../mode/supported/SupportedBoardMode.ts";
+	import FromFileLoaderNodeDisplayer from "../kinds/from-file-loader/displayer/FromFileLoaderNodeDisplayer.svelte";
+	import {FromFileLoaderNode} from "../kinds/from-file-loader/FromFileLoaderNode.svelte.ts";
+	import type {OutputNode} from "../OutputNode.ts";
 	const {
 		node,
 		onDeleteRequest,
@@ -19,7 +18,7 @@
 		onSetInputNodeRequest,
 		onSetOutputNodeRequest,
 	}: Readonly<{
-		node: SupportedNode;
+		node: Node;
 		onDeleteRequest: (node: Node) => void;
 		onMouseLeftButtonDown: (
 			node: Node,

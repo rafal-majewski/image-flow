@@ -3,8 +3,8 @@
 	import NodeDisplayer from "../../../displayer/NodeDisplayer.svelte";
 	import type {FromFileLoaderNode} from "../FromFileLoaderNode.svelte.ts";
 	import type {Node} from "../../../Node.svelte.ts";
-	import type {SupportedBoardMode} from "../../../../mode/SupportedBoardMode.ts";
-	import FromFileLoaderNodeStateDisplayer from "../state/FromFileLoaderNodeStateDisplayer.svelte";
+	import type {SupportedBoardMode} from "../../../../mode/supported/SupportedBoardMode.ts";
+	import FromFileLoaderNodeStateDisplayer from "../state/displayer/FromFileLoaderNodeStateDisplayer.svelte";
 	const {
 		node,
 		onDeleteRequest,

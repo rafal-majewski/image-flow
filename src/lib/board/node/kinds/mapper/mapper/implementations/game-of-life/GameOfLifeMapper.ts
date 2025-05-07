@@ -1,8 +1,11 @@
-import type {ColorComponent} from "../../../color/types/discrete/component/DiscreteColorComponent.ts";
-import type {RgbColor} from "../../../color/types/discrete/kinds/rgb/DiscreteRgbColor.ts";
 import type {Coordinates} from "../../../../../../coordinates/Coordinates.ts";
+import {createContinuousRgbColorFromComponent} from "../../../color/types/continuous/kinds/rgb/creating-from-component/createContinuousRgbColorFromComponent.ts";
+import type {DiscreteColorComponent} from "../../../color/types/discrete/component/DiscreteColorComponent.ts";
+import type {DiscreteRgbColor} from "../../../color/types/discrete/kinds/rgb/DiscreteRgbColor.ts";
+import {readRgbColorFromImage} from "../../../reading-rgb-color-from-image/readRgbColorFromImage.ts";
 import {Mapper} from "../../Mapper.ts";
 import type {GameOfLifeMapperColorComponentComputer} from "./color-component-computer/GameOfLifeMapperColorComponentComputer.ts";
+import {computeModuloKeepingDivisorSign} from "./computing-modulo-keeping-divisor-sign/computeModuloKeepingDivisorSign.ts";
 export class GameOfLifeMapper extends Mapper {
 	public readonly mixFactor: number;
 	public readonly componentComputer: GameOfLifeMapperColorComponentComputer;
@@ -40,13 +43,7 @@ export class GameOfLifeMapper extends Mapper {
 					x: (byteIndex / 4) % currentImage.width,
 					y: Math.floor(byteIndex / 4 / currentImage.width),
 				};
-				function computeModuloKeepingDivisorSign(
-					dividend: number,
-					divisor: number,
-				): number {
-					return ((dividend % divisor) + divisor) % divisor;
-				}
-				let neighborCount: RgbColor = {red: 0, green: 0, blue: 0};
+				let neighborCount = createContinuousRgbColorFromComponent(0);
 				for (let deltaY = -1; deltaY <= 1; deltaY += 1) {
 					for (let deltaX = -1; deltaX <= 1; deltaX += 1) {
 						if (deltaX === 0 && deltaY === 0) {
@@ -63,14 +60,12 @@ export class GameOfLifeMapper extends Mapper {
 							),
 						};
 						const neighborByteIndex =
-							neighborPosition.x + neighborPosition.y * currentImage.width;
-						const neighborColor: RgbColor = {
-							red: lastImage.data[neighborByteIndex * 4] as ColorComponent,
-							green: lastImage.data[
-								neighborByteIndex * 4 + 1
-							] as ColorComponent,
-							blue: lastImage.data[neighborByteIndex * 4 + 2] as ColorComponent,
-						};
+							(neighborPosition.x + neighborPosition.y * currentImage.width)
+							* 4;
+						const neighborColor = readRgbColorFromImage(
+							lastImage,
+							neighborByteIndex,
+						);
 						neighborCount = {
 							red: neighborCount.red + neighborColor.red / 255,
 							green: neighborCount.green + neighborColor.green / 255,
@@ -78,25 +73,36 @@ export class GameOfLifeMapper extends Mapper {
 						};
 					}
 				}
-				const color: RgbColor = {
-					red: this.componentComputer.compute(neighborCount.red),
-					green: this.componentComputer.compute(neighborCount.green),
-					blue: this.componentComputer.compute(neighborCount.blue),
+				const selfColor = readRgbColorFromImage(lastImage, byteIndex);
+				const color: DiscreteRgbColor = {
+					red: this.componentComputer.compute(
+						selfColor.red / 255,
+						neighborCount.red,
+					),
+					green: this.componentComputer.compute(
+						selfColor.green / 255,
+						neighborCount.green,
+					),
+					blue: this.componentComputer.compute(
+						selfColor.blue / 255,
+						neighborCount.blue,
+					),
 				};
 				currentImage.data[byteIndex] =
-					(lastImage.data[byteIndex] as ColorComponent) * (1 - this.mixFactor)
+					(lastImage.data[byteIndex] as DiscreteColorComponent)
+						* (1 - this.mixFactor)
 					+ color.red * this.mixFactor;
 				currentImage.data[byteIndex + 1] =
-					(lastImage.data[byteIndex + 1] as ColorComponent)
+					(lastImage.data[byteIndex + 1] as DiscreteColorComponent)
 						* (1 - this.mixFactor)
 					+ color.green * this.mixFactor;
 				currentImage.data[byteIndex + 2] =
-					(lastImage.data[byteIndex + 2] as ColorComponent)
+					(lastImage.data[byteIndex + 2] as DiscreteColorComponent)
 						* (1 - this.mixFactor)
 					+ color.blue * this.mixFactor;
 				currentImage.data[byteIndex + 3] = lastImage.data[
 					byteIndex + 3
-				] as ColorComponent;
+				] as DiscreteColorComponent;
 			}
 			lastImage = currentImage;
 		}

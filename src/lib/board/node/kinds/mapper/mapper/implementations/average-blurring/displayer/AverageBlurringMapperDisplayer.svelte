@@ -1,11 +1,11 @@
 <script lang="ts">
-	import type {AveragingBlurMapper} from "../AveragingBlurMapper.ts";
+	import type {AverageBlurringMapper} from "../AverageBlurringMapper.ts";
 	const {
 		mapper,
 		onSetMapperRequest,
 	}: Readonly<{
-		mapper: AveragingBlurMapper;
-		onSetMapperRequest: (mapper: AveragingBlurMapper) => void;
+		mapper: AverageBlurringMapper;
+		onSetMapperRequest: (mapper: AverageBlurringMapper) => void;
 	}> = $props();
 	// function handleClassicColorComponentComputerInputChange(event: Event): void {
 	// 	onSetMapperRequest(

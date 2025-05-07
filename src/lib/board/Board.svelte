@@ -3,21 +3,20 @@
 	import type {Coordinates} from "./coordinates/Coordinates.ts";
 	import EdgeDisplayer from "./edge-displayer/EdgeDisplayer.svelte";
 	import Menu from "./main/Menu.svelte";
-	import type {SupportedBoardMode} from "./mode/SupportedBoardMode.ts";
+	import type {SupportedBoardMode} from "./mode/supported/SupportedBoardMode.ts";
 	import LineDisplayer from "./line-displayer/LineDisplayer.svelte";
-	import SupportedNodeDisplayer from "./node/supported/displayer/SupportedNodeDisplayer.svelte";
+	import SupportedNodeDisplayer from "./node/supported-displayer/SupportedNodeDisplayer.svelte";
 	import type {Node} from "./node/Node.svelte.ts";
-	import type {SupportedNode} from "./node/supported/SupportedNode.ts";
 	import {MapperNode} from "./node/kinds/mapper/MapperNode.svelte.ts";
 	import {FromUrlLoaderNode} from "./node/kinds/from-url-loader/FromUrlLoaderNode.svelte.ts";
 	import {FromFileLoaderNode} from "./node/kinds/from-file-loader/FromFileLoaderNode.svelte.ts";
 	import type {OutputNode} from "./node/OutputNode.ts";
-	import type {SupportedNodeClass} from "./node/supported/class/SupportedNodeClass.ts";
 	import {createSettingOutputNodeBoardMode} from "./mode/kinds/setting-output-node/creating/createSettingOutputNodeBoardMode.ts";
 	import {createSettingInputNodeBoardMode} from "./mode/kinds/setting-input-node/creating/createSettingInputNodeBoardMode.ts";
 	import {movingCameraBoardMode} from "./mode/kinds/moving-camera/instance/movingCameraBoardMode.ts";
 	import {createMovingNodeBoardMode} from "./mode/kinds/moving-node/creating/createMovingNodeBoardMode.ts";
 	import {createAddingNodeBoardMode} from "./mode/kinds/adding-node/creating/createAddingNodeBoardMode.ts";
+	import type {NodeClass} from "./node/class/NodeClass.ts";
 	let board: HTMLElement;
 	let cameraPosition = $state<Coordinates>({x: 0, y: 0});
 	function computeInBoardPositionFromJustClientPosition(
@@ -30,9 +29,9 @@
 			cameraPosition,
 		);
 	}
-	let nodes = $state.raw<readonly SupportedNode[]>([]);
+	let nodes = $state.raw<readonly Node[]>([]);
 	let mode = $state.raw<null | SupportedBoardMode>(null);
-	function handleAddNodeRequest(newNodeClass: SupportedNodeClass): void {
+	function handleAddNodeRequest(newNodeClass: NodeClass): void {
 		if (mode !== null && mode.kindName === "addingNode") {
 			const newNode = new newNodeClass(mode.data.position);
 			nodes = [...nodes, newNode];
@@ -91,7 +90,7 @@
 					break;
 				}
 				case "settingInputNode": {
-					mode = createSettingOutputNodeBoardMode(
+					mode = createSettingInputNodeBoardMode(
 						mode.data.targetNode,
 						computeInBoardPositionFromJustClientPosition({
 							x: event.clientX,
@@ -104,11 +103,7 @@
 		}
 	}
 	function handleMouseDown(event: MouseEvent): void {
-		if (
-			event.target === board
-			&& event.button === 0
-			&& (mode === null || mode.kindName === "addingNode")
-		) {
+		if (event.target === board && event.button === 0) {
 			mode = movingCameraBoardMode;
 		}
 	}
