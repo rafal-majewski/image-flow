@@ -1,10 +1,19 @@
-import type {ColorComponentValue} from "../../../../../../../color-component-value/ColorComponentValue.ts";
-import type {RgbaColor} from "../../../../../../../color/RgbaColor.ts";
+import type {ContinuousColorComponent} from "../../../color/types/continuous/component/ContinuousColorComponent.ts";
+import type {ContinuousRgbColor} from "../../../color/types/continuous/kinds/rgb/ContinuousRgbColor.ts";
+import {computeDotProductFromDiscreteAndContinuousRgbColors} from "../../../color/types/discrete/kinds/rgb/computing-dot-product/computeDotProductFromDiscreteAndContinuousRgbColors.ts";
+import {createDiscreteRgbaColorFromComponent} from "../../../color/types/discrete/kinds/rgba/creating-from-component/createDiscreteRgbaColorFromComponent.ts";
+import {readRgbaColorFromImage} from "../../../reading-rgba-color-from-image/readRgbaColorFromImage.ts";
+import {writeRgbaColorToImage} from "../../../writing-rgba-color-to-image/writeRgbaColorToImage.ts";
 import {Mapper} from "../../Mapper.ts";
 import {convertColorToGrayscaleColor} from "./converting-color-to-grayscale-color/convertColorToGrayscaleColor.ts";
 export class GrayscaleMapper extends Mapper {
-	public constructor() {
+	private readonly multiplier: ContinuousRgbColor;
+	public constructor(multiplier: ContinuousRgbColor) {
 		super("grayscale", "Grayscale");
+		this.multiplier = multiplier;
+	}
+	public withNewMultiplier(newMultiplier: ContinuousRgbColor): GrayscaleMapper {
+		return new GrayscaleMapper(newMultiplier);
 	}
 	public *map(inputImage: ImageData): Generator<ImageData, ImageData, void> {
 		const outputImage = new ImageData(inputImage.width, inputImage.height);
@@ -14,17 +23,16 @@ export class GrayscaleMapper extends Mapper {
 			byteIndex += 4
 		) {
 			yield outputImage;
-			const color: RgbaColor = {
-				red: inputImage.data[byteIndex] as ColorComponentValue,
-				green: inputImage.data[byteIndex + 1] as ColorComponentValue,
-				blue: inputImage.data[byteIndex + 2] as ColorComponentValue,
-				alpha: inputImage.data[byteIndex + 3] as ColorComponentValue,
-			};
-			const grayscaleColor = convertColorToGrayscaleColor(color);
-			outputImage.data[byteIndex] = grayscaleColor.red;
-			outputImage.data[byteIndex + 1] = grayscaleColor.green;
-			outputImage.data[byteIndex + 2] = grayscaleColor.blue;
-			outputImage.data[byteIndex + 3] = grayscaleColor.alpha;
+			const color = readRgbaColorFromImage(inputImage, byteIndex);
+			const grayness = computeDotProductFromDiscreteAndContinuousRgbColors(
+				color,
+				this.multiplier,
+			);
+			writeRgbaColorToImage(
+				outputImage,
+				byteIndex,
+				createDiscreteRgbaColorFromComponent(grayness, color.alpha),
+			);
 		}
 		return outputImage;
 	}

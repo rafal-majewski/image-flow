@@ -1,4 +1,4 @@
-import type {ColorComponentValue} from "../../../../../../../../color-component-value/ColorComponentValue.ts";
+import type {ColorComponent} from "../../../../color/types/discrete/component/DiscreteColorComponent.ts";
 export abstract class GameOfLifeMapperColorComponentComputer {
 	public readonly id: string;
 	protected constructor(id: string, name: string) {
@@ -6,5 +6,5 @@ export abstract class GameOfLifeMapperColorComponentComputer {
 		this.name = name;
 	}
 	public readonly name: string;
-	public abstract compute(neighborCount: number): ColorComponentValue;
+	public abstract compute(neighborCount: number): ColorComponent;
 }

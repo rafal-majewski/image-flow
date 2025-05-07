@@ -1,6 +1,12 @@
 <script lang="ts">
 	import type {NearestNeighborScalingMapper} from "../NearestNeighborScalingMapper.ts";
-	const {mapper}: Readonly<{mapper: NearestNeighborScalingMapper}> = $props();
+	const {
+		mapper,
+		onSetMapperRequest,
+	}: Readonly<{
+		mapper: NearestNeighborScalingMapper;
+		onSetMapperRequest: (mapper: NearestNeighborScalingMapper) => void;
+	}> = $props();
 </script>
 
 <section></section>

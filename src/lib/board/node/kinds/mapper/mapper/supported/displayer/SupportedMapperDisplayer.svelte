@@ -18,11 +18,11 @@
 </script>
 
 {#if mapper instanceof GrayscaleMapper}
-	<GrayscaleMapperDisplayer {mapper} />
+	<GrayscaleMapperDisplayer {mapper} {onSetMapperRequest} />
 {:else if mapper instanceof GameOfLifeMapper}
 	<GameOfLifeMapperDisplayer {mapper} {onSetMapperRequest} />
 {:else if mapper instanceof AveragingBlurMapper}
 	<AveragingBlurMapperDisplayer {mapper} {onSetMapperRequest} />
 {:else if mapper instanceof NearestNeighborScalingMapper}
-	<NearestNeighborScalingMapperDisplayer {mapper} />
+	<NearestNeighborScalingMapperDisplayer {mapper} {onSetMapperRequest} />
 {/if}

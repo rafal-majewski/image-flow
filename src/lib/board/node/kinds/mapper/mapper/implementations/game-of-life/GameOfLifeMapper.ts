@@ -1,5 +1,5 @@
-import type {ColorComponentValue} from "../../../../../../../color-component-value/ColorComponentValue.ts";
-import type {RgbColor} from "../../../../../../../color/RgbColor.ts";
+import type {ColorComponent} from "../../../color/types/discrete/component/DiscreteColorComponent.ts";
+import type {RgbColor} from "../../../color/types/discrete/kinds/rgb/DiscreteRgbColor.ts";
 import type {Coordinates} from "../../../../../../coordinates/Coordinates.ts";
 import {Mapper} from "../../Mapper.ts";
 import type {GameOfLifeMapperColorComponentComputer} from "./color-component-computer/GameOfLifeMapperColorComponentComputer.ts";
@@ -65,13 +65,11 @@ export class GameOfLifeMapper extends Mapper {
 						const neighborByteIndex =
 							neighborPosition.x + neighborPosition.y * currentImage.width;
 						const neighborColor: RgbColor = {
-							red: lastImage.data[neighborByteIndex * 4] as ColorComponentValue,
+							red: lastImage.data[neighborByteIndex * 4] as ColorComponent,
 							green: lastImage.data[
 								neighborByteIndex * 4 + 1
-							] as ColorComponentValue,
-							blue: lastImage.data[
-								neighborByteIndex * 4 + 2
-							] as ColorComponentValue,
+							] as ColorComponent,
+							blue: lastImage.data[neighborByteIndex * 4 + 2] as ColorComponent,
 						};
 						neighborCount = {
 							red: neighborCount.red + neighborColor.red / 255,
@@ -86,20 +84,19 @@ export class GameOfLifeMapper extends Mapper {
 					blue: this.componentComputer.compute(neighborCount.blue),
 				};
 				currentImage.data[byteIndex] =
-					(lastImage.data[byteIndex] as ColorComponentValue)
-						* (1 - this.mixFactor)
+					(lastImage.data[byteIndex] as ColorComponent) * (1 - this.mixFactor)
 					+ color.red * this.mixFactor;
 				currentImage.data[byteIndex + 1] =
-					(lastImage.data[byteIndex + 1] as ColorComponentValue)
+					(lastImage.data[byteIndex + 1] as ColorComponent)
 						* (1 - this.mixFactor)
 					+ color.green * this.mixFactor;
 				currentImage.data[byteIndex + 2] =
-					(lastImage.data[byteIndex + 2] as ColorComponentValue)
+					(lastImage.data[byteIndex + 2] as ColorComponent)
 						* (1 - this.mixFactor)
 					+ color.blue * this.mixFactor;
 				currentImage.data[byteIndex + 3] = lastImage.data[
 					byteIndex + 3
-				] as ColorComponentValue;
+				] as ColorComponent;
 			}
 			lastImage = currentImage;
 		}

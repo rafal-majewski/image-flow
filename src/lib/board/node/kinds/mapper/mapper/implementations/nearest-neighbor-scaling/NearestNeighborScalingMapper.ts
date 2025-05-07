@@ -4,7 +4,7 @@ import {Mapper} from "../../Mapper.ts";
 export class NearestNeighborScalingMapper extends Mapper {
 	private readonly outputImageDimensions: Dimensions;
 	public constructor(outputImageDimensions: Dimensions) {
-		super("nearest-neighbor-scaling", "Nearest Neighbor Scaling");
+		super("nearest-neighbor-scaling", "Nearest neighbor scaling");
 		this.outputImageDimensions = outputImageDimensions;
 	}
 	public *map(inputImage: ImageData): Generator<ImageData, ImageData, void> {

@@ -1,7 +1,5 @@
-import type {ColorComponentValue} from "../../../../../../../color-component-value/ColorComponentValue.ts";
-import type {RgbaColor} from "../../../../../../../color/RgbaColor.ts";
-import type {RgbColor} from "../../../../../../../color/RgbColor.ts";
 import type {Coordinates} from "../../../../../../coordinates/Coordinates.ts";
+import {readRgbaColorFromImage} from "../../../reading-rgba-color-from-image/readRgbaColorFromImage.ts";
 import {Mapper} from "../../Mapper.ts";
 export class AveragingBlurMapper extends Mapper {
 	public readonly mixFactor: number;
@@ -25,16 +23,11 @@ export class AveragingBlurMapper extends Mapper {
 			byteIndex += 4
 		) {
 			yield outputImage;
-			const color: RgbaColor = {
-				red: inputImage.data[byteIndex] as ColorComponentValue,
-				green: inputImage.data[byteIndex + 1] as ColorComponentValue,
-				blue: inputImage.data[byteIndex + 2] as ColorComponentValue,
-				alpha: inputImage.data[byteIndex + 3] as ColorComponentValue,
-			};
+			const color = readRgbaColorFromImage(inputImage, byteIndex);
 			let blurredColor: RgbColor = {
-				red: 0 as ColorComponentValue,
-				green: 0 as ColorComponentValue,
-				blue: 0 as ColorComponentValue,
+				red: 0 as ColorComponent,
+				green: 0 as ColorComponent,
+				blue: 0 as ColorComponent,
 			};
 			const position: Coordinates = {
 				x: (byteIndex / 4) % inputImage.width,
@@ -63,13 +56,9 @@ export class AveragingBlurMapper extends Mapper {
 							const neighborByteIndex =
 								(neighborPositionY * inputImage.width + neighborPositionX) * 4;
 							const neighborColor: RgbColor = {
-								red: inputImage.data[neighborByteIndex] as ColorComponentValue,
-								green: inputImage.data[
-									neighborByteIndex + 1
-								] as ColorComponentValue,
-								blue: inputImage.data[
-									neighborByteIndex + 2
-								] as ColorComponentValue,
+								red: inputImage.data[neighborByteIndex] as ColorComponent,
+								green: inputImage.data[neighborByteIndex + 1] as ColorComponent,
+								blue: inputImage.data[neighborByteIndex + 2] as ColorComponent,
 							};
 							blurredColor = {
 								red: blurredColor.red + neighborColor.red,
