@@ -1,6 +1,6 @@
 import type {ColorComponentValue} from "../../../../../../../../../../color-component-value/ColorComponentValue.ts";
-import {GameOfLifeMapperComponentComputer} from "../../GameOfLifeMapperComponentComputer.ts";
-export class GameOfLifeMapperClassicComponentComputer extends GameOfLifeMapperComponentComputer {
+import {GameOfLifeMapperColorComponentComputer} from "../../GameOfLifeMapperColorComponentComputer.ts";
+export class GameOfLifeMapperClassicColorComponentComputer extends GameOfLifeMapperColorComponentComputer {
 	public constructor() {
 		super("classic", "Classic");
 	}

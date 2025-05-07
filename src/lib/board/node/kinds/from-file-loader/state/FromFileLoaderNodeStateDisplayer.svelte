@@ -33,8 +33,17 @@
 		disabled={boardMode !== null && boardMode.kindName === "settingOutputNode"}
 		>📍➡️</button
 	>
-	<input onchange={handleFileInputChange} type="file" accept="image/*" />
+	<label>
+		<span>📂</span>
+		<input onchange={handleFileInputChange} type="file" accept="image/*" />
+	</label>
 	{#if state instanceof LoadingSucceededFromFileLoaderNodeState}
 		<Canvas image={state.image} />
 	{/if}
 </section>
+
+<style lang="scss">
+	input {
+		display: none;
+	}
+</style>

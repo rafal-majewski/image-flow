@@ -1,6 +1,6 @@
 <script lang="ts">
-	import {GameOfLifeMapperClassicComponentComputer} from "../component-computer/implementations/classic/GameOfLifeMapperClassicComponentComputer.ts";
-	import {GameOfLifeMapperFuzzyComponentComputer} from "../component-computer/implementations/fuzzy/GameOfLifeMapperFuzzyComponentComputer.ts";
+	import {GameOfLifeMapperClassicColorComponentComputer} from "../color-component-computer/implementations/classic/GameOfLifeMapperClassicColorComponentComputer.ts";
+	import {GameOfLifeMapperFuzzyColorComponentComputer} from "../color-component-computer/implementations/fuzzy/GameOfLifeMapperFuzzyColorComponentComputer.ts";
 	import type {GameOfLifeMapper} from "../GameOfLifeMapper.ts";
 	const {
 		mapper,
@@ -9,17 +9,17 @@
 		mapper: GameOfLifeMapper;
 		onSetMapperRequest: (mapper: GameOfLifeMapper) => void;
 	}> = $props();
-	function handleClassicComponentComputerInputChange(event: Event): void {
+	function handleClassicColorComponentComputerInputChange(event: Event): void {
 		onSetMapperRequest(
-			mapper.withNewComponentComputer(
-				new GameOfLifeMapperClassicComponentComputer(),
+			mapper.withNewColorComponentComputer(
+				new GameOfLifeMapperClassicColorComponentComputer(),
 			),
 		);
 	}
-	function handleFuzzyComponentComputerInputChange(event: Event): void {
+	function handleFuzzyColorComponentComputerInputChange(event: Event): void {
 		onSetMapperRequest(
-			mapper.withNewComponentComputer(
-				new GameOfLifeMapperFuzzyComponentComputer(),
+			mapper.withNewColorComponentComputer(
+				new GameOfLifeMapperFuzzyColorComponentComputer(),
 			),
 		);
 	}
@@ -32,9 +32,9 @@
 	}
 </script>
 
-<div>
+<section>
 	<fieldset>
-		<legend>Component computer</legend>
+		<legend>Color component computer</legend>
 		<div>
 			<label>
 				<input
@@ -42,8 +42,8 @@
 					name="component-computer"
 					value="classic"
 					checked={mapper.componentComputer
-						instanceof GameOfLifeMapperClassicComponentComputer}
-					onchange={handleClassicComponentComputerInputChange}
+						instanceof GameOfLifeMapperClassicColorComponentComputer}
+					onchange={handleClassicColorComponentComputerInputChange}
 				/>
 				Classic
 			</label>
@@ -53,8 +53,8 @@
 					name="component-computer"
 					value="fuzzy"
 					checked={mapper.componentComputer
-						instanceof GameOfLifeMapperFuzzyComponentComputer}
-					onchange={handleFuzzyComponentComputerInputChange}
+						instanceof GameOfLifeMapperFuzzyColorComponentComputer}
+					onchange={handleFuzzyColorComponentComputerInputChange}
 				/>
 				Fuzzy
 			</label>
@@ -71,4 +71,4 @@
 			onchange={handleMixFactorInputChange}
 		/>
 	</label>
-</div>
+</section>

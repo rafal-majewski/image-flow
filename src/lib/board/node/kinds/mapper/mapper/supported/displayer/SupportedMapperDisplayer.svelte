@@ -6,6 +6,8 @@
 	import NearestNeighborScalingMapperDisplayer from "../../implementations/nearest-neighbor-scaling/displayer/NearestNeighborScalingMapperDisplayer.svelte";
 	import {NearestNeighborScalingMapper} from "../../implementations/nearest-neighbor-scaling/NearestNeighborScalingMapper.ts";
 	import type {SupportedMapper} from "../SupportedMapper.ts";
+	import {AveragingBlurMapper} from "../../implementations/averaging-blur/AveragingBlurMapper.ts";
+	import AveragingBlurMapperDisplayer from "../../implementations/averaging-blur/displayer/AveragingBlurMapperDisplayer.svelte";
 	const {
 		mapper,
 		onSetMapperRequest,
@@ -19,6 +21,8 @@
 	<GrayscaleMapperDisplayer {mapper} />
 {:else if mapper instanceof GameOfLifeMapper}
 	<GameOfLifeMapperDisplayer {mapper} {onSetMapperRequest} />
+{:else if mapper instanceof AveragingBlurMapper}
+	<AveragingBlurMapperDisplayer {mapper} {onSetMapperRequest} />
 {:else if mapper instanceof NearestNeighborScalingMapper}
 	<NearestNeighborScalingMapperDisplayer {mapper} />
 {/if}

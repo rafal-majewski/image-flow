@@ -2,12 +2,12 @@ import type {ColorComponentValue} from "../../../../../../../color-component-val
 import type {RgbColor} from "../../../../../../../color/RgbColor.ts";
 import type {Coordinates} from "../../../../../../coordinates/Coordinates.ts";
 import {Mapper} from "../../Mapper.ts";
-import type {GameOfLifeMapperComponentComputer} from "./component-computer/GameOfLifeMapperComponentComputer.ts";
+import type {GameOfLifeMapperColorComponentComputer} from "./color-component-computer/GameOfLifeMapperColorComponentComputer.ts";
 export class GameOfLifeMapper extends Mapper {
 	public readonly mixFactor: number;
-	public readonly componentComputer: GameOfLifeMapperComponentComputer;
+	public readonly componentComputer: GameOfLifeMapperColorComponentComputer;
 	public constructor(
-		componentComputer: GameOfLifeMapperComponentComputer,
+		componentComputer: GameOfLifeMapperColorComponentComputer,
 		mixFactor: number,
 	) {
 		super("game-of-life", "Game of Life");
@@ -17,10 +17,10 @@ export class GameOfLifeMapper extends Mapper {
 	public withNewMixFactor(newMixFactor: number): GameOfLifeMapper {
 		return new GameOfLifeMapper(this.componentComputer, newMixFactor);
 	}
-	public withNewComponentComputer(
-		newComponentComputer: GameOfLifeMapperComponentComputer,
+	public withNewColorComponentComputer(
+		newColorComponentComputer: GameOfLifeMapperColorComponentComputer,
 	): GameOfLifeMapper {
-		return new GameOfLifeMapper(newComponentComputer, this.mixFactor);
+		return new GameOfLifeMapper(newColorComponentComputer, this.mixFactor);
 	}
 	public *map(inputImage: ImageData): Generator<ImageData, ImageData, void> {
 		let lastImage = new ImageData(

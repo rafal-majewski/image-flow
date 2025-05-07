@@ -1,5 +1,5 @@
 import type {ColorComponentValue} from "../../../../../../../../color-component-value/ColorComponentValue.ts";
-export abstract class GameOfLifeMapperComponentComputer {
+export abstract class GameOfLifeMapperColorComponentComputer {
 	public readonly id: string;
 	protected constructor(id: string, name: string) {
 		this.id = id;

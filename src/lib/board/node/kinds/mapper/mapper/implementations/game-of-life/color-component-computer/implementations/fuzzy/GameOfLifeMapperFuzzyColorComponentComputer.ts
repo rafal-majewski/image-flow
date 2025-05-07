@@ -1,6 +1,6 @@
 import type {ColorComponentValue} from "../../../../../../../../../../color-component-value/ColorComponentValue.ts";
-import {GameOfLifeMapperComponentComputer} from "../../GameOfLifeMapperComponentComputer.ts";
-export class GameOfLifeMapperFuzzyComponentComputer extends GameOfLifeMapperComponentComputer {
+import {GameOfLifeMapperColorComponentComputer} from "../../GameOfLifeMapperColorComponentComputer.ts";
+export class GameOfLifeMapperFuzzyColorComponentComputer extends GameOfLifeMapperColorComponentComputer {
 	public constructor() {
 		super("fuzzy", "Fuzzy");
 	}
