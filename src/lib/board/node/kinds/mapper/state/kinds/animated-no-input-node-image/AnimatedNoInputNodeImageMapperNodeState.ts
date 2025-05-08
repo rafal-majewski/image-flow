@@ -200,4 +200,7 @@ export class AnimatedNoInputNodeImageMapperNodeState extends MapperNodeState {
 		this.intervalIntervalSeconds = intervalIntervalSeconds;
 		this.mapper = mapper;
 	}
+	public override resetOutputImage(outputNodes: readonly OutputNode[]): this {
+		return this;
+	}
 }

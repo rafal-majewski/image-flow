@@ -139,4 +139,7 @@ export class InstantNoInputNodeImageMapperNodeState extends MapperNodeState {
 		this.inputNode = inputNode;
 		this.mapper = mapper;
 	}
+	public override resetOutputImage(outputNodes: readonly OutputNode[]): this {
+		return this;
+	}
 }

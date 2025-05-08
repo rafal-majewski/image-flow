@@ -283,4 +283,35 @@ export class AnimatedMappingInProgressMapperNodeState extends MapperNodeState {
 			this.mapper,
 		);
 	}
+	public override resetOutputImage(
+		outputNodes: readonly OutputNode[],
+	):
+		| AnimatedMappingSucceededMapperNodeState
+		| AnimatedMappingInProgressMapperNodeState {
+		const newGenerator = this.mapper.map(this.inputNodeImage);
+		const newGeneratorResult = newGenerator.next();
+		if (newGeneratorResult.done) {
+			for (const outputNode of outputNodes) {
+				outputNode.setInputNodeImage(newGeneratorResult.value);
+			}
+			return new AnimatedMappingSucceededMapperNodeState(
+				this.inputNode,
+				this.inputNodeImage,
+				this.intervalId,
+				this.intervalIntervalSeconds,
+				this.mapper,
+				newGeneratorResult.value,
+			);
+		} else {
+			return new AnimatedMappingInProgressMapperNodeState(
+				newGenerator,
+				this.inputNode,
+				this.inputNodeImage,
+				this.intervalId,
+				this.intervalIntervalSeconds,
+				this.mapper,
+				newGeneratorResult.value,
+			);
+		}
+	}
 }

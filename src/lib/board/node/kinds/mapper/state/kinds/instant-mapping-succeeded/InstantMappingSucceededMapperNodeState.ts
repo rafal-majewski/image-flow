@@ -182,4 +182,7 @@ export class InstantMappingSucceededMapperNodeState extends MapperNodeState {
 		this.mapper = mapper;
 		this.outputImage = outputImage;
 	}
+	public override resetOutputImage(outputNodes: readonly OutputNode[]): this {
+		return this;
+	}
 }

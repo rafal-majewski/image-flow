@@ -91,4 +91,7 @@ export class InstantNoInputNodeAndNoMapperMapperNodeState extends MapperNodeStat
 	public constructor() {
 		super("unconfigured");
 	}
+	public override resetOutputImage(outputNodes: readonly OutputNode[]): this {
+		return this;
+	}
 }

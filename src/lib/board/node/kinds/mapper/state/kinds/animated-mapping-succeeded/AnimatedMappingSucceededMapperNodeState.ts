@@ -258,4 +258,38 @@ export class AnimatedMappingSucceededMapperNodeState extends MapperNodeState {
 	public readonly intervalIntervalSeconds: number;
 	public readonly mapper: Mapper;
 	public readonly outputImage: ImageData;
+	public override resetOutputImage(
+		outputNodes: readonly OutputNode[],
+	):
+		| AnimatedMappingSucceededMapperNodeState
+		| AnimatedMappingInProgressMapperNodeState {
+		const generator = this.mapper.map(this.inputNodeImage);
+		const generatorResult = generator.next();
+		if (generatorResult.done) {
+			for (const outputNode of outputNodes) {
+				outputNode.setInputNodeImage(generatorResult.value);
+			}
+			return new AnimatedMappingSucceededMapperNodeState(
+				this.inputNode,
+				this.inputNodeImage,
+				this.intervalId,
+				this.intervalIntervalSeconds,
+				this.mapper,
+				generatorResult.value,
+			);
+		} else {
+			for (const outputNode of outputNodes) {
+				outputNode.unsetInputNodeImage();
+			}
+			return new AnimatedMappingInProgressMapperNodeState(
+				generator,
+				this.inputNode,
+				this.inputNodeImage,
+				this.intervalId,
+				this.intervalIntervalSeconds,
+				this.mapper,
+				generatorResult.value,
+			);
+		}
+	}
 }

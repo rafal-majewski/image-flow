@@ -243,4 +243,36 @@ export class ManualMappingSucceededMapperNodeState extends MapperNodeState {
 	public readonly mapper: Mapper;
 	public readonly outputImage: ImageData;
 	public readonly stepCount: number;
+	public override resetOutputImage(
+		outputNodes: readonly OutputNode[],
+	):
+		| ManualMappingSucceededMapperNodeState
+		| ManualMappingInProgressMapperNodeState {
+		const generator = this.mapper.map(this.inputNodeImage);
+		const generatorResult = generator.next();
+		if (generatorResult.done) {
+			for (const outputNode of outputNodes) {
+				outputNode.setInputNodeImage(generatorResult.value);
+			}
+			return new ManualMappingSucceededMapperNodeState(
+				this.inputNode,
+				this.inputNodeImage,
+				this.mapper,
+				generatorResult.value,
+				this.stepCount,
+			);
+		} else {
+			for (const outputNode of outputNodes) {
+				outputNode.unsetInputNodeImage();
+			}
+			return new ManualMappingInProgressMapperNodeState(
+				generator,
+				this.inputNode,
+				this.inputNodeImage,
+				this.mapper,
+				generatorResult.value,
+				this.stepCount,
+			);
+		}
+	}
 }

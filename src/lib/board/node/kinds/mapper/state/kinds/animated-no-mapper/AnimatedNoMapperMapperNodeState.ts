@@ -170,4 +170,7 @@ export class AnimatedNoMapperMapperNodeState extends MapperNodeState {
 	private readonly inputNode: Node;
 	private readonly intervalId: ReturnType<typeof setInterval>;
 	public readonly intervalIntervalSeconds: number;
+	public override resetOutputImage(outputNodes: readonly OutputNode[]): this {
+		return this;
+	}
 }

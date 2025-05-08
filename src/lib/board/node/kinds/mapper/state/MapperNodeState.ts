@@ -60,4 +60,7 @@ export abstract class MapperNodeState {
 		intervalId: ReturnType<typeof setInterval>,
 		intervalIntervalSeconds: number,
 	): MapperNodeState;
+	public abstract resetOutputImage(
+		outputNodes: readonly OutputNode[],
+	): MapperNodeState;
 }

@@ -121,4 +121,7 @@ export class ManualNoInputNodeImageAndNoMapperMapperNodeState extends MapperNode
 	}
 	private readonly inputNode: Node;
 	public readonly stepCount: number;
+	public override resetOutputImage(outputNodes: readonly OutputNode[]): this {
+		return this;
+	}
 }
