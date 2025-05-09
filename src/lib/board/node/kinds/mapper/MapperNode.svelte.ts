@@ -78,4 +78,7 @@ export class MapperNode extends Node implements OutputNode {
 			intervalIntervalSeconds,
 		);
 	}
+	public resetOutputImage(): void {
+		this.state = this.state.resetOutputImage(this.outputNodes);
+	}
 }

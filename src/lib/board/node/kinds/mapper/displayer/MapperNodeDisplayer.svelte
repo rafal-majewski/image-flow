@@ -64,6 +64,9 @@
 	): void {
 		node.setIntervalInterval(intervalIntervalSeconds);
 	}
+	function handleResetRequest(): void {
+		node.resetOutputImage();
+	}
 </script>
 
 {#snippet stateDisplayer()}
@@ -81,6 +84,7 @@
 		onMakeInstantRequest={handleMakeInstantRequest}
 		onSetStepCountRequest={handleSetStepCountRequest}
 		onSetIntervalIntervalRequest={handleSetIntervalIntervalRequest}
+		onResetOutputImageRequest={handleResetRequest}
 	/>
 {/snippet}
 

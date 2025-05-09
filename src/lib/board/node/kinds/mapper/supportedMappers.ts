@@ -1,4 +1,5 @@
 import {AverageBlurringMapper} from "./mapper/implementations/average-blurring/AverageBlurringMapper.ts";
+import {ConvolutingMapper} from "./mapper/implementations/convoluting/ConvolutingMapper.ts";
 import {GameOfLifeMapperClassicColorComponentComputer} from "./mapper/implementations/game-of-life/color-component-computer/implementations/classic/GameOfLifeMapperClassicColorComponentComputer.ts";
 import {GameOfLifeMapper} from "./mapper/implementations/game-of-life/GameOfLifeMapper.ts";
 import {GrayscalingMapper} from "./mapper/implementations/grayscaling/GrayscalingMapper.ts";
@@ -11,4 +12,5 @@ export const supportedMappers = [
 		0.5,
 	),
 	new AverageBlurringMapper(1, 10),
+	new ConvolutingMapper({x: 0, y: 0}, [[1, -1]]),
 ] as const;

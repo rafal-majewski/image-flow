@@ -41,6 +41,7 @@
 		onMakeInstantRequest,
 		onSetStepCountRequest,
 		onSetIntervalIntervalRequest,
+		onResetOutputImageRequest,
 	}: Readonly<{
 		id: NodeId;
 		state: MapperNodeState;
@@ -55,6 +56,7 @@
 		onMakeInstantRequest: () => void;
 		onSetStepCountRequest: (stepCount: number) => void;
 		onSetIntervalIntervalRequest: (intervalIntervalSeconds: number) => void;
+		onResetOutputImageRequest: () => void;
 	}> = $props();
 	function handleSelectChange(
 		event: Event & Readonly<{currentTarget: HTMLSelectElement}>,
@@ -90,6 +92,11 @@
 		event: Event & Readonly<{currentTarget: HTMLInputElement}>,
 	): void {
 		onSetIntervalIntervalRequest(Number.parseFloat(event.currentTarget.value));
+	}
+	function handleResetOutputImageButtonClick(
+		event: Event & Readonly<{currentTarget: HTMLButtonElement}>,
+	): void {
+		onResetOutputImageRequest();
 	}
 </script>
 
@@ -172,21 +179,6 @@
 					onchange={onMakeManualRequest}
 				/>
 				Manual
-				{#if state instanceof ManualMappingInProgressMapperNodeState || state instanceof ManualMappingSucceededMapperNodeState || state instanceof ManualNoInputNodeImageAndNoMapperMapperNodeState || state instanceof ManualNoInputNodeImageMapperNodeState || state instanceof ManualNoInputNodeAndNoMapperMapperNodeState || state instanceof ManualNoInputNodeMapperNodeState || state instanceof ManualNoMapperMapperNodeState}
-					<div>
-						<label>
-							Step count:
-							<input
-								type="number"
-								min="1"
-								step="1"
-								value={state.stepCount}
-								onchange={handleStepCountInputChange}
-							/>
-						</label>
-						<button onclick={handleDoManualStepsButtonClick}>Do steps</button>
-					</div>
-				{/if}
 			</label>
 			<label>
 				<input
@@ -204,20 +196,6 @@
 					onchange={onMakeAnimatedRequest}
 				/>
 				Animated
-				{#if state instanceof AnimatedMappingInProgressMapperNodeState || state instanceof AnimatedMappingSucceededMapperNodeState || state instanceof AnimatedNoInputNodeImageAndNoMapperMapperNodeState || state instanceof AnimatedNoInputNodeImageMapperNodeState || state instanceof AnimatedNoInputNodeAndNoMapperMapperNodeState || state instanceof AnimatedNoInputNodeMapperNodeState || state instanceof AnimatedNoMapperMapperNodeState}
-					<div>
-						<label>
-							Interval (seconds):
-							<input
-								type="number"
-								min="0.0001"
-								step="0.0001"
-								value={state.intervalIntervalSeconds}
-								onchange={handleIntervalIntervalInputChange}
-							/>
-						</label>
-					</div>
-				{/if}
 			</label>
 			<label>
 				<input
@@ -236,5 +214,35 @@
 				Instant
 			</label>
 		</div>
+		{#if state instanceof ManualMappingInProgressMapperNodeState || state instanceof ManualMappingSucceededMapperNodeState || state instanceof ManualNoInputNodeImageAndNoMapperMapperNodeState || state instanceof ManualNoInputNodeImageMapperNodeState || state instanceof ManualNoInputNodeAndNoMapperMapperNodeState || state instanceof ManualNoInputNodeMapperNodeState || state instanceof ManualNoMapperMapperNodeState || state instanceof AnimatedMappingInProgressMapperNodeState || state instanceof AnimatedMappingSucceededMapperNodeState || state instanceof AnimatedNoInputNodeImageAndNoMapperMapperNodeState || state instanceof AnimatedNoInputNodeImageMapperNodeState || state instanceof AnimatedNoInputNodeAndNoMapperMapperNodeState || state instanceof AnimatedNoInputNodeMapperNodeState || state instanceof AnimatedNoMapperMapperNodeState}
+			<div>
+				{#if state instanceof ManualMappingInProgressMapperNodeState || state instanceof ManualMappingSucceededMapperNodeState || state instanceof ManualNoInputNodeImageAndNoMapperMapperNodeState || state instanceof ManualNoInputNodeImageMapperNodeState || state instanceof ManualNoInputNodeAndNoMapperMapperNodeState || state instanceof ManualNoInputNodeMapperNodeState || state instanceof ManualNoMapperMapperNodeState}
+					<label>
+						Step count:
+						<input
+							type="number"
+							min="1"
+							step="1"
+							value={state.stepCount}
+							onchange={handleStepCountInputChange}
+						/>
+					</label>
+					<button onclick={handleDoManualStepsButtonClick}>Do steps</button>
+				{/if}
+				{#if state instanceof AnimatedMappingInProgressMapperNodeState || state instanceof AnimatedMappingSucceededMapperNodeState || state instanceof AnimatedNoInputNodeImageAndNoMapperMapperNodeState || state instanceof AnimatedNoInputNodeImageMapperNodeState || state instanceof AnimatedNoInputNodeAndNoMapperMapperNodeState || state instanceof AnimatedNoInputNodeMapperNodeState || state instanceof AnimatedNoMapperMapperNodeState}
+					<label>
+						Interval (seconds):
+						<input
+							type="number"
+							min="0.0001"
+							step="0.0001"
+							value={state.intervalIntervalSeconds}
+							onchange={handleIntervalIntervalInputChange}
+						/>
+					</label>
+				{/if}
+				<button onclick={handleResetOutputImageButtonClick}>Reset</button>
+			</div>
+		{/if}
 	</fieldset>
 </section>
