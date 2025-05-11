@@ -12,5 +12,8 @@ export const supportedMappers = [
 		0.5,
 	),
 	new AverageBlurringMapper(1, 10),
-	new ConvolutingMapper({x: 0, y: 0}, [[1, -1]]),
+	new ConvolutingMapper({x: 0, y: 0}, [
+		[1, -1],
+		[1, -1],
+	]),
 ] as const;

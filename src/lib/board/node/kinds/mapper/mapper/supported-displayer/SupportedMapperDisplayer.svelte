@@ -8,6 +8,8 @@
 	import {AverageBlurringMapper} from "../implementations/average-blurring/AverageBlurringMapper.ts";
 	import AverageBlurringMapperDisplayer from "../implementations/average-blurring/displayer/AverageBlurringMapperDisplayer.svelte";
 	import type {Mapper} from "../Mapper.ts";
+	import {ConvolutingMapper} from "../implementations/convoluting/ConvolutingMapper.ts";
+	import ConvolutingMapperDisplayer from "../implementations/convoluting/displayer/ConvolutingMapperDisplayer.svelte";
 	const {
 		mapper,
 		onSetMapperRequest,
@@ -23,4 +25,6 @@
 	<AverageBlurringMapperDisplayer {mapper} {onSetMapperRequest} />
 {:else if mapper instanceof NearestNeighborScalingMapper}
 	<NearestNeighborScalingMapperDisplayer {mapper} {onSetMapperRequest} />
+{:else if mapper instanceof ConvolutingMapper}
+	<ConvolutingMapperDisplayer {mapper} {onSetMapperRequest} />
 {/if}

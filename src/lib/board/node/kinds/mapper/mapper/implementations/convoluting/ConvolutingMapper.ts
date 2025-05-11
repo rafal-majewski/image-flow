@@ -1,4 +1,5 @@
 import type {Coordinates} from "../../../../../../coordinates/Coordinates.ts";
+import {createDiscreteRgbColorEmpty} from "../../../color/types/discrete/kinds/rgb/creating-empty/createDiscreteRgbColorEmpty.ts";
 import {createDiscreteRgbColorFromComponent} from "../../../color/types/discrete/kinds/rgb/creating-from-component/createDiscreteRgbColorFromComponent.ts";
 import {createDiscreteRgbColorFromComponents} from "../../../color/types/discrete/kinds/rgb/creating-from-components/createDiscreteRgbColorFromComponents.ts";
 import {createDiscreteRgbaColorFromComponent} from "../../../color/types/discrete/kinds/rgba/creating-from-component/createDiscreteRgbaColorFromComponent.ts";
@@ -8,7 +9,7 @@ import {writeRgbaColorToImage} from "../../../writing-rgba-color-to-image/writeR
 import {Mapper} from "../../Mapper.ts";
 export class ConvolutingMapper extends Mapper {
 	private readonly anchorPoint: Coordinates;
-	private readonly kernel: readonly [
+	public readonly kernel: readonly [
 		readonly [number, ...(readonly number[])],
 		...(readonly [number, ...(readonly number[])])[],
 	];
@@ -40,9 +41,8 @@ export class ConvolutingMapper extends Mapper {
 				< outputImage.width + 1 - this.kernel[0].length + this.anchorPoint.x;
 				positionX += 1
 			) {
-				console.log(positionX, positionY);
 				yield outputImage;
-				let sum = createDiscreteRgbColorFromComponent(0);
+				let sum = createDiscreteRgbColorEmpty();
 				for (
 					let kernelCellPositionY = 0;
 					kernelCellPositionY < this.kernel.length;
