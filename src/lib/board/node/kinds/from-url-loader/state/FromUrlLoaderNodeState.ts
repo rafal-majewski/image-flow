@@ -4,20 +4,20 @@ import type {FromUrlLoaderNode} from "../FromUrlLoaderNode.svelte.ts";
 import type {InvalidUrlFromUrlLoaderNodeState} from "./kinds/invalid-url/InvalidUrlFromUrlLoaderNodeState.ts";
 import type {LoadingInProgressFromUrlLoaderNodeState} from "./kinds/loading-in-progress/LoadingInProgressFromUrlLoaderNodeState.ts";
 export abstract class FromUrlLoaderNodeState {
-	public readonly status: NodeStatus;
 	public constructor(status: NodeStatus) {
 		this.status = status;
 	}
-	public abstract setValidUrl(
-		url: string,
-		outputNodes: readonly OutputNode[],
-	): LoadingInProgressFromUrlLoaderNodeState;
 	public abstract setInvalidUrl(
 		url: string,
-		outputNodes: readonly OutputNode[],
+		outputEdges: readonly OutputEdge[],
 	): InvalidUrlFromUrlLoaderNodeState;
-	public abstract updateOutputNodeAfterAdding(
+	public abstract setValidUrl(
+		url: string,
+		outputEdges: readonly OutputEdge[],
+	): LoadingInProgressFromUrlLoaderNodeState;
+	public readonly status: NodeStatus;
+	public abstract updateOutputEdgeAfterAdding(
 		thisNode: FromUrlLoaderNode,
-		outputNodeToUpdate: OutputNode,
+		outputEdgeToUpdate: OutputEdge,
 	): void;
 }

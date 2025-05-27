@@ -8,14 +8,14 @@ export class NoFileFromFileLoaderNodeState extends FromFileLoaderNodeState {
 	}
 	public override setFile(
 		file: File,
-		outputNodes: readonly OutputNode[],
+		outputEdges: readonly OutputEdge[],
 	): LoadingInProgressFromFileLoaderNodeState {
 		return new LoadingInProgressFromFileLoaderNodeState(file);
 	}
-	public override updateOutputNodeAfterAdding(
+	public override updateOutputEdgeAfterAdding(
 		thisNode: FromFileLoaderNode,
-		outputNodeToUpdate: OutputNode,
+		outputEdgeToUpdate: OutputEdge,
 	): void {
-		outputNodeToUpdate.setInputNodeWithoutImage(thisNode);
+		outputEdgeToUpdate.setInputEdgeWithoutImage(thisNode);
 	}
 }

@@ -42,7 +42,6 @@
 		onSetOutputNodeRequest={handleSetOutputNodeRequest}
 	/>
 {/snippet}
-
 <NodeDisplayer
 	name="From URL loader"
 	{node}

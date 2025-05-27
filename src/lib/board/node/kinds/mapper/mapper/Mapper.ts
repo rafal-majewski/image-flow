@@ -1,10 +1,8 @@
-export abstract class Mapper {
-	public readonly id: string;
+import {Operator} from "../../../operator/Operator.ts";
+export abstract class Mapper extends Operator {
 	protected constructor(id: string, name: string) {
-		this.id = id;
-		this.name = name;
+		super(id, name);
 	}
-	public readonly name: string;
 	public abstract map(
 		inputImage: ImageData,
 	): Generator<ImageData, ImageData, void>;

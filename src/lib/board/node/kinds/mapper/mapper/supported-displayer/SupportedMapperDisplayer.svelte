@@ -8,13 +8,18 @@
 	import {AverageBlurringMapper} from "../implementations/average-blurring/AverageBlurringMapper.ts";
 	import AverageBlurringMapperDisplayer from "../implementations/average-blurring/displayer/AverageBlurringMapperDisplayer.svelte";
 	import type {Mapper} from "../Mapper.ts";
-	import {ConvolutingMapper} from "../implementations/convoluting/ConvolutingMapper.ts";
-	import ConvolutingMapperDisplayer from "../implementations/convoluting/displayer/ConvolutingMapperDisplayer.svelte";
+	import {ConvolutingOrCorrelatingMapper} from "../implementations/convoluting-or-correlating/ConvolutingOrCorrelatingMapper.ts";
+	import ConvolutingOrCorrelatingMapperDisplayer from "../implementations/convoluting-or-correlating/displayer/ConvolutingOrCorrelatingMapperDisplayer.svelte";
+	import type {NodeId} from "../../../../id/NodeId.ts";
 	const {
 		mapper,
 		onSetMapperRequest,
-	}: Readonly<{mapper: Mapper; onSetMapperRequest: (mapper: Mapper) => void}> =
-		$props();
+		nodeId,
+	}: Readonly<{
+		mapper: Mapper;
+		onSetMapperRequest: (mapper: Mapper) => void;
+		nodeId: NodeId;
+	}> = $props();
 </script>
 
 {#if mapper instanceof GrayscalingMapper}
@@ -25,6 +30,10 @@
 	<AverageBlurringMapperDisplayer {mapper} {onSetMapperRequest} />
 {:else if mapper instanceof NearestNeighborScalingMapper}
 	<NearestNeighborScalingMapperDisplayer {mapper} {onSetMapperRequest} />
-{:else if mapper instanceof ConvolutingMapper}
-	<ConvolutingMapperDisplayer {mapper} {onSetMapperRequest} />
+{:else if mapper instanceof ConvolutingOrCorrelatingMapper}
+	<ConvolutingOrCorrelatingMapperDisplayer
+		{mapper}
+		{onSetMapperRequest}
+		{nodeId}
+	/>
 {/if}

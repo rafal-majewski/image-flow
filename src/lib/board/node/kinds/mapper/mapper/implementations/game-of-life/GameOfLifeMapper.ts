@@ -7,8 +7,6 @@ import {Mapper} from "../../Mapper.ts";
 import type {GameOfLifeMapperColorComponentComputer} from "./color-component-computer/GameOfLifeMapperColorComponentComputer.ts";
 import {computeModuloKeepingDivisorSign} from "./computing-modulo-keeping-divisor-sign/computeModuloKeepingDivisorSign.ts";
 export class GameOfLifeMapper extends Mapper {
-	public readonly mixFactor: number;
-	public readonly componentComputer: GameOfLifeMapperColorComponentComputer;
 	public constructor(
 		componentComputer: GameOfLifeMapperColorComponentComputer,
 		mixFactor: number,
@@ -17,14 +15,7 @@ export class GameOfLifeMapper extends Mapper {
 		this.componentComputer = componentComputer;
 		this.mixFactor = mixFactor;
 	}
-	public withNewMixFactor(newMixFactor: number): GameOfLifeMapper {
-		return new GameOfLifeMapper(this.componentComputer, newMixFactor);
-	}
-	public withNewColorComponentComputer(
-		newColorComponentComputer: GameOfLifeMapperColorComponentComputer,
-	): GameOfLifeMapper {
-		return new GameOfLifeMapper(newColorComponentComputer, this.mixFactor);
-	}
+	public readonly componentComputer: GameOfLifeMapperColorComponentComputer;
 	public *map(inputImage: ImageData): Generator<ImageData, ImageData, void> {
 		let lastImage = new ImageData(
 			inputImage.data,
@@ -106,5 +97,14 @@ export class GameOfLifeMapper extends Mapper {
 			}
 			lastImage = currentImage;
 		}
+	}
+	public readonly mixFactor: number;
+	public withNewColorComponentComputer(
+		newColorComponentComputer: GameOfLifeMapperColorComponentComputer,
+	): GameOfLifeMapper {
+		return new GameOfLifeMapper(newColorComponentComputer, this.mixFactor);
+	}
+	public withNewMixFactor(newMixFactor: number): GameOfLifeMapper {
+		return new GameOfLifeMapper(this.componentComputer, newMixFactor);
 	}
 }

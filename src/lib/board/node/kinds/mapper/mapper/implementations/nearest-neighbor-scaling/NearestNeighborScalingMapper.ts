@@ -2,7 +2,6 @@ import type {Coordinates} from "../../../../../../coordinates/Coordinates.ts";
 import type {Dimensions} from "../../../../../../dimensions/Dimensions.ts";
 import {Mapper} from "../../Mapper.ts";
 export class NearestNeighborScalingMapper extends Mapper {
-	private readonly outputImageDimensions: Dimensions;
 	public constructor(outputImageDimensions: Dimensions) {
 		super("nearest-neighbor-scaling", "Nearest neighbor scaling");
 		this.outputImageDimensions = outputImageDimensions;
@@ -54,4 +53,5 @@ export class NearestNeighborScalingMapper extends Mapper {
 		}
 		return outputImage;
 	}
+	private readonly outputImageDimensions: Dimensions;
 }

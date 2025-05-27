@@ -5,43 +5,43 @@ import {InvalidUrlFromUrlLoaderNodeState} from "../invalid-url/InvalidUrlFromUrl
 import {LoadingInProgressFromUrlLoaderNodeState} from "../loading-in-progress/LoadingInProgressFromUrlLoaderNodeState.ts";
 import {NoUrlFromUrlLoaderNodeState} from "../no-url/NoUrlFromUrlLoaderNodeState.ts";
 export class LoadingSucceededFromUrlLoaderNodeState extends FromUrlLoaderNodeState {
-	public readonly image: ImageData;
-	public readonly url: string;
 	public constructor(image: ImageData, url: string) {
 		super("done");
 		this.image = image;
 		this.url = url;
 	}
-	public override setValidUrl(
-		newUrl: string,
-		outputNodes: readonly OutputNode[],
-	): LoadingInProgressFromUrlLoaderNodeState {
-		for (const outputNode of outputNodes) {
-			outputNode.unsetInputNodeImage();
-		}
-		return new LoadingInProgressFromUrlLoaderNodeState(newUrl);
-	}
+	public readonly image: ImageData;
 	public override setInvalidUrl(
 		newUrl: string,
-		outputNodes: readonly OutputNode[],
+		outputEdges: readonly OutputEdge[],
 	): InvalidUrlFromUrlLoaderNodeState {
 		for (const outputNode of outputNodes) {
 			outputNode.unsetInputNodeImage();
 		}
 		return new InvalidUrlFromUrlLoaderNodeState(newUrl);
 	}
+	public override setValidUrl(
+		newUrl: string,
+		outputEdges: readonly OutputEdge[],
+	): LoadingInProgressFromUrlLoaderNodeState {
+		for (const outputNode of outputNodes) {
+			outputNode.unsetInputNodeImage();
+		}
+		return new LoadingInProgressFromUrlLoaderNodeState(newUrl);
+	}
 	public unsetUrl(
-		outputNodes: readonly OutputNode[],
+		outputEdges: readonly OutputEdge[],
 	): NoUrlFromUrlLoaderNodeState {
 		for (const outputNode of outputNodes) {
 			outputNode.unsetInputNodeImage();
 		}
 		return new NoUrlFromUrlLoaderNodeState();
 	}
-	public override updateOutputNodeAfterAdding(
+	public override updateOutputEdgeAfterAdding(
 		thisNode: FromUrlLoaderNode,
-		outputNodeToUpdate: OutputNode,
+		outputEdgeToUpdate: OutputEdge,
 	): void {
-		outputNodeToUpdate.setInputNodeWithImage(thisNode, this.image);
+		outputNodeToUpdate.setInputEdgeWithImage(thisNode, this.image);
 	}
+	public readonly url: string;
 }

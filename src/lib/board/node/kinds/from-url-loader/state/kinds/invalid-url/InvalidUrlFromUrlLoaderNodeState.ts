@@ -4,32 +4,32 @@ import {FromUrlLoaderNodeState} from "../../FromUrlLoaderNodeState.ts";
 import {LoadingInProgressFromUrlLoaderNodeState} from "../loading-in-progress/LoadingInProgressFromUrlLoaderNodeState.ts";
 import {NoUrlFromUrlLoaderNodeState} from "../no-url/NoUrlFromUrlLoaderNodeState.ts";
 export class InvalidUrlFromUrlLoaderNodeState extends FromUrlLoaderNodeState {
-	public readonly url: string;
 	public constructor(url: string) {
 		super("errored");
 		this.url = url;
 	}
-	public override setValidUrl(
-		newUrl: string,
-		outputNodes: readonly OutputNode[],
-	): LoadingInProgressFromUrlLoaderNodeState {
-		return new LoadingInProgressFromUrlLoaderNodeState(newUrl);
-	}
 	public override setInvalidUrl(
 		newUrl: string,
-		outputNodes: readonly OutputNode[],
+		outputEdges: readonly OutputEdge[],
 	): InvalidUrlFromUrlLoaderNodeState {
 		return new InvalidUrlFromUrlLoaderNodeState(newUrl);
 	}
+	public override setValidUrl(
+		newUrl: string,
+		outputEdges: readonly OutputEdge[],
+	): LoadingInProgressFromUrlLoaderNodeState {
+		return new LoadingInProgressFromUrlLoaderNodeState(newUrl);
+	}
 	public unsetUrl(
-		outputNodes: readonly OutputNode[],
+		outputEdges: readonly OutputEdge[],
 	): NoUrlFromUrlLoaderNodeState {
 		return new NoUrlFromUrlLoaderNodeState();
 	}
-	public override updateOutputNodeAfterAdding(
+	public override updateOutputEdgeAfterAdding(
 		thisNode: FromUrlLoaderNode,
-		outputNodeToUpdate: OutputNode,
+		outputEdgeToUpdate: OutputEdge,
 	): void {
-		outputNodeToUpdate.setInputNodeWithoutImage(thisNode);
+		outputEdgeToUpdate.setInputEdgeWithoutImage(thisNode);
 	}
+	public readonly url: string;
 }

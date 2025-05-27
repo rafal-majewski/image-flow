@@ -59,6 +59,6 @@
 	"exclude": [".git", "node_modules"],
 	"extends": ["./.svelte-kit/tsconfig.json"],
 	"files": [],
-	"include": ["**/*"],
+	"include": ["**/*", "**/.*"],
 	"references": []
 }

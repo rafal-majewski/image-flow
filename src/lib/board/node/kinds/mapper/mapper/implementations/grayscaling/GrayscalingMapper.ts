@@ -5,15 +5,9 @@ import {readRgbaColorFromImage} from "../../../reading-rgba-color-from-image/rea
 import {writeRgbaColorToImage} from "../../../writing-rgba-color-to-image/writeRgbaColorToImage.ts";
 import {Mapper} from "../../Mapper.ts";
 export class GrayscalingMapper extends Mapper {
-	public readonly multiplier: ContinuousRgbColor;
 	public constructor(multiplier: ContinuousRgbColor) {
 		super("grayscaling", "Grayscaling");
 		this.multiplier = multiplier;
-	}
-	public withNewMultiplier(
-		newMultiplier: ContinuousRgbColor,
-	): GrayscalingMapper {
-		return new GrayscalingMapper(newMultiplier);
 	}
 	public *map(inputImage: ImageData): Generator<ImageData, ImageData, void> {
 		const outputImage = new ImageData(inputImage.width, inputImage.height);
@@ -35,5 +29,11 @@ export class GrayscalingMapper extends Mapper {
 			);
 		}
 		return outputImage;
+	}
+	public readonly multiplier: ContinuousRgbColor;
+	public withNewMultiplier(
+		newMultiplier: ContinuousRgbColor,
+	): GrayscalingMapper {
+		return new GrayscalingMapper(newMultiplier);
 	}
 }

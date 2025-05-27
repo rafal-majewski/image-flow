@@ -1,8 +1,8 @@
 <script lang="ts">
-	import {computeInBoardPositionFromClientPosition} from "./computing-in-board-position-from-client-position/computeInBoardPositionFromClientPosition.ts";
+	import {computeInBoardPositionFromClientPosition} from "./computing-in-board-position-from-in-viewport-position/computeInBoardPositionFromInViewportPosition.ts";
 	import type {Coordinates} from "./coordinates/Coordinates.ts";
 	import EdgeDisplayer from "./edge-displayer/EdgeDisplayer.svelte";
-	import Menu from "./main/Menu.svelte";
+	import Menu from "./menu/Menu.svelte";
 	import type {SupportedBoardMode} from "./mode/supported/SupportedBoardMode.ts";
 	import LineDisplayer from "./line-displayer/LineDisplayer.svelte";
 	import SupportedNodeDisplayer from "./node/supported-displayer/SupportedNodeDisplayer.svelte";

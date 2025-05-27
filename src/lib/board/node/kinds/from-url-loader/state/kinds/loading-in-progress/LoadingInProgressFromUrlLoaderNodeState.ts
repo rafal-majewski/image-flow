@@ -6,46 +6,46 @@ import {LoadingFailedFromUrlLoaderNodeState} from "../loading-failed/LoadingFail
 import {LoadingSucceededFromUrlLoaderNodeState} from "../loading-succeeded/LoadingSucceededFromUrlLoaderNodeState.ts";
 import {NoUrlFromUrlLoaderNodeState} from "../no-url/NoUrlFromUrlLoaderNodeState.ts";
 export class LoadingInProgressFromUrlLoaderNodeState extends FromUrlLoaderNodeState {
-	public readonly url: string;
 	public constructor(url: string) {
 		super("working");
 		this.url = url;
 	}
+	public failLoading(
+		outputEdges: readonly OutputEdge[],
+	): LoadingFailedFromUrlLoaderNodeState {
+		return new LoadingFailedFromUrlLoaderNodeState(this.url);
+	}
+	public override setInvalidUrl(
+		newUrl: string,
+		outputEdges: readonly OutputEdge[],
+	): InvalidUrlFromUrlLoaderNodeState {
+		return new InvalidUrlFromUrlLoaderNodeState(newUrl);
+	}
+	public override setValidUrl(
+		newUrl: string,
+		outputEdges: readonly OutputEdge[],
+	): LoadingInProgressFromUrlLoaderNodeState {
+		return new LoadingInProgressFromUrlLoaderNodeState(newUrl);
+	}
 	public succeedLoading(
 		loadedImage: ImageData,
-		outputNodes: readonly OutputNode[],
+		outputEdges: readonly OutputEdge[],
 	): LoadingSucceededFromUrlLoaderNodeState {
 		for (const outputNode of outputNodes) {
 			outputNode.setInputNodeImage(loadedImage);
 		}
 		return new LoadingSucceededFromUrlLoaderNodeState(loadedImage, this.url);
 	}
-	public failLoading(
-		outputNodes: readonly OutputNode[],
-	): LoadingFailedFromUrlLoaderNodeState {
-		return new LoadingFailedFromUrlLoaderNodeState(this.url);
-	}
-	public override setValidUrl(
-		newUrl: string,
-		outputNodes: readonly OutputNode[],
-	): LoadingInProgressFromUrlLoaderNodeState {
-		return new LoadingInProgressFromUrlLoaderNodeState(newUrl);
-	}
-	public override setInvalidUrl(
-		newUrl: string,
-		outputNodes: readonly OutputNode[],
-	): InvalidUrlFromUrlLoaderNodeState {
-		return new InvalidUrlFromUrlLoaderNodeState(newUrl);
-	}
 	public unsetUrl(
-		outputNodes: readonly OutputNode[],
+		outputEdges: readonly OutputEdge[],
 	): NoUrlFromUrlLoaderNodeState {
 		return new NoUrlFromUrlLoaderNodeState();
 	}
-	public override updateOutputNodeAfterAdding(
+	public override updateOutputEdgeAfterAdding(
 		thisNode: FromUrlLoaderNode,
-		outputNodeToUpdate: OutputNode,
+		outputEdgeToUpdate: OutputEdge,
 	): void {
-		outputNodeToUpdate.setInputNodeWithoutImage(thisNode);
+		outputEdgeToUpdate.setInputEdgeWithoutImage(thisNode);
 	}
+	public readonly url: string;
 }

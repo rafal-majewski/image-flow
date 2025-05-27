@@ -4,18 +4,10 @@ import {readRgbColorFromImage} from "../../../reading-rgb-color-from-image/readR
 import {readRgbaColorFromImage} from "../../../reading-rgba-color-from-image/readRgbaColorFromImage.ts";
 import {Mapper} from "../../Mapper.ts";
 export class AverageBlurringMapper extends Mapper {
-	public readonly mixFactor: number;
-	public readonly radius: number;
 	public constructor(mixFactor: number, radius: number) {
 		super("average-blurring", "Average blurring");
 		this.mixFactor = mixFactor;
 		this.radius = radius;
-	}
-	public withNewMixFactor(newMixFactor: number): AverageBlurringMapper {
-		return new AverageBlurringMapper(newMixFactor, this.radius);
-	}
-	public withNewRadius(newRadius: number): AverageBlurringMapper {
-		return new AverageBlurringMapper(this.mixFactor, newRadius);
 	}
 	public *map(inputImage: ImageData): Generator<ImageData, ImageData, void> {
 		const outputImage = new ImageData(inputImage.width, inputImage.height);
@@ -82,5 +74,13 @@ export class AverageBlurringMapper extends Mapper {
 			outputImage.data[byteIndex + 3] = color.alpha;
 		}
 		return outputImage;
+	}
+	public readonly mixFactor: number;
+	public readonly radius: number;
+	public withNewMixFactor(newMixFactor: number): AverageBlurringMapper {
+		return new AverageBlurringMapper(newMixFactor, this.radius);
+	}
+	public withNewRadius(newRadius: number): AverageBlurringMapper {
+		return new AverageBlurringMapper(this.mixFactor, newRadius);
 	}
 }

@@ -5,18 +5,92 @@ import {MapperNodeState} from "../../MapperNodeState.ts";
 import type {Node} from "../../../../../Node.svelte.ts";
 import {ManualMappingSucceededMapperNodeState} from "../manual-mapping-succeeded/ManualMappingSucceededMapperNodeState.ts";
 import {ManualMappingInProgressMapperNodeState} from "../manual-mapping-in-progress/ManualMappingInProgressMapperNodeState.ts";
-import {ManualNoInputNodeImageAndNoMapperMapperNodeState} from "../manual-no-input-node-image-and-no-mapper/ManualNoInputNodeImageAndNoMapperMapperNodeState.ts";
-import {ManualNoInputNodeAndNoMapperMapperNodeState} from "../manual-no-input-node-and-no-mapper/ManualNoInputNodeAndNoMapperMapperNodeState.ts";
+import {ManualNoInputImageAndNoMapperMapperNodeState} from "../manual-no-input-node-image-and-no-mapper/ManualNoInputImageAndNoMapperMapperNodeState.ts";
+import {ManualNoInputEdgeAndNoMapperMapperNodeState} from "../manual-no-input-node-and-no-mapper/ManualNoInputEdgeAndNoMapperMapperNodeState.ts";
 import {InstantNoMapperMapperNodeState} from "../instant-no-mapper/InstantNoMapperMapperNodeState.ts";
 import {AnimatedNoMapperMapperNodeState} from "../animated-no-mapper/AnimatedNoMapperMapperNodeState.ts";
 export class ManualNoMapperMapperNodeState extends MapperNodeState {
-	public override setStepCount(
+	public constructor(
+		inputEdge: InputEdge,
+		inputNodeImage: ImageData,
+		stepCount: number,
+	) {
+		super("unconfigured");
+		this.inputNode = inputNode;
+		this.inputNodeImage = inputNodeImage;
+		this.stepCount = stepCount;
+	}
+	public override doAnimatedStep(outputEdges: readonly OutputEdge[]): this {
+		return this;
+	}
+	public override doManualSteps(outputEdges: readonly OutputEdge[]): this {
+		return this;
+	}
+	private readonly inputEdge: InputEdge;
+	private readonly inputNodeImage: ImageData;
+	public override makeAnimated(
+		intervalId: ReturnType<typeof setInterval>,
+		intervalIntervalSeconds: number,
+	): AnimatedNoMapperMapperNodeState {
+		return new AnimatedNoMapperMapperNodeState(
+			this.inputEdge,
+			this.inputNodeImage,
+			intervalId,
+			intervalIntervalSeconds,
+		);
+	}
+	public override makeInstant(
+		outputEdges: readonly OutputEdge[],
+	): InstantNoMapperMapperNodeState {
+		return new InstantNoMapperMapperNodeState(
+			this.inputEdge,
+			this.inputNodeImage,
+		);
+	}
+	public override makeManual(
 		newStepCount: number,
 	): ManualNoMapperMapperNodeState {
 		return new ManualNoMapperMapperNodeState(
-			this.inputNode,
+			this.inputEdge,
 			this.inputNodeImage,
 			newStepCount,
+		);
+	}
+	public override resetOutputImage(outputEdges: readonly OutputEdge[]): this {
+		return this;
+	}
+	public override setInputEdgeWithImage(
+		thisNode: MapperNode,
+		newInputNode: Node,
+		newInputNodeImage: ImageData,
+		outputEdges: readonly OutputEdge[],
+	): ManualNoMapperMapperNodeState {
+		this.inputEdge.disconnectFromInputNode();
+		return new ManualNoMapperMapperNodeState(
+			newInputNode,
+			newInputNodeImage,
+			this.stepCount,
+		);
+	}
+	public override setInputEdgeWithoutImage(
+		thisNode: MapperNode,
+		newInputNode: Node,
+		outputEdges: readonly OutputEdge[],
+	): ManualNoInputImageAndNoMapperMapperNodeState {
+		this.inputEdge.disconnectFromInputNode();
+		return new ManualNoInputImageAndNoMapperMapperNodeState(
+			newInputNode,
+			this.stepCount,
+		);
+	}
+	public override setInputNodeImage(
+		newInputNodeImage: ImageData,
+		outputEdges: readonly OutputEdge[],
+	): ManualNoMapperMapperNodeState {
+		return new ManualNoMapperMapperNodeState(
+			this.inputEdge,
+			newInputNodeImage,
+			this.stepCount,
 		);
 	}
 	public override setIntervalInterval(
@@ -25,22 +99,9 @@ export class ManualNoMapperMapperNodeState extends MapperNodeState {
 	): this {
 		return this;
 	}
-	public override setInputNodeWithImage(
-		thisNode: MapperNode,
-		newInputNode: Node,
-		newInputNodeImage: ImageData,
-		outputNodes: readonly OutputNode[],
-	): ManualNoMapperMapperNodeState {
-		this.inputNode.deleteOutputNode(thisNode);
-		return new ManualNoMapperMapperNodeState(
-			newInputNode,
-			newInputNodeImage,
-			this.stepCount,
-		);
-	}
 	public override setMapper(
 		mapper: Mapper,
-		outputNodes: readonly OutputNode[],
+		outputEdges: readonly OutputEdge[],
 	):
 		| ManualMappingInProgressMapperNodeState
 		| ManualMappingSucceededMapperNodeState {
@@ -51,7 +112,7 @@ export class ManualNoMapperMapperNodeState extends MapperNodeState {
 				outputNode.setInputNodeImage(generatorResult.value);
 			}
 			return new ManualMappingSucceededMapperNodeState(
-				this.inputNode,
+				this.inputEdge,
 				this.inputNodeImage,
 				mapper,
 				generatorResult.value,
@@ -60,7 +121,7 @@ export class ManualNoMapperMapperNodeState extends MapperNodeState {
 		} else {
 			return new ManualMappingInProgressMapperNodeState(
 				generator,
-				this.inputNode,
+				this.inputEdge,
 				this.inputNodeImage,
 				mapper,
 				generatorResult.value,
@@ -68,99 +129,37 @@ export class ManualNoMapperMapperNodeState extends MapperNodeState {
 			);
 		}
 	}
-	public override setInputNodeWithoutImage(
-		thisNode: MapperNode,
-		newInputNode: Node,
-		outputNodes: readonly OutputNode[],
-	): ManualNoInputNodeImageAndNoMapperMapperNodeState {
-		this.inputNode.deleteOutputNode(thisNode);
-		return new ManualNoInputNodeImageAndNoMapperMapperNodeState(
-			newInputNode,
-			this.stepCount,
-		);
-	}
-	public override setInputNodeImage(
-		newInputNodeImage: ImageData,
-		outputNodes: readonly OutputNode[],
-	): ManualNoMapperMapperNodeState {
-		return new ManualNoMapperMapperNodeState(
-			this.inputNode,
-			newInputNodeImage,
-			this.stepCount,
-		);
-	}
-	public override unsetInputNode(
-		thisNode: MapperNode,
-		outputNodes: readonly OutputNode[],
-	): ManualNoInputNodeAndNoMapperMapperNodeState {
-		this.inputNode.deleteOutputNode(thisNode);
-		return new ManualNoInputNodeAndNoMapperMapperNodeState(this.stepCount);
-	}
-	public override unsetInputNodeImage(
-		outputNodes: readonly OutputNode[],
-	): ManualNoInputNodeImageAndNoMapperMapperNodeState {
-		return new ManualNoInputNodeImageAndNoMapperMapperNodeState(
-			this.inputNode,
-			this.stepCount,
-		);
-	}
-	public override unsetMapper(outputNodes: readonly OutputNode[]): this {
-		return this;
-	}
-	public override makeInstant(
-		outputNodes: readonly OutputNode[],
-	): InstantNoMapperMapperNodeState {
-		return new InstantNoMapperMapperNodeState(
-			this.inputNode,
-			this.inputNodeImage,
-		);
-	}
-	public override makeManual(
+	public override setStepCount(
 		newStepCount: number,
 	): ManualNoMapperMapperNodeState {
 		return new ManualNoMapperMapperNodeState(
-			this.inputNode,
+			this.inputEdge,
 			this.inputNodeImage,
 			newStepCount,
 		);
 	}
-	public override makeAnimated(
-		intervalId: ReturnType<typeof setInterval>,
-		intervalIntervalSeconds: number,
-	): AnimatedNoMapperMapperNodeState {
-		return new AnimatedNoMapperMapperNodeState(
-			this.inputNode,
-			this.inputNodeImage,
-			intervalId,
-			intervalIntervalSeconds,
+	public readonly stepCount: number;
+	public override unsetInputEdge(
+		outputEdges: readonly OutputEdge[],
+	): ManualNoInputEdgeAndNoMapperMapperNodeState {
+		this.inputEdge.disconnectFromInputNode();
+		return new ManualNoInputEdgeAndNoMapperMapperNodeState(this.stepCount);
+	}
+	public override unsetInputImage(
+		outputEdges: readonly OutputEdge[],
+	): ManualNoInputImageAndNoMapperMapperNodeState {
+		return new ManualNoInputImageAndNoMapperMapperNodeState(
+			this.inputEdge,
+			this.stepCount,
 		);
 	}
-	public override doManualSteps(outputNodes: readonly OutputNode[]): this {
+	public override unsetMapper(outputEdges: readonly OutputEdge[]): this {
 		return this;
 	}
-	public override doAnimatedStep(outputNodes: readonly OutputNode[]): this {
-		return this;
-	}
-	public override updateOutputNodeAfterAdding(
+	public override updateOutputEdgeAfterAdding(
 		thisNode: MapperNode,
-		outputNodeToUpdate: OutputNode,
+		outputEdgeToUpdate: OutputEdge,
 	): void {
-		outputNodeToUpdate.setInputNodeWithoutImage(thisNode);
-	}
-	public constructor(
-		inputNode: Node,
-		inputNodeImage: ImageData,
-		stepCount: number,
-	) {
-		super("unconfigured");
-		this.inputNode = inputNode;
-		this.inputNodeImage = inputNodeImage;
-		this.stepCount = stepCount;
-	}
-	private readonly inputNodeImage: ImageData;
-	private readonly inputNode: Node;
-	public readonly stepCount: number;
-	public override resetOutputImage(outputNodes: readonly OutputNode[]): this {
-		return this;
+		outputEdgeToUpdate.setInputEdgeWithoutImage(thisNode);
 	}
 }

@@ -87,7 +87,6 @@
 		onResetOutputImageRequest={handleResetRequest}
 	/>
 {/snippet}
-
 <NodeDisplayer
 	name="Mapper"
 	{node}

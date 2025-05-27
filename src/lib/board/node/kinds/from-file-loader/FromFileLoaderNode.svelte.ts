@@ -1,5 +1,4 @@
 import type {Coordinates} from "../../../coordinates/Coordinates.ts";
-import type {OutputNode} from "../../OutputNode.ts";
 import {Node} from "../../Node.svelte.ts";
 import {NoFileFromFileLoaderNodeState} from "./state/kinds/no-file/NoFileFromFileLoaderNodeState.ts";
 import type {FromFileLoaderNodeState} from "./state/FromFileLoaderNodeState.ts";
@@ -8,9 +7,9 @@ export class FromFileLoaderNode extends Node {
 		super(position);
 		this.state = new NoFileFromFileLoaderNodeState();
 	}
-	public state: FromFileLoaderNodeState =
-		$state.raw() as FromFileLoaderNodeState;
-	public readonly status = $derived(this.state.status);
+	public override disconnect(): void {
+		this.disconnectOutputNodes();
+	}
 	public async setFile(file: File): Promise<void> {
 		const loadingInProgressState = this.state.setFile(file, this.outputNodes);
 		this.state = loadingInProgressState;
@@ -50,12 +49,12 @@ export class FromFileLoaderNode extends Node {
 			}
 		}
 	}
-	protected override updateOutputNodeAfterAdding(
-		outputNodeToUpdate: OutputNode,
+	public state: FromFileLoaderNodeState =
+		$state.raw() as FromFileLoaderNodeState;
+	public readonly status = $derived(this.state.status);
+	protected override updateOutputEdgeAfterAdding(
+		outputEdgeToUpdate: OutputEdge,
 	): void {
-		this.state.updateOutputNodeAfterAdding(this, outputNodeToUpdate);
-	}
-	public override disconnect(): void {
-		this.disconnectOutputNodes();
+		this.state.updateOutputEdgeAfterAdding(this, outputNodeToUpdate);
 	}
 }

@@ -1,38 +1,59 @@
 import type {Coordinates} from "../coordinates/Coordinates.ts";
+import type {OutputEdge} from "../edge/types/output/OutputEdge.ts";
 import {generateNodeId} from "./id/generation/generateNodeId.ts";
 import type {NodeId} from "./id/NodeId.ts";
-import type {OutputNode} from "./OutputNode.ts";
-import type {NodeStatus} from "./status/NodeStatus.ts";
-export abstract class Node {
-	protected constructor(position: Coordinates) {
+import type {NodeState} from "./state/NodeState.ts";
+export abstract class Node<NodeStateToUse extends NodeState> {
+	protected constructor(position: Coordinates, state: NodeStateToUse) {
 		this.id = generateNodeId();
 		this.position = position;
-		this.outputNodes = [];
+		this.outputEdges = [];
+		this.state = state;
 	}
-	public readonly id: NodeId;
+	public addOutputEdge(outputEdgeBuilder: UnhandledOutputEdgeBuilder): void {
+		this.outputEdges = [
+			...this.outputEdges,
+			this.state.handleOutputEdgeBuilder(outputEdgeBuilder).build(this),
+		];
+	}
+	public doManualSteps(): void {
+		this.state = this.state.doManualSteps(this.outputEdges);
+	}
+	private readonly id: NodeId;
+	public makeAnimated(): void {
+		const intervalIntervalSeconds = 0.001;
+		const intervalId = setInterval(() => {
+			this.state = this.state.doAnimatedStep(this.outputEdges);
+		}, intervalIntervalSeconds * 1000);
+		this.state = this.state.makeAnimated(intervalId, intervalIntervalSeconds);
+	}
+	public makeInstant(): void {
+		this.state = this.state.makeInstant(this.outputEdges);
+	}
+	public makeManual(): void {
+		const stepCount = 1;
+		this.state = this.state.makeManual(stepCount);
+	}
+	/**
+	 * Do not reassign externally.
+	 */
+	public outputEdges: readonly OutputEdge[] =
+		$state.raw() as readonly OutputEdge[];
 	public position: Coordinates = $state.raw() as Coordinates;
-	public abstract readonly status: NodeStatus;
-	public abstract disconnect(): void;
-	public outputNodes: readonly OutputNode[] =
-		$state.raw() as readonly OutputNode[];
-	private addOutputNode(outputNodeToAdd: OutputNode): void {
-		this.outputNodes = [...this.outputNodes, outputNodeToAdd];
+	public resetOutputImage(): void {
+		this.state = this.state.resetOutputImage(this.outputEdges);
 	}
-	public addAndUpdateOutputNode(outputNodeToAddAndUpdate: OutputNode): void {
-		this.addOutputNode(outputNodeToAddAndUpdate);
-		this.updateOutputNodeAfterAdding(outputNodeToAddAndUpdate);
-	}
-	protected abstract updateOutputNodeAfterAdding(
-		outputNodeToUpdate: OutputNode,
-	): void;
-	public deleteOutputNode(outputNodeToDelete: OutputNode): void {
-		this.outputNodes = this.outputNodes.filter(
-			(node) => node !== outputNodeToDelete,
+	public setIntervalInterval(intervalIntervalSeconds: number): void {
+		const intervalId = setInterval(() => {
+			this.state = this.state.doAnimatedStep(this.outputEdges);
+		}, intervalIntervalSeconds * 1000);
+		this.state = this.state.setIntervalInterval(
+			intervalId,
+			intervalIntervalSeconds,
 		);
 	}
-	protected disconnectOutputNodes(): void {
-		for (const outputNode of this.outputNodes) {
-			outputNode.unsetInputNode();
-		}
+	public setStepCount(stepCount: number): void {
+		this.state = this.state.setStepCount(stepCount);
 	}
+	public state: NodeStateToUse = $state.raw() as NodeStateToUse;
 }

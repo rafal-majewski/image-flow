@@ -42,7 +42,6 @@
 		onSetOutputNodeRequest={handleSetOutputNodeRequest}
 	/>
 {/snippet}
-
 <NodeDisplayer
 	name="From file loader"
 	{node}

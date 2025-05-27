@@ -1,6 +1,5 @@
 import type {Coordinates} from "../../../coordinates/Coordinates.ts";
 import {Node} from "../../Node.svelte.ts";
-import type {OutputNode} from "../../OutputNode.ts";
 import {checkIfUrlIsValid} from "./checking-if-url-is-valid/checkIfUrlIsValid.ts";
 import type {FromUrlLoaderNodeState} from "./state/FromUrlLoaderNodeState.ts";
 import {NoUrlFromUrlLoaderNodeState} from "./state/kinds/no-url/NoUrlFromUrlLoaderNodeState.ts";
@@ -9,8 +8,9 @@ export class FromUrlLoaderNode extends Node {
 		super(position);
 		this.state = new NoUrlFromUrlLoaderNodeState();
 	}
-	public state: FromUrlLoaderNodeState = $state.raw() as FromUrlLoaderNodeState;
-	public readonly status = $derived(this.state.status);
+	public override disconnect(): void {
+		this.disconnectOutputNodes();
+	}
 	public async setUrl(url: string): Promise<void> {
 		if (checkIfUrlIsValid(url)) {
 			const loadingInProgressState = this.state.setValidUrl(
@@ -56,12 +56,11 @@ export class FromUrlLoaderNode extends Node {
 			this.state = this.state.setInvalidUrl(url, this.outputNodes);
 		}
 	}
-	protected override updateOutputNodeAfterAdding(
-		outputNodeToUpdate: OutputNode,
+	public state: FromUrlLoaderNodeState = $state.raw() as FromUrlLoaderNodeState;
+	public readonly status = $derived(this.state.status);
+	protected override updateOutputEdgeAfterAdding(
+		outputEdgeToUpdate: OutputEdge,
 	): void {
-		this.state.updateOutputNodeAfterAdding(this, outputNodeToUpdate);
-	}
-	public override disconnect(): void {
-		this.disconnectOutputNodes();
+		this.state.updateOutputEdgeAfterAdding(this, outputNodeToUpdate);
 	}
 }
