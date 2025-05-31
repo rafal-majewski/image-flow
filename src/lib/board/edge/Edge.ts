@@ -1,12 +1,30 @@
-import type {Node} from "../node/Node.svelte.ts";
-import type {OutputEdge} from "./types/output/OutputEdge.ts";
-export abstract class Edge<OutputNodeToUse extends Node> implements OutputEdge {
-	public constructor(inputNode: Node, outputNode: OutputNodeToUse) {
-		this.inputNode = inputNode;
-		this.outputNode = outputNode;
+import type {EdgeId} from "./id/EdgeId.ts";
+import {WithImageEdge} from "./implementations/WithImageEdge.ts";
+export abstract class Edge {
+	protected constructor(
+		id: EdgeId,
+		index: number,
+		input: InEdgePut,
+		output: OutEdgePut,
+	) {
+		this.id = id;
+		this.index = index;
+		this.input = input;
+		this.output = output;
 	}
-	public readonly inputNode: Node;
-	public readonly outputNode: OutputNodeToUse;
-	public abstract setImage(image: ImageData): void;
-	public abstract unsetImage(): void;
+	public readonly id: EdgeId;
+	public readonly index: number;
+	public readonly input: InEdgePut;
+	public readonly output: OutEdgePut;
+	public withImage(image: ImageData): WithImageEdge {
+		const newEdge = new WithImageEdge(
+			this.id,
+			image,
+			this.index,
+			this.input,
+			this.output,
+		);
+		this.output.setInputEdge(newEdge);
+		return newEdge;
+	}
 }

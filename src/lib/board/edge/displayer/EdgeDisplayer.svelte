@@ -1,30 +1,24 @@
 <script lang="ts">
-	import LineDisplayer from "../line-displayer/LineDisplayer.svelte";
-	import type {Node} from "../node/Node.svelte.ts";
-	import type {OutputNode} from "../node/OutputNode.ts";
+	import LineDisplayer from "../../line-displayer/LineDisplayer.svelte";
+	import type {Edge} from "../Edge.ts";
 	const {
-		inputNode,
-		outputNode,
+		edge,
 		onDeleteRequest,
-	}: Readonly<{
-		inputNode: Node;
-		outputNode: OutputNode;
-		onDeleteRequest: (inputNode: Node, outputNode: OutputNode) => void;
-	}> = $props();
+	}: Readonly<{edge: Edge; onDeleteRequest: (edge: Edge) => void}> = $props();
 	function handleDeleteButtonClick() {
-		onDeleteRequest(inputNode, outputNode);
+		onDeleteRequest(edge);
 	}
 </script>
 
 <div>
 	<LineDisplayer
-		sourcePosition={inputNode.position}
-		targetPosition={outputNode.position}
+		sourcePosition={edge.input.position}
+		targetPosition={edge.output.position}
 	/>
 	<button
 		onclick={handleDeleteButtonClick}
-		style:top={`${(inputNode.position.y + outputNode.position.y) / 2}px`}
-		style:left={`${(inputNode.position.x + outputNode.position.x) / 2}px`}
+		style:top={`${(edge.input.position.y + edge.output.position.y) / 2}px`}
+		style:left={`${(edge.input.position.x + edge.output.position.x) / 2}px`}
 		>🗑️</button
 	>
 </div>

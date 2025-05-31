@@ -1,11 +1,11 @@
-import type {AddingNodeBoardMode} from "../kinds/adding-node/AddingNodeBoardMode.ts";
-import type {MovingCameraBoardMode} from "../kinds/moving-camera/MovingCameraBoardMode.ts";
-import type {MovingNodeBoardMode} from "../kinds/moving-node/MovingNodeBoardMode.ts";
-import type {SettingInputNodeBoardMode} from "../kinds/setting-input-node/SettingInputNodeBoardMode.ts";
-import type {SettingOutputNodeBoardMode} from "../kinds/setting-output-node/SettingOutputNodeBoardMode.ts";
+import type {AddingNodeBoardMode} from "../implementations/adding-node/AddingNodeBoardMode.ts";
+import type {MovingCameraBoardMode} from "../implementations/moving-camera/MovingCameraBoardMode.ts";
+import type {MovingNodeBoardMode} from "../implementations/moving-node/MovingNodeBoardMode.ts";
+import type {SettingInEdgePutBoardMode} from "../implementations/setting-edge-input/SettingInEdgePutBoardMode.ts";
+import type {SettingOutEdgePutBoardMode} from "../implementations/setting-edge-output/SettingOutEdgePutBoardMode.ts";
 export type SupportedBoardMode =
 	| AddingNodeBoardMode
 	| MovingCameraBoardMode
 	| MovingNodeBoardMode
-	| SettingInputNodeBoardMode
-	| SettingOutputNodeBoardMode;
+	| SettingInEdgePutBoardMode
+	| SettingOutEdgePutBoardMode;

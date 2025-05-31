@@ -4,12 +4,12 @@
 		position,
 		onAddMapperNodeRequest,
 		onAddGeneratorNodeRequest,
-		onAddCombinerNodeRequest,
+		onAddBicombinerNodeRequest,
 	}: Readonly<{
 		position: Coordinates;
 		onAddMapperNodeRequest: () => void;
 		onAddGeneratorNodeRequest: () => void;
-		onAddCombinerNodeRequest: () => void;
+		onAddBicombinerNodeRequest: () => void;
 	}> = $props();
 	function handleAddGeneratorNodeButtonClick(): void {
 		onAddGeneratorNodeRequest();
@@ -17,8 +17,8 @@
 	function handleAddMapperNodeButtonClick(): void {
 		onAddMapperNodeRequest();
 	}
-	function handleAddCombinerNodeButtonClick(): void {
-		onAddCombinerNodeRequest();
+	function handleAddBicombinerNodeButtonClick(): void {
+		onAddBicombinerNodeRequest();
 	}
 </script>
 
@@ -27,9 +27,21 @@
 	style:left="calc({position.x}px + 50%)"
 	open
 >
-	<button onclick={handleAddGeneratorNodeButtonClick}>Add generator</button>
-	<button onclick={handleAddMapperNodeButtonClick}>Add mapper</button>
-	<button onclick={handleAddCombinerNodeButtonClick}>Add combiner</button>
+	<menu>
+		<li>
+			<button onclick={handleAddGeneratorNodeButtonClick}
+				>Add a generator</button
+			>
+		</li>
+		<li>
+			<button onclick={handleAddMapperNodeButtonClick}>Add a mapper</button>
+		</li>
+		<li>
+			<button onclick={handleAddBicombinerNodeButtonClick}
+				>Add a bicombiner</button
+			>
+		</li>
+	</menu>
 </dialog>
 
 <style>

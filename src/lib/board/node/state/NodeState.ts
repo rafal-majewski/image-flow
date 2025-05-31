@@ -1,29 +1,72 @@
-import type {Edge} from "../../edge/Edge.ts";
-import type {OutputEdge} from "../../edge/types/output/OutputEdge.ts";
-import type {Node} from "../Node.svelte.ts";
+import type {HandledEdgeBuilder} from "../../edge/builder/implementations/handled/HandledEdgeBuilder.ts";
+import type {WithoutImageEdge} from "../../edge/implementations/without-image/WithoutImageEdge.ts";
+import type {WithImageEdge} from "../../edge/WithImageEdge.ts";
+import type {OperatorId} from "../operator/id/OperatorId.ts";
+import type {Operator} from "../operator/Operator.ts";
 import type {NodeStatus} from "../status/NodeStatus.ts";
-export abstract class NodeState {
-	public constructor(status: NodeStatus) {
+export abstract class NodeState<
+	InputEdgeCount extends number,
+	OutputEdgesToUse extends
+		| readonly WithImageEdge[]
+		| readonly WithoutImageEdge[],
+> {
+	public constructor(outputEdges: OutputEdgesToUse, status: NodeStatus) {
+		this.outputEdges = outputEdges;
 		this.status = status;
 	}
-	public abstract doAnimatedStep(outputEdges: readonly OutputEdge[]): NodeState;
-	public abstract doManualSteps(outputEdges: readonly OutputEdge[]): NodeState;
-	public abstract handleOutputEdgeBuilder(
-		outputEdgeBuilder: UnhandledOutputEdgeBuilder,
-	): HandledOutputEdgeBuilder;
+	public abstract addOutputEdge(
+		builder: HandledEdgeBuilder,
+	): NodeState<InputEdgeCount, OutputEdgesToUse>;
+	public abstract doAnimatedStep(): NodeState<
+		InputEdgeCount,
+		readonly WithImageEdge[] | readonly WithoutImageEdge[]
+	>;
+	public abstract doManualSteps(): NodeState<
+		InputEdgeCount,
+		readonly WithImageEdge[] | readonly WithoutImageEdge[]
+	>;
+	public abstract invalidateInputImages(): NodeState<
+		InputEdgeCount,
+		readonly WithoutImageEdge[]
+	>;
 	public abstract makeAnimated(
-		intervalId: NodeJS.Timeout,
+		intervalId: ReturnType<typeof setInterval>,
 		intervalIntervalSeconds: number,
-	): NodeState;
-	public abstract makeInstant(outputEdges: readonly OutputEdge[]): NodeState;
-	public abstract makeManual(stepCount: number): NodeState;
-	public abstract resetOutputImage(
-		outputEdges: readonly OutputEdge[],
-	): NodeState;
+	): NodeState<InputEdgeCount, OutputEdgesToUse>;
+	public abstract makeInstant(): NodeState<
+		InputEdgeCount,
+		readonly WithImageEdge[] | readonly WithoutImageEdge[]
+	>;
+	public abstract makeManual(
+		stepCount: number,
+	): NodeState<InputEdgeCount, OutputEdgesToUse>;
+	public readonly outputEdges: OutputEdgesToUse;
+	public abstract resetOutputImage(): NodeState<
+		InputEdgeCount,
+		readonly WithImageEdge[] | readonly WithoutImageEdge[]
+	>;
 	public abstract setIntervalInterval(
 		intervalId: ReturnType<typeof setInterval>,
 		intervalIntervalSeconds: number,
-	): NodeState;
-	public abstract setStepCount(stepCount: number): NodeState;
+	): NodeState<InputEdgeCount, OutputEdgesToUse>;
+	public abstract setOperator(
+		operator: Operator<OperatorId, InputEdgeCount, string>,
+	): NodeState<
+		InputEdgeCount,
+		readonly WithImageEdge[] | readonly WithoutImageEdge[]
+	>;
+	public abstract setStepCount(
+		stepCount: number,
+	): NodeState<InputEdgeCount, OutputEdgesToUse>;
+	public abstract validateInputImages(
+		inputImages: readonly ImageData[] & Readonly<{length: InputEdgeCount}>,
+	): NodeState<
+		InputEdgeCount,
+		readonly WithImageEdge[] | readonly WithoutImageEdge[]
+	>;
 	public readonly status: NodeStatus;
+	public abstract unsetOperator(): NodeState<
+		InputEdgeCount,
+		readonly WithoutImageEdge[]
+	>;
 }

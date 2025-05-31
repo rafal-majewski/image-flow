@@ -1,24 +1,37 @@
-<script lang="ts">
-	import type {Snippet} from "svelte";
+<script lang="ts" generics="InputEdgeCount extends number, Name extends string">
 	import type {Coordinates} from "../../coordinates/Coordinates.ts";
+	import type {SupportedBoardMode} from "../../mode/supported/SupportedBoardMode.ts";
 	import type {Node} from "../Node.svelte.ts";
+	import type {Operator} from "../operator/Operator.ts";
+	import NodeStateDisplayer from "../state/displayer/NodeStateDisplayer.svelte";
 	const {
 		node,
 		onDeleteRequest,
 		onMouseLeftButtonDown,
 		onMouseLeftButtonUp,
-		stateDisplayer,
-		name,
+		onSetInputRequest,
+		onSetOutputRequest,
+		operators,
+		boardMode,
 	}: Readonly<{
-		onDeleteRequest: (node: Node) => void;
-		node: Node;
+		onDeleteRequest: (node: Node<InputEdgeCount, Name>) => void;
+		node: Node<InputEdgeCount, Name>;
+		boardMode: null | SupportedBoardMode;
+		operators: readonly Operator<InputEdgeCount>[];
 		onMouseLeftButtonDown: (
-			node: Node,
-			mouseClientPosition: Coordinates,
+			node: Node<InputEdgeCount, Name>,
+			mouseCursorInViewportPosition: Coordinates,
 		) => void;
-		onMouseLeftButtonUp: (node: Node) => void;
-		name: string;
-		stateDisplayer: Snippet<[]>;
+		onMouseLeftButtonUp: (node: Node<InputEdgeCount, Name>) => void;
+		onSetInputRequest: (
+			index: number,
+			nodeInRequest: Node<InputEdgeCount, Name>,
+			inViewportPosition: Coordinates,
+		) => void;
+		onSetOutputRequest: (
+			nodeInRequest: Node<InputEdgeCount, Name>,
+			inViewportPosition: Coordinates,
+		) => void;
 	}> = $props();
 	function handleDeleteButtonClick(): void {
 		onDeleteRequest(node);
@@ -32,6 +45,15 @@
 		if (event.button === 0) {
 			onMouseLeftButtonUp(node);
 		}
+	}
+	function handleSetInputButtonClick(
+		index: number,
+		mouseCursorInViewportPosition: Coordinates,
+	): void {
+		onSetInputRequest(index, node, mouseCursorInViewportPosition);
+	}
+	function handleSetOutputButtonClick(event: MouseEvent): void {
+		onSetOutputRequest(node, {x: event.clientX, y: event.clientY});
 	}
 </script>
 
@@ -49,11 +71,41 @@
 >
 	<div>
 		<header>
-			{name}
+			{node.name}
 		</header>
 		<button onclick={handleDeleteButtonClick}>🗑️</button>
 	</div>
-	{@render stateDisplayer()}
+	<ol>
+		{#each node.inputEdges as edge, index (index)}
+			<li>
+				<button
+					disabled={boardMode !== null
+						&& boardMode.kindName === "settingInEdgePut"}
+					onclick={(event) => {
+						handleSetInputButtonClick(index, {
+							x: event.clientX,
+							y: event.clientY,
+						});
+					}}>🔌</button
+				>
+				{edge}
+			</li>
+		{/each}
+	</ol>
+	<NodeStateDisplayer state={node.state} />
+	<select>
+		<option value="" disabled selected>Choose operator</option>
+		{#each operators as operator (operator.id)}
+			<option value={operator.id}>{operator.name}</option>
+		{/each}
+	</select>
+	<div>
+		<button
+			onclick={handleSetOutputButtonClick}
+			disabled={boardMode !== null
+				&& boardMode.kindName === "settingOutEdgePut"}>🔌</button
+		>
+	</div>
 </section>
 
 <style lang="scss">
