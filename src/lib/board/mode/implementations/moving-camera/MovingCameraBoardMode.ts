@@ -1,9 +1,9 @@
 import {BoardMode} from "../../BoardMode.ts";
-import {movingCameraBoardModeKindName} from "./kind-name/movingCameraBoardModeKindName.ts";
+import {movingCameraBoardModeName} from "./name/movingCameraBoardModeName.ts";
 export class MovingCameraBoardMode extends BoardMode<
-	typeof movingCameraBoardModeKindName
+	typeof movingCameraBoardModeName
 > {
 	public constructor() {
-		super(movingCameraBoardModeKindName);
+		super(movingCameraBoardModeName);
 	}
 }

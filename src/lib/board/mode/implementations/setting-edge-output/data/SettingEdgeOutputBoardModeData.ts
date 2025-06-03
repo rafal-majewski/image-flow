@@ -1,6 +1,6 @@
 import type {Coordinates} from "../../../../coordinates/Coordinates.ts";
-import type {InEdgePut} from "../../../../edge/InEdgePut.ts";
-export type SettingOutEdgePutBoardModeData = Readonly<{
-	input: InEdgePut;
+import type {Node} from "../../../../node/Node.svelte.ts";
+export type SettingEdgeOutputBoardModeData = Readonly<{
+	input: Node<number>;
 	mouseCursorInBoardPosition: Coordinates;
 }>;

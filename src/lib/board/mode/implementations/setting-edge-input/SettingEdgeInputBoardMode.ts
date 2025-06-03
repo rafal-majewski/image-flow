@@ -1,20 +1,20 @@
 import type {Coordinates} from "../../../coordinates/Coordinates.ts";
-import type {OutEdgePut} from "../../../edge/OutEdgePut.ts";
 import {WithDataBoardMode} from "../../WithDataBoardMode.ts";
-import type {SettingInEdgePutBoardModeData} from "./data/SettingInEdgePutBoardModeData.ts";
-import {settingInEdgePutBoardModeKindName} from "./kind-name/settingInEdgePutBoardModeKindName.ts";
-export class SettingInEdgePutBoardMode extends WithDataBoardMode<
-	typeof settingInEdgePutBoardModeKindName,
-	SettingInEdgePutBoardModeData
+import {settingEdgeInputBoardModeName} from "./name/settingEdgeInputBoardModeName.ts";
+import type {SettingEdgeInputBoardModeData} from "./data/SettingEdgeInputBoardModeData.ts";
+import type {Node} from "../../../node/Node.svelte.ts";
+export class SettingEdgeInputBoardMode extends WithDataBoardMode<
+	typeof settingEdgeInputBoardModeName,
+	SettingEdgeInputBoardModeData
 > {
 	public constructor(
 		index: number,
 		mouseCursorInBoardPosition: Coordinates,
-		output: OutEdgePut,
+		output: Node<number>,
 	) {
 		super(
 			{index, mouseCursorInBoardPosition, output},
-			settingInEdgePutBoardModeKindName,
+			settingEdgeInputBoardModeName,
 		);
 	}
 }

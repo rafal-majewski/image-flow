@@ -1,6 +1,1 @@
-export type NodeStatus =
-	| "errored"
-	| "working"
-	| "done"
-	| "unconfigured"
-	| "idling";
+export type NodeStatus = "in-progress" | "done" | "unconfigured";

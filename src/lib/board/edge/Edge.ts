@@ -1,5 +1,7 @@
 import type {EdgeId} from "./id/EdgeId.ts";
-import {WithImageEdge} from "./implementations/WithImageEdge.ts";
+import {WithImageEdge} from "./implementations/with-image/WithImageEdge.ts";
+import type {InEdgePut} from "./put/implementations/in/InEdgePut.ts";
+import type {OutEdgePut} from "./put/implementations/out/OutEdgePut.ts";
 export abstract class Edge {
 	protected constructor(
 		id: EdgeId,
@@ -11,6 +13,10 @@ export abstract class Edge {
 		this.index = index;
 		this.input = input;
 		this.output = output;
+	}
+	public delete(): void {
+		this.input.deleteOutputEdge(this);
+		this.output.unsetInputEdge(this.index);
 	}
 	public readonly id: EdgeId;
 	public readonly index: number;

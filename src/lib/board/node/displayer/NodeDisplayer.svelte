@@ -1,9 +1,13 @@
-<script lang="ts" generics="InputEdgeCount extends number, Name extends string">
+<script
+	lang="ts"
+	generics="
+		InputEdgeCount extends number,
+	"
+>
+	import type {Snippet} from "svelte";
 	import type {Coordinates} from "../../coordinates/Coordinates.ts";
 	import type {SupportedBoardMode} from "../../mode/supported/SupportedBoardMode.ts";
 	import type {Node} from "../Node.svelte.ts";
-	import type {Operator} from "../operator/Operator.ts";
-	import NodeStateDisplayer from "../state/displayer/NodeStateDisplayer.svelte";
 	const {
 		node,
 		onDeleteRequest,
@@ -11,27 +15,27 @@
 		onMouseLeftButtonUp,
 		onSetInputRequest,
 		onSetOutputRequest,
-		operators,
 		boardMode,
+		children,
 	}: Readonly<{
-		onDeleteRequest: (node: Node<InputEdgeCount, Name>) => void;
-		node: Node<InputEdgeCount, Name>;
+		onDeleteRequest: (node: Node<InputEdgeCount>) => void;
+		node: Node<InputEdgeCount>;
 		boardMode: null | SupportedBoardMode;
-		operators: readonly Operator<InputEdgeCount>[];
 		onMouseLeftButtonDown: (
-			node: Node<InputEdgeCount, Name>,
+			node: Node<InputEdgeCount>,
 			mouseCursorInViewportPosition: Coordinates,
 		) => void;
-		onMouseLeftButtonUp: (node: Node<InputEdgeCount, Name>) => void;
+		onMouseLeftButtonUp: (node: Node<InputEdgeCount>) => void;
 		onSetInputRequest: (
 			index: number,
-			nodeInRequest: Node<InputEdgeCount, Name>,
+			nodeInRequest: Node<InputEdgeCount>,
 			inViewportPosition: Coordinates,
 		) => void;
 		onSetOutputRequest: (
-			nodeInRequest: Node<InputEdgeCount, Name>,
+			nodeInRequest: Node<InputEdgeCount>,
 			inViewportPosition: Coordinates,
 		) => void;
+		children: Snippet<[]>;
 	}> = $props();
 	function handleDeleteButtonClick(): void {
 		onDeleteRequest(node);
@@ -60,11 +64,9 @@
 <section
 	style:top="{node.position.y}px"
 	style:left="{node.position.x}px"
-	class:errored={node.status === "errored"}
-	class:processing={node.status === "working"}
-	class:done={node.status === "done"}
-	class:unconfigured={node.status === "unconfigured"}
-	class:idling={node.status === "idling"}
+	class:in-progress={node.state.status === "in-progress"}
+	class:done={node.state.status === "done"}
+	class:unconfigured={node.state.status === "unconfigured"}
 	onmousedown={handleMouseDown}
 	role="none"
 	onmouseup={handleMouseUp}
@@ -79,8 +81,7 @@
 		{#each node.inputEdges as edge, index (index)}
 			<li>
 				<button
-					disabled={boardMode !== null
-						&& boardMode.kindName === "settingInEdgePut"}
+					disabled={boardMode !== null && boardMode.name === "settingEdgeInput"}
 					onclick={(event) => {
 						handleSetInputButtonClick(index, {
 							x: event.clientX,
@@ -92,18 +93,25 @@
 			</li>
 		{/each}
 	</ol>
-	<NodeStateDisplayer state={node.state} />
-	<select>
-		<option value="" disabled selected>Choose operator</option>
-		{#each operators as operator (operator.id)}
-			<option value={operator.id}>{operator.name}</option>
-		{/each}
-	</select>
+	<!-- state,
+		onDoManualStepsRequest,
+		onUnsetOperatorRequest,
+		onSetOperatorRequest,
+		boardMode,
+		nodeId,
+		onMakeManualRequest,
+		onMakeAnimatedRequest,
+		onMakeInstantRequest,
+		onSetStepCountRequest,
+		onSetIntervalIntervalRequest,
+		onResetOutputImageRequest,
+		operators, -->
+	{@render children()}
 	<div>
 		<button
 			onclick={handleSetOutputButtonClick}
-			disabled={boardMode !== null
-				&& boardMode.kindName === "settingOutEdgePut"}>🔌</button
+			disabled={boardMode !== null && boardMode.name === "settingEdgeOutput"}
+			>🔌</button
 		>
 	</div>
 </section>
@@ -123,10 +131,7 @@
 			display: flex;
 			flex-direction: row;
 		}
-		&.errored {
-			border-color: red;
-		}
-		&.processing {
+		&.in-progress {
 			border-color: orange;
 		}
 		&.done {
@@ -134,9 +139,6 @@
 		}
 		&.unconfigured {
 			border-color: gray;
-		}
-		&.idling {
-			border-color: blue;
 		}
 		display: flex;
 	}

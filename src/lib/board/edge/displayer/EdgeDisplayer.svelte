@@ -1,12 +1,9 @@
 <script lang="ts">
 	import LineDisplayer from "../../line-displayer/LineDisplayer.svelte";
 	import type {Edge} from "../Edge.ts";
-	const {
-		edge,
-		onDeleteRequest,
-	}: Readonly<{edge: Edge; onDeleteRequest: (edge: Edge) => void}> = $props();
+	const {edge}: Readonly<{edge: Edge}> = $props();
 	function handleDeleteButtonClick() {
-		onDeleteRequest(edge);
+		edge.delete();
 	}
 </script>
 

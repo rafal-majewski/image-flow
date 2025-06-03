@@ -1,7 +1,7 @@
+import {WithImageEdge} from "../../../implementations/with-image/WithImageEdge.ts";
 import {WithoutImageEdge} from "../../../implementations/without-image/WithoutImageEdge.ts";
 import type {InEdgePut} from "../../../put/implementations/in/InEdgePut.ts";
 import type {OutEdgePut} from "../../../put/implementations/out/OutEdgePut.ts";
-import {WithImageEdge} from "../../../WithImageEdge.ts";
 import {EdgeBuilder} from "../../EdgeBuilder.ts";
 export class HandledEdgeBuilder extends EdgeBuilder {
 	public constructor(index: number, input: InEdgePut, output: OutEdgePut) {

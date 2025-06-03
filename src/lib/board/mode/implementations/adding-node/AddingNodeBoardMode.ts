@@ -1,12 +1,12 @@
 import type {Coordinates} from "../../../coordinates/Coordinates.ts";
 import {WithDataBoardMode} from "../../WithDataBoardMode.ts";
 import type {AddingNodeBoardModeData} from "./data/AddingNodeBoardModeData.ts";
-import {addingNodeBoardModeKindName} from "./kind-name/addingNodeBoardModeKindName.ts";
+import {addingNodeBoardModeName} from "./name/addingNodeBoardModeName.ts";
 export class AddingNodeBoardMode extends WithDataBoardMode<
-	typeof addingNodeBoardModeKindName,
+	typeof addingNodeBoardModeName,
 	AddingNodeBoardModeData
 > {
 	public constructor(position: Coordinates) {
-		super({position}, addingNodeBoardModeKindName);
+		super({position}, addingNodeBoardModeName);
 	}
 }

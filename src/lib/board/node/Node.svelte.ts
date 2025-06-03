@@ -1,61 +1,97 @@
 import type {Coordinates} from "../coordinates/Coordinates.ts";
-import type {Edge} from "../edge/Edge.ts";
-import type {UnhandledEdgeBuilder} from "../edge/builder/implementations/unhandled/UnhandledEdgeBuilder.ts";
-import {WithImageEdge} from "../edge/implementations/WithImageEdge.ts";
 import type {WithoutImageEdge} from "../edge/implementations/without-image/WithoutImageEdge.ts";
-import {generateNodeId} from "./id/generation/generateNodeId.ts";
-import type {Operator} from "./operator/Operator.ts";
-import {ManualInvalidAndNoOperatorNodeState} from "./state/implementations/ManualInvalidAndNoOperatorNodeState.ts";
+import {generateOperatableNodeId} from "./id/generation/generateOperatableNodeId.ts";
+import {WithImageEdge} from "../edge/implementations/with-image/WithImageEdge.ts";
+import type {InEdgePut} from "../edge/put/implementations/in/InEdgePut.ts";
 import type {NodeState} from "./state/NodeState.ts";
-import type {NodeStatus} from "./status/NodeStatus.ts";
-export abstract class Node<InputEdgeCount extends number, Name extends string> {
+import type {UnhandledEdgeBuilder} from "../edge/builder/implementations/unhandled/UnhandledEdgeBuilder.ts";
+import type {OutEdgePut} from "../edge/put/implementations/out/OutEdgePut.ts";
+import type {Edge} from "../edge/Edge.ts";
+import type {Component} from "svelte";
+import type {SupportedBoardMode} from "../mode/supported/SupportedBoardMode.ts";
+export abstract class Node<InputEdgeCount extends number>
+	implements InEdgePut, OutEdgePut
+{
 	public constructor(
-		name: Name,
+		displayer: Component<{
+			onDeleteRequest: (node: Node<number>) => void;
+			boardMode: null | SupportedBoardMode;
+			node: Node<number>;
+			onMouseLeftButtonDown: (
+				node: Node<number>,
+				mouseCursorInViewportPosition: Coordinates,
+			) => void;
+			onMouseLeftButtonUp: (node: Node<number>) => void;
+			onSetInputRequest: (
+				index: number,
+				nodeInRequest: Node<number>,
+				inViewportPosition: Coordinates,
+			) => void;
+			onSetOutputRequest: (
+				nodeInRequest: Node<number>,
+				inViewportPosition: Coordinates,
+			) => void;
+		}>,
+		inputEdgeCount: InputEdgeCount,
+		name: string,
 		position: Coordinates,
-		requiredInputEdgeCount: InputEdgeCount,
+		state: NodeState<InputEdgeCount, WithImageEdge | WithoutImageEdge>,
 	) {
-		this.id = generateNodeId();
-		this.inputEdges = new Array(requiredInputEdgeCount).fill(
+		this.displayer = (...parameters) => {
+			// @ts-expect-error: TODO
+			parameters[1].node = this;
+			// @ts-expect-error: TODO
+			return displayer(...parameters);
+		};
+		this.id = generateOperatableNodeId();
+		this.inputEdges = new Array(inputEdgeCount).fill(
 			null,
 		) as unknown as readonly null[] & Readonly<{length: InputEdgeCount}>;
 		this.name = name;
 		this.position = position;
-		this.state = new ManualInvalidAndNoOperatorNodeState([]);
+		this.state = state;
+		console.log(this.state);
 	}
-	public readonly name: Name;
 	public addOutputEdge(builder: UnhandledEdgeBuilder): void {
 		this.state = this.state.addOutputEdge(builder.handleInput(this));
 	}
-	public doManualSteps(): void {
-		this.state = this.state.doManualSteps();
+	public deleteOutputEdge(edgeToBeDeleted: Edge): void {
+		this.state = this.state.deleteOutputEdge(edgeToBeDeleted);
 	}
+	public readonly displayer: Component<{
+		onDeleteRequest: (node: Node<number>) => void;
+		boardMode: null | SupportedBoardMode;
+		onMouseLeftButtonDown: (
+			node: Node<number>,
+			mouseCursorInViewportPosition: Coordinates,
+		) => void;
+		onMouseLeftButtonUp: (node: Node<number>) => void;
+		onSetInputRequest: (
+			index: number,
+			nodeInRequest: Node<number>,
+			inViewportPosition: Coordinates,
+		) => void;
+		onSetOutputRequest: (
+			nodeInRequest: Node<number>,
+			inViewportPosition: Coordinates,
+		) => void;
+	}>;
 	public readonly id: string;
 	/**
 	 * Do not assign externally.
 	 */
 	public inputEdges: readonly (null | WithImageEdge | WithoutImageEdge)[]
+		& Readonly<{length: InputEdgeCount}> = $state.raw() as readonly (
+		| null
+		| WithImageEdge
+		| WithoutImageEdge
+	)[]
 		& Readonly<{length: InputEdgeCount}>;
-	public makeAnimated(): void {
-		const intervalIntervalSeconds = 0.001;
-		const intervalId = setInterval(() => {
-			this.state = this.state.doAnimatedStep();
-		}, intervalIntervalSeconds * 1000);
-		this.state = this.state.makeAnimated(intervalId, intervalIntervalSeconds);
-	}
-	public makeInstant(): void {
-		this.state = this.state.makeInstant();
-	}
-	public makeManual(): void {
-		const stepCount = 1;
-		this.state = this.state.makeManual(stepCount);
-	}
-	public get outputEdges(): readonly Edge[] {
-		return this.state.outputEdges;
-	}
+	public readonly name: string;
+	/**
+	 * Do not reassign externally.
+	 */
 	public position: Coordinates = $state.raw() as Coordinates;
-	public resetOutputImage(): void {
-		this.state = this.state.resetOutputImage();
-	}
 	public setInputEdge(inputEdge: Edge): void {
 		this.updateInputEdges(
 			this.inputEdges.with(inputEdge.index, inputEdge) as unknown as readonly (
@@ -66,31 +102,11 @@ export abstract class Node<InputEdgeCount extends number, Name extends string> {
 				& Readonly<{length: InputEdgeCount}>,
 		);
 	}
-	public setIntervalInterval(intervalIntervalSeconds: number): void {
-		const intervalId = setInterval(() => {
-			this.state = this.state.doAnimatedStep();
-		}, intervalIntervalSeconds * 1000);
-		this.state = this.state.setIntervalInterval(
-			intervalId,
-			intervalIntervalSeconds,
-		);
-	}
-	public setStepCount(stepCount: number): void {
-		this.state = this.state.setStepCount(stepCount);
-	}
 	/**
 	 * Do not reassign externally.
 	 */
-	public state: NodeState<
-		InputEdgeCount,
-		readonly WithImageEdge[] | readonly WithoutImageEdge[]
-	> = $state.raw() as NodeState<
-		InputEdgeCount,
-		readonly WithImageEdge[] | readonly WithoutImageEdge[]
-	>;
-	public get status(): NodeStatus {
-		return this.state.status;
-	}
+	public state: NodeState<InputEdgeCount, WithImageEdge | WithoutImageEdge> =
+		$state.raw() as NodeState<InputEdgeCount, WithImageEdge | WithoutImageEdge>;
 	public unsetInputEdge(inputEdgeIndex: number): void {
 		this.updateInputEdges(
 			this.inputEdges.with(inputEdgeIndex, null) as unknown as readonly (
@@ -123,11 +139,5 @@ export abstract class Node<InputEdgeCount extends number, Name extends string> {
 		} else {
 			this.state = this.state.invalidateInputImages();
 		}
-	}
-	public setOperator(operator: Operator<InputEdgeCount>): void {
-		this.state = this.state.setOperator(operator);
-	}
-	public unsetOperator(): void {
-		this.state = this.state.unsetOperator();
 	}
 }

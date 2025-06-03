@@ -1,4 +1,4 @@
-import type {DiscreteRgbaColor} from "../color/discrete/implementations/rgba/DiscreteRgbaColor.ts";
+import type {DiscreteRgbaColor} from "../implementations/operatable/color/discrete/implementations/rgba/DiscreteRgbaColor.ts";
 export function writeRgbaColorToImage(
 	outputImage: ImageData,
 	byteIndex: number,

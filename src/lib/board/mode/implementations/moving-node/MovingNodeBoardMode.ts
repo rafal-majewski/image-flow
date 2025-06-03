@@ -1,12 +1,12 @@
-import type {SupportedNode} from "../../../node/supported/SupportedNode.ts";
+import type {Node} from "../../../node/Node.svelte.ts";
 import {WithDataBoardMode} from "../../WithDataBoardMode.ts";
 import type {MovingNodeBoardModeData} from "./data/MovingNodeBoardModeData.ts";
-import {movingNodeBoardModeKindName} from "./kind-name/movingNodeBoardModeKindName.ts";
+import {movingNodeBoardModeName} from "./name/movingNodeBoardModeName.ts";
 export class MovingNodeBoardMode extends WithDataBoardMode<
-	typeof movingNodeBoardModeKindName,
+	typeof movingNodeBoardModeName,
 	MovingNodeBoardModeData
 > {
-	public constructor(node: SupportedNode) {
-		super({node}, movingNodeBoardModeKindName);
+	public constructor(node: Node<number>) {
+		super({node}, movingNodeBoardModeName);
 	}
 }

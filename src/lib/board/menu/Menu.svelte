@@ -2,23 +2,23 @@
 	import type {Coordinates} from "../coordinates/Coordinates.ts";
 	const {
 		position,
-		onAddMapperNodeRequest,
-		onAddGeneratorNodeRequest,
-		onAddBicombinerNodeRequest,
+		onAddMapperOperatableNodeRequest,
+		onAddGeneratorOperatableNodeRequest,
+		onAddFromFileLoaderNodeRequest,
 	}: Readonly<{
 		position: Coordinates;
-		onAddMapperNodeRequest: () => void;
-		onAddGeneratorNodeRequest: () => void;
-		onAddBicombinerNodeRequest: () => void;
+		onAddMapperOperatableNodeRequest: () => void;
+		onAddGeneratorOperatableNodeRequest: () => void;
+		onAddFromFileLoaderNodeRequest: () => void;
 	}> = $props();
-	function handleAddGeneratorNodeButtonClick(): void {
-		onAddGeneratorNodeRequest();
+	function handleAddGeneratorOperatableNodeButtonClick(): void {
+		onAddGeneratorOperatableNodeRequest();
 	}
-	function handleAddMapperNodeButtonClick(): void {
-		onAddMapperNodeRequest();
+	function handleAddMapperOperatableNodeButtonClick(): void {
+		onAddMapperOperatableNodeRequest();
 	}
-	function handleAddBicombinerNodeButtonClick(): void {
-		onAddBicombinerNodeRequest();
+	function handleAddFromFileLoaderNodeButtonClick(): void {
+		onAddFromFileLoaderNodeRequest();
 	}
 </script>
 
@@ -29,17 +29,23 @@
 >
 	<menu>
 		<li>
-			<button onclick={handleAddGeneratorNodeButtonClick}
-				>Add a generator</button
+			<button onclick={handleAddFromFileLoaderNodeButtonClick}
+				>Add a from file loader</button
 			>
 		</li>
 		<li>
-			<button onclick={handleAddMapperNodeButtonClick}>Add a mapper</button>
-		</li>
-		<li>
-			<button onclick={handleAddBicombinerNodeButtonClick}
-				>Add a bicombiner</button
-			>
+			<ul>
+				<li>
+					<button onclick={handleAddGeneratorOperatableNodeButtonClick}
+						>Add a generator operatable</button
+					>
+				</li>
+				<li>
+					<button onclick={handleAddMapperOperatableNodeButtonClick}
+						>Add a mapper operatable</button
+					>
+				</li>
+			</ul>
 		</li>
 	</menu>
 </dialog>

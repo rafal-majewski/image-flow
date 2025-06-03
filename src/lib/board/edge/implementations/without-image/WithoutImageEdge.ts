@@ -1,7 +1,7 @@
 import {Edge} from "../../Edge.ts";
-import type {InEdgePut} from "./InEdgePut.ts";
-import type {OutEdgePut} from "./OutEdgePut.ts";
 import type {EdgeId} from "../../id/EdgeId.ts";
+import type {InEdgePut} from "../../put/implementations/in/InEdgePut.ts";
+import type {OutEdgePut} from "../../put/implementations/out/OutEdgePut.ts";
 export class WithoutImageEdge extends Edge {
 	public constructor(
 		id: EdgeId,
