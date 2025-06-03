@@ -15,7 +15,6 @@ export class FromFileLoaderNode extends Node<0> {
 			position,
 			new NoFileFromFileLoaderNodeState([]),
 		);
-		console.log(this.state);
 	}
 	public async setFile(file: File): Promise<void> {
 		const withFileState = this.state.setFile(file);
