@@ -9,21 +9,25 @@ export class HandledEdgeBuilder extends EdgeBuilder {
 		this.input = input;
 	}
 	public buildWithImage(image: ImageData): WithImageEdge {
-		return new WithImageEdge(
+		const edge = new WithImageEdge(
 			`${this.input.id}-${this.index}-${this.output.id}`,
 			image,
 			this.index,
 			this.input,
 			this.output,
 		);
+		edge.output.setInputEdge(edge);
+		return edge;
 	}
 	public buildWithoutImage(): WithoutImageEdge {
-		return new WithoutImageEdge(
+		const edge = new WithoutImageEdge(
 			`${this.input.id}-${this.index}-${this.output.id}`,
 			this.index,
 			this.input,
 			this.output,
 		);
+		edge.output.setInputEdge(edge);
+		return edge;
 	}
 	private readonly input: InEdgePut;
 }

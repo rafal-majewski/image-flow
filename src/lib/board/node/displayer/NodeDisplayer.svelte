@@ -89,23 +89,9 @@
 						});
 					}}>🔌</button
 				>
-				{edge}
 			</li>
 		{/each}
 	</ol>
-	<!-- state,
-		onDoManualStepsRequest,
-		onUnsetOperatorRequest,
-		onSetOperatorRequest,
-		boardMode,
-		nodeId,
-		onMakeManualRequest,
-		onMakeAnimatedRequest,
-		onMakeInstantRequest,
-		onSetStepCountRequest,
-		onSetIntervalIntervalRequest,
-		onResetOutputImageRequest,
-		operators, -->
 	{@render children()}
 	<div>
 		<button
