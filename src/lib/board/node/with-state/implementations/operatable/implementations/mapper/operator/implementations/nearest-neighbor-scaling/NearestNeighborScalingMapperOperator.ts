@@ -61,5 +61,10 @@ export class NearestNeighborScalingMapperOperator extends MapperOperator {
 		}
 		return outputImage;
 	}
-	private readonly outputImageDimensions: Dimensions;
+	public withNewOutputImageDimensions(
+		newDimensions: Dimensions,
+	): NearestNeighborScalingMapperOperator {
+		return new NearestNeighborScalingMapperOperator(newDimensions);
+	}
+	public readonly outputImageDimensions: Dimensions;
 }
