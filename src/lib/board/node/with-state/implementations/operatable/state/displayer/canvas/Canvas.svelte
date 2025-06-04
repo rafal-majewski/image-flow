@@ -27,10 +27,21 @@
 </script>
 
 <section>
-	<canvas bind:this={canvas} style:scale={zoom}></canvas>
+	<div
+		style:width="{Math.round(image.width * zoom)}px"
+		style:height="{Math.round(image.height * zoom)}px"
+	>
+		<canvas bind:this={canvas} style:scale={zoom}></canvas>
+	</div>
 	<div>
 		<button onclick={handlePlusButtonClick}>+</button>
 		<button onclick={handleMinusButtonClick}>-</button>
 		<input type="number" onchange={handleInputChange} value={zoom} min="0" />
 	</div>
 </section>
+
+<style lang="scss">
+	canvas {
+		transform-origin: 0 0;
+	}
+</style>

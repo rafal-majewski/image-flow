@@ -25,7 +25,7 @@ export class FromUrlLoaderNode extends WithStateNode<
 		this.state = loadingStartedState;
 		const image = await loadUrl(url);
 		if (this.state === loadingStartedState) {
-			this.state = loadingStartedState.doneLoading(image);
+			this.state = loadingStartedState.doneLoading(image, this.outputEdges);
 		}
 	}
 }

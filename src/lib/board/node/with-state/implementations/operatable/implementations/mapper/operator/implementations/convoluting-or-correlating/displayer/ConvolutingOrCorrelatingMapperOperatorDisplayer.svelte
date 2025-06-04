@@ -2,6 +2,8 @@
 	import type {Coordinates} from "../../../../../../../../../../coordinates/Coordinates.ts";
 	import type {OperatableNodeId} from "../../../../../../../../../id/OperatableNodeId.ts";
 	import type {ConvolutingOrCorrelatingMapperOperator} from "../ConvolutingOrCorrelatingMapperOperator.ts";
+	import {convolutingRotationApplier} from "../rotation-applier/implementations/convoluting/instance/convolutingRotationApplier.ts";
+	import {correlatingRotationApplier} from "../rotation-applier/implementations/correlating/instance/correlatingRotationApplier.ts";
 	const {
 		nodeId,
 		operator,
@@ -120,6 +122,16 @@
 		newAnchorPosition: Coordinates,
 	): void {
 		onSetOperatorRequest(operator.withNewAnchorPosition(newAnchorPosition));
+	}
+	function handleSetCorrelatingRotationApplierRequest(): void {
+		onSetOperatorRequest(
+			operator.withNewRotationApplier(correlatingRotationApplier),
+		);
+	}
+	function handleSetConvolutingRotationApplierRequest(): void {
+		onSetOperatorRequest(
+			operator.withNewRotationApplier(convolutingRotationApplier),
+		);
 	}
 </script>
 
@@ -353,9 +365,24 @@
 				type="radio"
 				name="{nodeId}-kernel-interpretation"
 				value="correlating"
-				checked={true}
+				checked={operator.rotationApplier === correlatingRotationApplier}
+				onchange={() => {
+					handleSetCorrelatingRotationApplierRequest();
+				}}
 			/>
 			Correlating
+		</label>
+		<label>
+			<input
+				type="radio"
+				name="{nodeId}-kernel-interpretation"
+				value="convoluting"
+				checked={operator.rotationApplier === convolutingRotationApplier}
+				onchange={() => {
+					handleSetConvolutingRotationApplierRequest();
+				}}
+			/>
+			Convoluting
 		</label>
 	</fieldset>
 </section>

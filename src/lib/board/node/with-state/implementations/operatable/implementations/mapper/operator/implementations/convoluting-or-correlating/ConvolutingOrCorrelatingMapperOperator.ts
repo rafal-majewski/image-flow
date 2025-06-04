@@ -9,6 +9,7 @@ import ConvolutingOrCorrelatingMapperOperatorDisplayer from "./displayer/Convolu
 import type {DiscreteColorComponent} from "../../../../../color/discrete/component/DiscreteColorComponent.ts";
 import type {DiscreteRgbColor} from "../../../../../color/discrete/implementations/rgb/DiscreteRgbColor.ts";
 import {sanitizeDiscreteRgbColor} from "./sanitizing-discrete-rgb-color/sanitizeDiscreteRgbColor.ts";
+import type {RotationApplier} from "./rotation-applier/RotationApplier.ts";
 export class ConvolutingOrCorrelatingMapperOperator extends MapperOperator {
 	public constructor(
 		anchorPosition: Coordinates,
@@ -16,6 +17,7 @@ export class ConvolutingOrCorrelatingMapperOperator extends MapperOperator {
 			readonly [number, ...(readonly number[])],
 			...(readonly [number, ...(readonly number[])])[],
 		],
+		rotationApplier: RotationApplier,
 	) {
 		super(
 			// @ts-expect-error
@@ -25,7 +27,9 @@ export class ConvolutingOrCorrelatingMapperOperator extends MapperOperator {
 		);
 		this.anchorPosition = anchorPosition;
 		this.kernel = kernel;
+		this.rotationApplier = rotationApplier;
 	}
+	public readonly rotationApplier: RotationApplier;
 	public readonly anchorPosition: Coordinates;
 	public readonly kernel: readonly [
 		readonly [number, ...(readonly number[])],
@@ -34,14 +38,18 @@ export class ConvolutingOrCorrelatingMapperOperator extends MapperOperator {
 	public override *operate(
 		inputImages: readonly [ImageData],
 	): Generator<ImageData, ImageData, void> {
+		const rotatedkernel = this.rotationApplier.applyRotation(this.kernel);
 		const outputImage = new ImageData(
-			inputImages[0].width - (this.kernel[0].length - 1),
-			inputImages[0].height - (this.kernel.length - 1),
+			inputImages[0].width - (rotatedkernel[0].length - 1),
+			inputImages[0].height - (rotatedkernel.length - 1),
 		);
 		for (
 			let positionY = this.anchorPosition.y;
 			positionY
-			< inputImages[0].height + 1 - this.kernel.length + this.anchorPosition.y;
+			< inputImages[0].height
+				+ 1
+				- rotatedkernel.length
+				+ this.anchorPosition.y;
 			positionY += 1
 		) {
 			for (
@@ -49,7 +57,7 @@ export class ConvolutingOrCorrelatingMapperOperator extends MapperOperator {
 				positionX
 				< inputImages[0].width
 					+ 1
-					- this.kernel[0].length
+					- rotatedkernel[0].length
 					+ this.anchorPosition.x;
 				positionX += 1
 			) {
@@ -62,13 +70,13 @@ export class ConvolutingOrCorrelatingMapperOperator extends MapperOperator {
 				for (
 					let inKernelRelativePositionY = -this.anchorPosition.y;
 					inKernelRelativePositionY
-					< this.kernel.length - this.anchorPosition.y;
+					< rotatedkernel.length - this.anchorPosition.y;
 					inKernelRelativePositionY += 1
 				) {
 					for (
 						let inKernelRelativePositionX = -this.anchorPosition.x;
 						inKernelRelativePositionX
-						< this.kernel[0].length - this.anchorPosition.x;
+						< rotatedkernel[0].length - this.anchorPosition.x;
 						inKernelRelativePositionX += 1
 					) {
 						const inInputImagePosition: Coordinates = {
@@ -91,17 +99,23 @@ export class ConvolutingOrCorrelatingMapperOperator extends MapperOperator {
 							sum.red
 								+ color.red
 									* ((
-										this.kernel[inKernelAbsolutePosition.y] as readonly number[]
+										rotatedkernel[
+											inKernelAbsolutePosition.y
+										] as readonly number[]
 									)[inKernelAbsolutePosition.x] as number),
 							sum.green
 								+ color.green
 									* ((
-										this.kernel[inKernelAbsolutePosition.y] as readonly number[]
+										rotatedkernel[
+											inKernelAbsolutePosition.y
+										] as readonly number[]
 									)[inKernelAbsolutePosition.x] as number),
 							sum.blue
 								+ color.blue
 									* ((
-										this.kernel[inKernelAbsolutePosition.y] as readonly number[]
+										rotatedkernel[
+											inKernelAbsolutePosition.y
+										] as readonly number[]
 									)[inKernelAbsolutePosition.x] as number),
 						);
 					}
@@ -132,6 +146,7 @@ export class ConvolutingOrCorrelatingMapperOperator extends MapperOperator {
 		return new ConvolutingOrCorrelatingMapperOperator(
 			newAnchorPosition,
 			newKernel,
+			this.rotationApplier,
 		);
 	}
 	public withNewAnchorPosition(
@@ -140,6 +155,7 @@ export class ConvolutingOrCorrelatingMapperOperator extends MapperOperator {
 		return new ConvolutingOrCorrelatingMapperOperator(
 			newAnchorPosition,
 			this.kernel,
+			this.rotationApplier,
 		);
 	}
 	public withNewKernel(
@@ -151,6 +167,16 @@ export class ConvolutingOrCorrelatingMapperOperator extends MapperOperator {
 		return new ConvolutingOrCorrelatingMapperOperator(
 			this.anchorPosition,
 			newKernel,
+			this.rotationApplier,
+		);
+	}
+	public withNewRotationApplier(
+		newRotationApplier: RotationApplier,
+	): ConvolutingOrCorrelatingMapperOperator {
+		return new ConvolutingOrCorrelatingMapperOperator(
+			this.anchorPosition,
+			this.kernel,
+			newRotationApplier,
 		);
 	}
 }
