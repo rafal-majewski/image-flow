@@ -5,11 +5,13 @@
 		onAddMapperOperatableNodeRequest,
 		onAddGeneratorOperatableNodeRequest,
 		onAddFromFileLoaderNodeRequest,
+		onAddFromUrlLoaderNodeRequest,
 	}: Readonly<{
 		position: Coordinates;
 		onAddMapperOperatableNodeRequest: () => void;
 		onAddGeneratorOperatableNodeRequest: () => void;
 		onAddFromFileLoaderNodeRequest: () => void;
+		onAddFromUrlLoaderNodeRequest: () => void;
 	}> = $props();
 	function handleAddGeneratorOperatableNodeButtonClick(): void {
 		onAddGeneratorOperatableNodeRequest();
@@ -19,6 +21,9 @@
 	}
 	function handleAddFromFileLoaderNodeButtonClick(): void {
 		onAddFromFileLoaderNodeRequest();
+	}
+	function handleAddFromUrlLoaderNodeButtonClick(): void {
+		onAddFromUrlLoaderNodeRequest();
 	}
 </script>
 
@@ -31,6 +36,11 @@
 		<li>
 			<button onclick={handleAddFromFileLoaderNodeButtonClick}
 				>Add a from file loader</button
+			>
+		</li>
+		<li>
+			<button onclick={handleAddFromUrlLoaderNodeButtonClick}
+				>Add a from URL loader</button
 			>
 		</li>
 		<li>

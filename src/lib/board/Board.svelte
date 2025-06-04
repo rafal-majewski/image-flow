@@ -15,8 +15,8 @@
 	import {FromFileLoaderNode} from "./node/with-state/implementations/from-file-loader/FromFileLoaderNode.ts";
 	import {GeneratorOperatableNode} from "./node/with-state/implementations/operatable/implementations/generator/GeneratorOperatableNode.ts";
 	import {MapperOperatableNode} from "./node/with-state/implementations/operatable/implementations/mapper/MapperOperatableNode.ts";
-	import {EdgeBuilder} from "./edge/builder/EdgeBuilder.ts";
 	import {UnhandledEdgeBuilder} from "./edge/builder/implementations/unhandled/UnhandledEdgeBuilder.ts";
+	import {FromUrlLoaderNode} from "./node/with-state/implementations/from-url-loader/FromUrlLoaderNode.ts";
 	let board: HTMLElement;
 	let cameraPosition = $state<Coordinates>({x: 0, y: 0});
 	function computeInBoardPositionFromJustInViewportPosition(
@@ -46,6 +46,9 @@
 	}
 	function handleAddFromFileLoaderNodeRequest(): void {
 		handleAddNodeRequest(FromFileLoaderNode);
+	}
+	function handleAddFromUrlLoaderNodeRequest(): void {
+		handleAddNodeRequest(FromUrlLoaderNode);
 	}
 	function handleContextMenuOpen(event: MouseEvent): void {
 		if (event.target === board && mode === null) {
@@ -214,6 +217,7 @@
 				onAddMapperOperatableNodeRequest={handleAddMapperOperatableNodeRequest}
 				onAddGeneratorOperatableNodeRequest={handleAddGeneratorOperatableNodeRequest}
 				onAddFromFileLoaderNodeRequest={handleAddFromFileLoaderNodeRequest}
+				onAddFromUrlLoaderNodeRequest={handleAddFromUrlLoaderNodeRequest}
 			/>
 		{/if}
 		<ul>
