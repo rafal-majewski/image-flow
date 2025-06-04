@@ -1,33 +1,34 @@
-import {WithImageEdge} from "../../../implementations/with-image/WithImageEdge.ts";
-import {WithoutImageEdge} from "../../../implementations/without-image/WithoutImageEdge.ts";
-import type {InEdgePut} from "../../../put/implementations/in/InEdgePut.ts";
-import type {OutEdgePut} from "../../../put/implementations/out/OutEdgePut.ts";
+import type {Node} from "../../../../node/Node.svelte.ts";
+import {Edge} from "../../../Edge.ts";
 import {EdgeBuilder} from "../../EdgeBuilder.ts";
 export class HandledEdgeBuilder extends EdgeBuilder {
-	public constructor(index: number, input: InEdgePut, output: OutEdgePut) {
+	public constructor(index: number, input: Node<number>, output: Node<number>) {
 		super(index, output);
 		this.input = input;
 	}
-	public buildWithImage(image: ImageData): WithImageEdge {
-		const edge = new WithImageEdge(
+	public buildWithImage(image: ImageData): void {
+		const edge = new Edge(
 			`${this.input.id}-${this.index}-${this.output.id}`,
 			image,
 			this.index,
 			this.input,
 			this.output,
 		);
-		edge.output.setInputEdge(edge);
-		return edge;
+		this.input.addOutputEdge(edge);
+		this.output.setInputEdge(this.index, edge);
+		this.output.validateInputEdges();
 	}
-	public buildWithoutImage(): WithoutImageEdge {
-		const edge = new WithoutImageEdge(
+	public buildWithoutImage(): void {
+		const edge = new Edge(
 			`${this.input.id}-${this.index}-${this.output.id}`,
+			null,
 			this.index,
 			this.input,
 			this.output,
 		);
-		edge.output.setInputEdge(edge);
-		return edge;
+		this.input.addOutputEdge(edge);
+		this.output.setInputEdge(this.index, edge);
+		this.output.validateInputEdges();
 	}
-	private readonly input: InEdgePut;
+	private readonly input: Node<number>;
 }

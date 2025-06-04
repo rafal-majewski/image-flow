@@ -1,15 +1,15 @@
+import type {Node} from "../node/Node.svelte.ts";
 import type {EdgeId} from "./id/EdgeId.ts";
-import {WithImageEdge} from "./implementations/with-image/WithImageEdge.ts";
-import type {InEdgePut} from "./put/implementations/in/InEdgePut.ts";
-import type {OutEdgePut} from "./put/implementations/out/OutEdgePut.ts";
-export abstract class Edge {
-	protected constructor(
+export class Edge {
+	public constructor(
 		id: EdgeId,
+		image: ImageData | null,
 		index: number,
-		input: InEdgePut,
-		output: OutEdgePut,
+		input: Node<number>,
+		output: Node<number>,
 	) {
 		this.id = id;
+		this.image = image;
 		this.index = index;
 		this.input = input;
 		this.output = output;
@@ -17,20 +17,22 @@ export abstract class Edge {
 	public delete(): void {
 		this.input.deleteOutputEdge(this);
 		this.output.unsetInputEdge(this.index);
+		this.output.invalidateInputImages();
 	}
 	public readonly id: EdgeId;
+	/**
+	 * Do not reassign externally.
+	 */
+	public image: ImageData | null;
 	public readonly index: number;
-	public readonly input: InEdgePut;
-	public readonly output: OutEdgePut;
-	public withImage(image: ImageData): WithImageEdge {
-		const newEdge = new WithImageEdge(
-			this.id,
-			image,
-			this.index,
-			this.input,
-			this.output,
-		);
-		this.output.setInputEdge(newEdge);
-		return newEdge;
+	public readonly input: Node<number>;
+	public readonly output: Node<number>;
+	public setImage(newImage: ImageData): void {
+		this.image = newImage;
+		this.output.validateInputEdges();
+	}
+	public unsetImage(): void {
+		this.image = null;
+		this.output.invalidateInputImages();
 	}
 }

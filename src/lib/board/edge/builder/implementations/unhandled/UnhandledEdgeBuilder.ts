@@ -1,12 +1,11 @@
-import {HandledEdgeBuilder} from "../handled/HandledEdgeBuilder.ts";
+import type {Node} from "../../../../node/Node.svelte.ts";
 import {EdgeBuilder} from "../../EdgeBuilder.ts";
-import type {InEdgePut} from "../../../put/implementations/in/InEdgePut.ts";
-import type {OutEdgePut} from "../../../put/implementations/out/OutEdgePut.ts";
+import {HandledEdgeBuilder} from "../handled/HandledEdgeBuilder.ts";
 export class UnhandledEdgeBuilder extends EdgeBuilder {
-	public constructor(index: number, output: OutEdgePut) {
+	public constructor(index: number, output: Node<number>) {
 		super(index, output);
 	}
-	public handleInput(input: InEdgePut): HandledEdgeBuilder {
+	public handleInput(input: Node<number>): HandledEdgeBuilder {
 		return new HandledEdgeBuilder(this.index, input, this.output);
 	}
 }

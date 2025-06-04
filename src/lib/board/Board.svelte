@@ -6,17 +6,17 @@
 	import {movingCameraBoardMode} from "./mode/implementations/moving-camera/instance/movingCameraBoardMode.ts";
 	import {computeInBoardPositionFromInViewportPosition} from "./computing-in-board-position-from-in-viewport-position/computeInBoardPositionFromInViewportPosition.ts";
 	import EdgeDisplayer from "./edge/displayer/EdgeDisplayer.svelte";
-	import type {Edge} from "./edge/Edge.ts";
-	import {UnhandledEdgeBuilder} from "./edge/builder/implementations/unhandled/UnhandledEdgeBuilder.ts";
 	import {MovingNodeBoardMode} from "./mode/implementations/moving-node/MovingNodeBoardMode.ts";
 	import {AddingNodeBoardMode} from "./mode/implementations/adding-node/AddingNodeBoardMode.ts";
 	import {SettingEdgeInputBoardMode} from "./mode/implementations/setting-edge-input/SettingEdgeInputBoardMode.ts";
 	import {SettingEdgeOutputBoardMode} from "./mode/implementations/setting-edge-output/SettingEdgeOutputBoardMode.ts";
 	import type {Node} from "./node/Node.svelte.ts";
 	import type {NodeClass} from "./node/class/NodeClass.ts";
-	import {GeneratorOperatableNode} from "./node/implementations/operatable/implementations/generator/GeneratorOperatableNode.ts";
-	import {MapperOperatableNode} from "./node/implementations/operatable/implementations/mapper/MapperOperatableNode.ts";
-	import {FromFileLoaderNode} from "./node/implementations/from-file-loader/FromFileLoaderNode.ts";
+	import {FromFileLoaderNode} from "./node/with-state/implementations/from-file-loader/FromFileLoaderNode.ts";
+	import {GeneratorOperatableNode} from "./node/with-state/implementations/operatable/implementations/generator/GeneratorOperatableNode.ts";
+	import {MapperOperatableNode} from "./node/with-state/implementations/operatable/implementations/mapper/MapperOperatableNode.ts";
+	import {EdgeBuilder} from "./edge/builder/EdgeBuilder.ts";
+	import {UnhandledEdgeBuilder} from "./edge/builder/implementations/unhandled/UnhandledEdgeBuilder.ts";
 	let board: HTMLElement;
 	let cameraPosition = $state<Coordinates>({x: 0, y: 0});
 	function computeInBoardPositionFromJustInViewportPosition(
@@ -137,7 +137,7 @@
 				computeInBoardPositionFromJustInViewportPosition(inViewportPosition),
 			);
 		} else if (mode.name === "settingEdgeInput") {
-			nodeInRequest.addOutputEdge(
+			nodeInRequest.handleEdgeBuilder(
 				new UnhandledEdgeBuilder(mode.data.index, mode.data.output),
 			);
 			mode = null;
@@ -155,7 +155,7 @@
 				nodeInRequest,
 			);
 		} else if (mode.name === "settingEdgeOutput") {
-			mode.data.input.addOutputEdge(
+			mode.data.input.handleEdgeBuilder(
 				new UnhandledEdgeBuilder(index, nodeInRequest),
 			);
 			mode = null;
@@ -228,7 +228,7 @@
 						boardMode={mode}
 					/>
 				</li>
-				{#each node.state.outputEdges as edge (edge.id)}
+				{#each node.outputEdges as edge (edge.id)}
 					<li>
 						<EdgeDisplayer {edge} />
 					</li>
