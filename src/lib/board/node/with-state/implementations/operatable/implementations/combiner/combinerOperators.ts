@@ -2,5 +2,5 @@ import {AddCombinerOperator} from "./operator/implementations/add/AddCombinerOpe
 import {SubtractCombinerOperator} from "./operator/implementations/subtract/SubtractCombinerOperator.ts";
 export const combinerOperators = [
 	new AddCombinerOperator(),
-	new SubtractCombinerOperator(),
+	new SubtractCombinerOperator("ignore"),
 ] as const;

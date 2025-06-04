@@ -1,13 +1,21 @@
 import {CombinerOperator} from "../../CombinerOperator.ts";
 import SubtractCombinerOperatorDisplayer from "./displayer/SubtractCombinerOperatorDisplayer.svelte";
 export class SubtractCombinerOperator extends CombinerOperator {
-	constructor() {
+	public readonly alphaChannelPolicy:
+		| "subtract"
+		| "keepFrom1"
+		| "keepFrom2"
+		| "ignore";
+	constructor(
+		alphaChannelPolicy: "subtract" | "keepFrom1" | "keepFrom2" | "ignore",
+	) {
 		super(
 			// @ts-expect-error
 			SubtractCombinerOperatorDisplayer,
 			"subtract",
 			"Subtract",
 		);
+		this.alphaChannelPolicy = alphaChannelPolicy;
 	}
 	public override *operate(
 		inputImages: readonly [ImageData, ImageData],
@@ -18,6 +26,7 @@ export class SubtractCombinerOperator extends CombinerOperator {
 		);
 		for (let positionY = 0; positionY < outputImage.height; positionY += 1) {
 			for (let positionX = 0; positionX < outputImage.width; positionX += 1) {
+				yield outputImage;
 				const inBounds0 =
 					positionX < inputImages[0].width && positionY < inputImages[0].height;
 				const inBounds1 =
@@ -50,10 +59,12 @@ export class SubtractCombinerOperator extends CombinerOperator {
 					0,
 					color1Blue - color2Blue,
 				);
-				outputImage.data[outputIndex + 3] = Math.max(
-					0,
-					color1Alpha - color2Alpha,
-				);
+				outputImage.data[outputIndex + 3] =
+					this.alphaChannelPolicy === "subtract" ?
+						Math.max(0, color1Alpha - color2Alpha)
+					: this.alphaChannelPolicy === "keepFrom1" ? color1Alpha
+					: this.alphaChannelPolicy === "keepFrom2" ? color2Alpha
+					: 255;
 			}
 		}
 		return outputImage;

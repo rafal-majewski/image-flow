@@ -18,6 +18,7 @@ export class AddCombinerOperator extends CombinerOperator {
 		);
 		for (let positionY = 0; positionY < outputImage.height; positionY += 1) {
 			for (let positionX = 0; positionX < outputImage.width; positionX += 1) {
+				yield outputImage;
 				const inBounds0 =
 					positionX < inputImages[0].width && positionY < inputImages[0].height;
 				const inBounds1 =
