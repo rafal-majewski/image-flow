@@ -19,9 +19,7 @@ export class LoadingDonedFromFileLoaderNodeState extends FromFileLoaderNodeState
 		}
 		return new LoadingStartedFromFileLoaderNodeState();
 	}
-	public override validateInputImages(
-		inputImages: readonly ImageData[] & Readonly<{length: 0}>,
-	): this {
+	public override validateInputImages(inputImages: readonly []): this {
 		return this;
 	}
 	public override useEdgeBuilder(builder: HandledEdgeBuilder): void {

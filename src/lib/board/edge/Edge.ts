@@ -19,6 +19,9 @@ export class Edge {
 		this.output.unsetInputEdge(this.index);
 		this.output.invalidateInputImages();
 	}
+	public deleteLeft(): void {
+		this.input.deleteOutputEdge(this);
+	}
 	public readonly id: EdgeId;
 	/**
 	 * Do not reassign externally.

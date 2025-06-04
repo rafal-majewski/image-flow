@@ -15,6 +15,7 @@ export class HandledEdgeBuilder extends EdgeBuilder {
 			this.output,
 		);
 		this.input.addOutputEdge(edge);
+		this.output.clearInputEdgeLeft(this.index);
 		this.output.setInputEdge(this.index, edge);
 		this.output.validateInputEdges();
 	}
@@ -27,8 +28,9 @@ export class HandledEdgeBuilder extends EdgeBuilder {
 			this.output,
 		);
 		this.input.addOutputEdge(edge);
+		this.output.clearInputEdgeLeft(this.index);
 		this.output.setInputEdge(this.index, edge);
-		this.output.validateInputEdges();
+		this.output.invalidateInputImages();
 	}
 	private readonly input: Node<number>;
 }

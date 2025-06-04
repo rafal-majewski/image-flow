@@ -7,7 +7,7 @@ export class LoadingStartedFromFileLoaderNodeState extends FromFileLoaderNodeSta
 		return this;
 	}
 	public override validateInputImages(
-		inputImages: readonly ImageData[] & Readonly<{length: 0}>,
+		inputImages: readonly [],
 		outputEdges: readonly Edge[],
 	): this {
 		return this;

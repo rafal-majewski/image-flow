@@ -9,9 +9,7 @@ export class FromUrlLoaderNode extends WithStateNode<
 	FromUrlLoaderNodeState
 > {
 	public override invalidateInputImages(): void {}
-	protected override validateInputImages(
-		inputImages: readonly ImageData[] & Readonly<{length: 0}>,
-	): void {}
+	protected override validateInputImages(inputImages: readonly []): void {}
 	public constructor(position: Coordinates) {
 		super(
 			// @ts-expect-error: TODO

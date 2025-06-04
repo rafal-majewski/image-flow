@@ -3,7 +3,6 @@ import {generateOperatableNodeId} from "./id/generation/generateOperatableNodeId
 import {Edge} from "../edge/Edge.ts";
 import type {Component} from "svelte";
 import type {SupportedBoardMode} from "../mode/supported/SupportedBoardMode.ts";
-import type {EdgeBuilder} from "../edge/builder/EdgeBuilder.ts";
 import type {UnhandledEdgeBuilder} from "../edge/builder/implementations/unhandled/UnhandledEdgeBuilder.ts";
 import type {HandledEdgeBuilder} from "../edge/builder/implementations/handled/HandledEdgeBuilder.ts";
 export abstract class Node<InputEdgeCount extends number> {
@@ -83,6 +82,14 @@ export abstract class Node<InputEdgeCount extends number> {
 		);
 	}
 	public position: Coordinates = $state.raw() as Coordinates;
+	public clearInputEdgeLeft(index: number): void {
+		if (
+			this.inputEdges[index] !== undefined
+			&& this.inputEdges[index] !== null
+		) {
+			this.inputEdges[index].deleteLeft();
+		}
+	}
 	public setInputEdge(index: number, edge: Edge): void {
 		this.inputEdges = this.inputEdges.with(
 			index,
@@ -118,4 +125,14 @@ export abstract class Node<InputEdgeCount extends number> {
 		this.useEdgeBuilder(builder.handleInput(this));
 	}
 	public abstract useEdgeBuilder(builder: HandledEdgeBuilder): void;
+	public delete(): void {
+		for (const edge of this.outputEdges) {
+			edge.delete();
+		}
+		for (const edge of this.inputEdges) {
+			if (edge !== null) {
+				edge.delete();
+			}
+		}
+	}
 }

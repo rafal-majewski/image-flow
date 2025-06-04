@@ -6,12 +6,14 @@
 		onAddGeneratorOperatableNodeRequest,
 		onAddFromFileLoaderNodeRequest,
 		onAddFromUrlLoaderNodeRequest,
+		onAddCombinerOperatableNodeRequest,
 	}: Readonly<{
 		position: Coordinates;
 		onAddMapperOperatableNodeRequest: () => void;
 		onAddGeneratorOperatableNodeRequest: () => void;
 		onAddFromFileLoaderNodeRequest: () => void;
 		onAddFromUrlLoaderNodeRequest: () => void;
+		onAddCombinerOperatableNodeRequest: () => void;
 	}> = $props();
 	function handleAddGeneratorOperatableNodeButtonClick(): void {
 		onAddGeneratorOperatableNodeRequest();
@@ -24,6 +26,9 @@
 	}
 	function handleAddFromUrlLoaderNodeButtonClick(): void {
 		onAddFromUrlLoaderNodeRequest();
+	}
+	function handleAddCombinerOperatableNodeButtonClick(): void {
+		onAddCombinerOperatableNodeRequest();
 	}
 </script>
 
@@ -55,6 +60,11 @@
 						>Add a mapper operatable</button
 					>
 				</li>
+				<li>
+					<button onclick={handleAddCombinerOperatableNodeButtonClick}
+						>Add a combiner operatable</button
+					>
+				</li>
 			</ul>
 		</li>
 	</menu>
@@ -65,7 +75,6 @@
 		transform: translate(-50%, -50%);
 		margin: 0;
 		z-index: 1;
-		width: 200px;
-		height: 200px;
+		width: min-content;
 	}
 </style>

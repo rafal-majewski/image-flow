@@ -17,6 +17,7 @@
 	import {MapperOperatableNode} from "./node/with-state/implementations/operatable/implementations/mapper/MapperOperatableNode.ts";
 	import {UnhandledEdgeBuilder} from "./edge/builder/implementations/unhandled/UnhandledEdgeBuilder.ts";
 	import {FromUrlLoaderNode} from "./node/with-state/implementations/from-url-loader/FromUrlLoaderNode.ts";
+	import {CombinerOperatableNode} from "./node/with-state/implementations/operatable/implementations/combiner/CombinerOperatableNode.ts";
 	let board: HTMLElement;
 	let cameraPosition = $state<Coordinates>({x: 0, y: 0});
 	function computeInBoardPositionFromJustInViewportPosition(
@@ -49,6 +50,9 @@
 	}
 	function handleAddFromUrlLoaderNodeRequest(): void {
 		handleAddNodeRequest(FromUrlLoaderNode);
+	}
+	function handleAddCombinerOperatableNodeRequest(): void {
+		handleAddNodeRequest(CombinerOperatableNode);
 	}
 	function handleContextMenuOpen(event: MouseEvent): void {
 		if (event.target === board && mode === null) {
@@ -218,6 +222,7 @@
 				onAddGeneratorOperatableNodeRequest={handleAddGeneratorOperatableNodeRequest}
 				onAddFromFileLoaderNodeRequest={handleAddFromFileLoaderNodeRequest}
 				onAddFromUrlLoaderNodeRequest={handleAddFromUrlLoaderNodeRequest}
+				onAddCombinerOperatableNodeRequest={handleAddCombinerOperatableNodeRequest}
 			/>
 		{/if}
 		<ul>
