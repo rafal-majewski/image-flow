@@ -93,6 +93,13 @@
 						});
 					}}>🔌</button
 				>
+				{#if edge !== null}
+					{#if edge.image === null}
+						⌛
+					{:else}
+						🖼️
+					{/if}
+				{/if}
 			</li>
 		{/each}
 	</ol>

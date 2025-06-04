@@ -1,4 +1,5 @@
 <script lang="ts">
+	import type {Coordinates} from "../../../../../../../../../../coordinates/Coordinates.ts";
 	import type {OperatableNodeId} from "../../../../../../../../../id/OperatableNodeId.ts";
 	import type {ConvolutingOrCorrelatingMapperOperator} from "../ConvolutingOrCorrelatingMapperOperator.ts";
 	const {
@@ -14,11 +15,12 @@
 	}> = $props();
 	function handleAddRowRequest(number_: number): void {
 		onSetOperatorRequest(
-			operator.withNewAnchorPointAndNewKernel(
+			operator.withNewAnchorPositionAndNewKernel(
 				{
-					x: operator.anchorPoint.x,
+					x: operator.anchorPosition.x,
 					y:
-						operator.anchorPoint.y + (number_ > operator.anchorPoint.y ? 0 : 1),
+						operator.anchorPosition.y
+						+ (number_ > operator.anchorPosition.y ? 0 : 1),
 				},
 				[
 					...operator.kernel.slice(0, number_),
@@ -35,11 +37,12 @@
 	}
 	function handleAddColumnRequest(number_: number): void {
 		onSetOperatorRequest(
-			operator.withNewAnchorPointAndNewKernel(
+			operator.withNewAnchorPositionAndNewKernel(
 				{
 					x:
-						operator.anchorPoint.x + (number_ > operator.anchorPoint.x ? 0 : 1),
-					y: operator.anchorPoint.y,
+						operator.anchorPosition.x
+						+ (number_ > operator.anchorPosition.x ? 0 : 1),
+					y: operator.anchorPosition.y,
 				},
 				operator.kernel.map((row) => {
 					return [
@@ -56,11 +59,12 @@
 	}
 	function handleRemoveRowRequest(number_: number): void {
 		onSetOperatorRequest(
-			operator.withNewAnchorPointAndNewKernel(
+			operator.withNewAnchorPositionAndNewKernel(
 				{
-					x: operator.anchorPoint.x,
+					x: operator.anchorPosition.x,
 					y:
-						operator.anchorPoint.y - (number_ > operator.anchorPoint.y ? 0 : 1),
+						operator.anchorPosition.y
+						- (number_ > operator.anchorPosition.y ? 0 : 1),
 				},
 				[
 					...operator.kernel.slice(0, number_),
@@ -74,11 +78,12 @@
 	}
 	function handleRemoveColumnRequest(number_: number): void {
 		onSetOperatorRequest(
-			operator.withNewAnchorPointAndNewKernel(
+			operator.withNewAnchorPositionAndNewKernel(
 				{
 					x:
-						operator.anchorPoint.x - (number_ > operator.anchorPoint.x ? 0 : 1),
-					y: operator.anchorPoint.y,
+						operator.anchorPosition.x
+						- (number_ > operator.anchorPosition.x ? 0 : 1),
+					y: operator.anchorPosition.y,
 				},
 				operator.kernel.map((row) => {
 					return [
@@ -92,7 +97,30 @@
 			),
 		);
 	}
-	$inspect(operator.anchorPoint);
+	function handleChangeCellRequest(
+		position: Coordinates,
+		newValue: number,
+	): void {
+		onSetOperatorRequest(
+			operator.withNewKernel(
+				operator.kernel.with(
+					position.y,
+					(operator.kernel[position.y] as readonly number[]).with(
+						position.x,
+						newValue,
+					) as unknown as readonly [number, ...(readonly number[])],
+				) as unknown as readonly [
+					readonly [number, ...(readonly number[])],
+					...(readonly [number, ...(readonly number[])])[],
+				],
+			),
+		);
+	}
+	function handleChangeAnchorPositionRequest(
+		newAnchorPosition: Coordinates,
+	): void {
+		onSetOperatorRequest(operator.withNewAnchorPosition(newAnchorPosition));
+	}
 </script>
 
 <section>
@@ -178,12 +206,27 @@
 						{/if}
 						{#each row as cell, columnIndex (columnIndex)}
 							<td colspan="4" rowspan="4" class="kernel-cell">
-								<input type="number" value={cell} />
+								<input
+									type="number"
+									value={cell}
+									onchange={(event) => {
+										handleChangeCellRequest(
+											{x: columnIndex, y: rowIndex},
+											event.currentTarget.valueAsNumber,
+										);
+									}}
+								/>
 								<input
 									type="radio"
 									name="{nodeId}-anchor"
-									checked={operator.anchorPoint.x === columnIndex
-										&& operator.anchorPoint.y === rowIndex}
+									checked={operator.anchorPosition.x === columnIndex
+										&& operator.anchorPosition.y === rowIndex}
+									onchange={() => {
+										handleChangeAnchorPositionRequest({
+											x: columnIndex,
+											y: rowIndex,
+										});
+									}}
 								/>
 							</td>
 						{/each}

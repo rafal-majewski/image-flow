@@ -20,7 +20,13 @@ export class LoadingStartedFromFileLoaderNodeState extends FromFileLoaderNodeSta
 	): LoadingStartedFromFileLoaderNodeState {
 		return new LoadingStartedFromFileLoaderNodeState();
 	}
-	public doneLoading(image: ImageData): LoadingDonedFromFileLoaderNodeState {
+	public doneLoading(
+		image: ImageData,
+		outputEdges: readonly Edge[],
+	): LoadingDonedFromFileLoaderNodeState {
+		for (const edge of outputEdges) {
+			edge.setImage(image);
+		}
 		return new LoadingDonedFromFileLoaderNodeState(image);
 	}
 	public override useEdgeBuilder(builder: HandledEdgeBuilder): void {

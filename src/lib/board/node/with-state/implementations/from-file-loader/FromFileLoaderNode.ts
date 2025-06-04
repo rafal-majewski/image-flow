@@ -25,7 +25,7 @@ export class FromFileLoaderNode extends WithStateNode<
 		this.state = loadingStartedState;
 		const image = await loadFile(file);
 		if (this.state === loadingStartedState) {
-			this.state = loadingStartedState.doneLoading(image);
+			this.state = loadingStartedState.doneLoading(image, this.outputEdges);
 		}
 	}
 }
