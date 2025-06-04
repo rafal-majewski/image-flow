@@ -76,7 +76,7 @@ export abstract class Node<InputEdgeCount extends number> {
 	/**
 	 * Do not reassign externally.
 	 */
-	public outputEdges: readonly Edge[];
+	public outputEdges: readonly Edge[] = $state.raw() as readonly Edge[];
 	public deleteOutputEdge(outputEdgeToBeDeleted: Edge): void {
 		this.outputEdges = this.outputEdges.filter(
 			(edge) => edge !== outputEdgeToBeDeleted,
