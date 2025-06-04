@@ -5,6 +5,7 @@ import {GameOfLifeMapperOperatorClassicColorComponentComputer} from "./operator/
 import {GameOfLifeMapperOperator} from "./operator/implementations/game-of-life/GameOfLifeMapperOperator.ts";
 import {GrayscalingMapperOperator} from "./operator/implementations/grayscaling/GrayscalingMapperOperator.ts";
 import {NearestNeighborScalingMapperOperator} from "./operator/implementations/nearest-neighbor-scaling/NearestNeighborScalingMapperOperator.ts";
+import {DitheringMapperOperator} from "./operator/implementations/dithering/DitheringMapperOperator.ts";
 export const mapperOperators = [
 	new GrayscalingMapperOperator({red: 0.21, green: 0.72, blue: 0.07}),
 	new NearestNeighborScalingMapperOperator({width: 300, height: 300}),
@@ -18,4 +19,5 @@ export const mapperOperators = [
 		[[1]],
 		correlatingRotationApplier,
 	),
+	new DitheringMapperOperator(),
 ] as const;
