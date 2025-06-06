@@ -9,26 +9,26 @@
 		onAddCombinerOperatableNodeRequest,
 	}: Readonly<{
 		position: Coordinates;
-		onAddMapperOperatableNodeRequest: () => void;
-		onAddGeneratorOperatableNodeRequest: () => void;
-		onAddFromFileLoaderNodeRequest: () => void;
-		onAddFromUrlLoaderNodeRequest: () => void;
-		onAddCombinerOperatableNodeRequest: () => void;
+		onAddMapperOperatableNodeRequest: (position: Coordinates) => void;
+		onAddGeneratorOperatableNodeRequest: (position: Coordinates) => void;
+		onAddFromFileLoaderNodeRequest: (position: Coordinates) => void;
+		onAddFromUrlLoaderNodeRequest: (position: Coordinates) => void;
+		onAddCombinerOperatableNodeRequest: (position: Coordinates) => void;
 	}> = $props();
 	function handleAddGeneratorOperatableNodeButtonClick(): void {
-		onAddGeneratorOperatableNodeRequest();
+		onAddGeneratorOperatableNodeRequest(position);
 	}
 	function handleAddMapperOperatableNodeButtonClick(): void {
-		onAddMapperOperatableNodeRequest();
+		onAddMapperOperatableNodeRequest(position);
 	}
 	function handleAddFromFileLoaderNodeButtonClick(): void {
-		onAddFromFileLoaderNodeRequest();
+		onAddFromFileLoaderNodeRequest(position);
 	}
 	function handleAddFromUrlLoaderNodeButtonClick(): void {
-		onAddFromUrlLoaderNodeRequest();
+		onAddFromUrlLoaderNodeRequest(position);
 	}
 	function handleAddCombinerOperatableNodeButtonClick(): void {
-		onAddCombinerOperatableNodeRequest();
+		onAddCombinerOperatableNodeRequest(position);
 	}
 </script>
 

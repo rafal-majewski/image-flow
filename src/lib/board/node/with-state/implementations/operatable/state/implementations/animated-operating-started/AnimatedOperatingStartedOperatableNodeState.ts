@@ -83,6 +83,7 @@ export class AnimatedOperatingStartedOperatableNodeState<
 	public override makeInstant(
 		outputEdges: readonly Edge[],
 	): InstantOperatingDonedOperatableNodeState<InputImageCount> {
+		clearInterval(this.intervalId);
 		let generatorResult = this.generator.next();
 		while (!generatorResult.done) {
 			generatorResult = this.generator.next();
@@ -99,6 +100,7 @@ export class AnimatedOperatingStartedOperatableNodeState<
 	public override makeManual(
 		stepCount: number,
 	): ManualOperatingStartedOperatableNodeState<InputImageCount> {
+		clearInterval(this.intervalId);
 		return new ManualOperatingStartedOperatableNodeState<InputImageCount>(
 			this.generator,
 			this.inputImages,

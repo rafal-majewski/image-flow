@@ -3,13 +3,11 @@ import {createDiscreteRgbColorEmpty} from "../../../../../color/discrete/impleme
 import {createDiscreteRgbColorFromComponents} from "../../../../../color/discrete/implementations/rgb/creating-from-components/createDiscreteRgbColorFromComponents.ts";
 import {createDiscreteRgbaColorFromDiscreteRgbColor} from "../../../../../color/discrete/implementations/rgba/creating-from-rgb-color/createDiscreteRgbaColorFromDiscreteRgbColor.ts";
 import {readRgbColorFromImage} from "../../../../../reading-rgb-color-from-image/readRgbColorFromImage.ts";
-import {writeRgbaColorToImage} from "../../../../../../../writing-rgba-color-to-image/writeRgbaColorToImage.ts";
 import {MapperOperator} from "../../MapperOperator.ts";
 import ConvolutingOrCorrelatingMapperOperatorDisplayer from "./displayer/ConvolutingOrCorrelatingMapperOperatorDisplayer.svelte";
-import type {DiscreteColorComponent} from "../../../../../color/discrete/component/DiscreteColorComponent.ts";
-import type {DiscreteRgbColor} from "../../../../../color/discrete/implementations/rgb/DiscreteRgbColor.ts";
 import {sanitizeDiscreteRgbColor} from "./sanitizing-discrete-rgb-color/sanitizeDiscreteRgbColor.ts";
 import type {RotationApplier} from "./rotation-applier/RotationApplier.ts";
+import {writeRgbaColorToImageAtByteIndex} from "../../../../../../../writing-rgba-color-to-image-at-byte-index/writeRgbaColorToImageAtByteIndex.ts";
 export class ConvolutingOrCorrelatingMapperOperator extends MapperOperator {
 	public constructor(
 		anchorPosition: Coordinates,
@@ -124,7 +122,7 @@ export class ConvolutingOrCorrelatingMapperOperator extends MapperOperator {
 					(inOutputImagePosition.y * outputImage.width
 						+ inOutputImagePosition.x)
 					* 4;
-				writeRgbaColorToImage(
+				writeRgbaColorToImageAtByteIndex(
 					outputImage,
 					outputImageByteIndex,
 					createDiscreteRgbaColorFromDiscreteRgbColor(

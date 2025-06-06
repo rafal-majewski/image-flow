@@ -1,6 +1,6 @@
 import type {DiscreteColorComponent} from "../color/discrete/component/DiscreteColorComponent.ts";
 import type {DiscreteRgbaColor} from "../color/discrete/implementations/rgba/DiscreteRgbaColor.ts";
-export function readRgbaColorFromImage(
+export function readRgbaColorFromImageAtByteIndex(
 	inputImage: ImageData,
 	byteIndex: number,
 ): DiscreteRgbaColor {

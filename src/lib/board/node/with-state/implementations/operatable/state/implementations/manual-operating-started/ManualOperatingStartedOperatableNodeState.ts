@@ -24,7 +24,7 @@ export class ManualOperatingStartedOperatableNodeState<
 		this.outputImage = outputImage;
 		this.stepCount = stepCount;
 	}
-	public override doAnimatedStep(
+	public override doManualSteps(
 		outputEdges: readonly Edge[],
 	):
 		| ManualOperatingDonedOperatableNodeState<InputImageCount>
@@ -50,7 +50,7 @@ export class ManualOperatingStartedOperatableNodeState<
 			);
 		}
 	}
-	public override doManualSteps(outputEdges: readonly Edge[]): this {
+	public override doAnimatedStep(outputEdges: readonly Edge[]): this {
 		return this;
 	}
 	private readonly generator: Generator<ImageData, ImageData, void>;

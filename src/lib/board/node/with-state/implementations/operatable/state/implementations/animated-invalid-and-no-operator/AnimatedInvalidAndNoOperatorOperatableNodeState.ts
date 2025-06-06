@@ -43,6 +43,7 @@ export class AnimatedInvalidAndNoOperatorOperatableNodeState<
 	public override makeManual(
 		stepCount: number,
 	): ManualInvalidAndNoOperatorOperatableNodeState<InputImageCount> {
+		clearInterval(this.intervalId);
 		return new ManualInvalidAndNoOperatorOperatableNodeState<InputImageCount>(
 			stepCount,
 		);

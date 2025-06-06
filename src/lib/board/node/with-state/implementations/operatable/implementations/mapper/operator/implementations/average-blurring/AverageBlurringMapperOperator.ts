@@ -1,7 +1,7 @@
 import type {Coordinates} from "../../../../../../../../../coordinates/Coordinates.ts";
 import {createDiscreteRgbColorFromComponent} from "../../../../../color/discrete/implementations/rgb/creating-from-component/createDiscreteRgbColorFromComponent.ts";
 import {readRgbColorFromImage} from "../../../../../reading-rgb-color-from-image/readRgbColorFromImage.ts";
-import {readRgbaColorFromImage} from "../../../../../reading-rgba-color-from-image/readRgbaColorFromImage.ts";
+import {readRgbaColorFromImageAtByteIndex} from "../../../../../reading-rgba-color-from-image-at-byte-index/readRgbaColorFromImageAtByteIndex.ts";
 import {MapperOperator} from "../../MapperOperator.ts";
 import AverageBlurringMapperOperatorDisplayer from "./displayer/AverageBlurringMapperOperatorDisplayer.svelte";
 export class AverageBlurringMapperOperator extends MapperOperator {
@@ -29,7 +29,10 @@ export class AverageBlurringMapperOperator extends MapperOperator {
 			byteIndex += 4
 		) {
 			yield outputImage;
-			const color = readRgbaColorFromImage(inputImages[0], byteIndex);
+			const color = readRgbaColorFromImageAtByteIndex(
+				inputImages[0],
+				byteIndex,
+			);
 			let blurredColor = createDiscreteRgbColorFromComponent(0);
 			const position: Coordinates = {
 				x: (byteIndex / 4) % inputImages[0].width,

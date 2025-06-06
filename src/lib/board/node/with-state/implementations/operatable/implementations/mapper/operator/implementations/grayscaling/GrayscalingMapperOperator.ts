@@ -1,8 +1,8 @@
+import {writeRgbaColorToImageAtByteIndex} from "../../../../../../../writing-rgba-color-to-image-at-byte-index/writeRgbaColorToImageAtByteIndex.ts";
 import type {ContinuousRgbColor} from "../../../../../color/continuous/implementations/rgb/ContinuousRgbColor.ts";
 import {computeDotProductFromDiscreteAndContinuousRgbColors} from "../../../../../color/discrete/implementations/rgb/computing-dot-product/computeDotProductFromDiscreteAndContinuousRgbColors.ts";
 import {createDiscreteRgbaColorFromComponent} from "../../../../../color/discrete/implementations/rgba/creating-from-component/createDiscreteRgbaColorFromComponent.ts";
-import {readRgbaColorFromImage} from "../../../../../reading-rgba-color-from-image/readRgbaColorFromImage.ts";
-import {writeRgbaColorToImage} from "../../../../../../../writing-rgba-color-to-image/writeRgbaColorToImage.ts";
+import {readRgbaColorFromImageAtByteIndex} from "../../../../../reading-rgba-color-from-image-at-byte-index/readRgbaColorFromImageAtByteIndex.ts";
 import {MapperOperator} from "../../MapperOperator.ts";
 import GrayscalingMapperOperatorDisplayer from "./displayer/GrayscalingMapperOperatorDisplayer.svelte";
 export class GrayscalingMapperOperator extends MapperOperator {
@@ -29,12 +29,15 @@ export class GrayscalingMapperOperator extends MapperOperator {
 			byteIndex += 4
 		) {
 			yield outputImage;
-			const color = readRgbaColorFromImage(inputImages[0], byteIndex);
+			const color = readRgbaColorFromImageAtByteIndex(
+				inputImages[0],
+				byteIndex,
+			);
 			const grayness = computeDotProductFromDiscreteAndContinuousRgbColors(
 				color,
 				this.multiplier,
 			);
-			writeRgbaColorToImage(
+			writeRgbaColorToImageAtByteIndex(
 				outputImage,
 				byteIndex,
 				createDiscreteRgbaColorFromComponent(grayness, color.alpha),

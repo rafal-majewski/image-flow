@@ -1,11 +1,10 @@
 import type {Coordinates} from "../../../../../../../../../coordinates/Coordinates.ts";
-import {writeRgbaColorToImage} from "../../../../../../../writing-rgba-color-to-image/writeRgbaColorToImage.ts";
+import {writeRgbaColorToImageAtPosition} from "../../../../../../../writing-rgba-color-to-image-at-position/writeRgbaColorToImageAtPosition.ts";
 import {sanitizeDiscreteColorComponent} from "../../../../../color/discrete/component/sanitizing/sanitizeDiscreteColorComponent.ts";
 import {createDiscreteRgbaColorFromComponents} from "../../../../../color/discrete/implementations/rgba/creating-from-components/createDiscreteRgbaColorFromComponents.ts";
 import type {DiscreteRgbaColor} from "../../../../../color/discrete/implementations/rgba/DiscreteRgbaColor.ts";
-import {readRgbaColorFromImage} from "../../../../../reading-rgba-color-from-image/readRgbaColorFromImage.ts";
+import {readRgbaColorFromImageAtPosition} from "../../../../../reading-rgba-color-from-image-at-position/readRgbaColorFromImageAtPosition.ts";
 import {MapperOperator} from "../../MapperOperator.ts";
-import {sanitizeDiscreteRgbColor} from "../convoluting-or-correlating/sanitizing-discrete-rgb-color/sanitizeDiscreteRgbColor.ts";
 import DitheringMapperOperatorDisplayer from "./displayer/DitheringMapperOperatorDisplayer.svelte";
 export class DitheringMapperOperator extends MapperOperator {
 	public constructor() {
@@ -20,10 +19,10 @@ export class DitheringMapperOperator extends MapperOperator {
 				new Array(inputImages[0].width)
 					.fill(null)
 					.map((_, colIndex) =>
-						readRgbaColorFromImage(
-							inputImages[0],
-							4 * (rowIndex * inputImages[0].width + colIndex),
-						),
+						readRgbaColorFromImageAtPosition(inputImages[0], {
+							y: rowIndex,
+							x: colIndex,
+						}),
 					),
 			);
 		const outputImage = new ImageData(
@@ -59,9 +58,9 @@ export class DitheringMapperOperator extends MapperOperator {
 					oldColor.alpha - newColor.alpha,
 				);
 				// set before spreading
-				writeRgbaColorToImage(
+				writeRgbaColorToImageAtPosition(
 					outputImage,
-					4 * (positionY * inputImages[0].width + positionX),
+					{y: positionY, x: positionX},
 					newColor,
 				);
 				(buffer[positionY] as DiscreteRgbaColor[])[positionX] = newColor;
@@ -128,11 +127,9 @@ export class DitheringMapperOperator extends MapperOperator {
 							(buffer[inImageCellPosition.y] as DiscreteRgbaColor[])[
 								inImageCellPosition.x
 							] = newCellColor;
-							writeRgbaColorToImage(
+							writeRgbaColorToImageAtPosition(
 								outputImage,
-								4
-									* (inImageCellPosition.y * inputImages[0].width
-										+ inImageCellPosition.x),
+								{y: inImageCellPosition.y, x: inImageCellPosition.x},
 								createDiscreteRgbaColorFromComponents(
 									Math.max(0, Math.min(Math.round(newCellColor.red), 255)),
 									Math.max(0, Math.min(Math.round(newCellColor.green), 255)),

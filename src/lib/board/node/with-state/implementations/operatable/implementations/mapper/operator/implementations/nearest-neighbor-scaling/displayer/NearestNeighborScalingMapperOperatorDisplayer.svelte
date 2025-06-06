@@ -11,7 +11,7 @@
 	}> = $props();
 	function handleWidthInputChange(
 		event: Event & {currentTarget: HTMLInputElement},
-	) {
+	): void {
 		onSetOperatorRequest(
 			operator.withNewOutputImageDimensions({
 				width: event.currentTarget.valueAsNumber,
