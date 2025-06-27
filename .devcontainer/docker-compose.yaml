@@ -1,0 +1,15 @@
+services:
+  image-flow:
+    build:
+      args:
+        ALPINE_VERSION: "3.22.0"
+        NODE_VERSION: "22.16.0-r2"
+        NPM_VERSION: "11.3.0-r0"
+      context: "."
+      dockerfile: "Dockerfile"
+    volumes:
+      - consistency: "consistent"
+        read_only: false
+        source: ".."
+        target: "/home/developer/image-flow"
+        type: "bind"

@@ -1,14 +1,7 @@
 {
-	"appPort": [],
-	"build": {
-		"args": {"ALPINE_VERSION": "3.21", "NODE_JS_VERSION": "23.10.0"},
-		"cacheFrom": [],
-		"dockerfile": "./Dockerfile",
-		"options": []
-	},
 	"capAdd": [],
 	"containerEnv": {},
-	"containerUser": "node",
+	"containerUser": "developer",
 	"customizations": {
 		"vscode": {
 			"extensions": [
@@ -18,22 +11,22 @@
 			]
 		}
 	},
+	"dockerComposeFile": ["./docker-compose.yaml"],
 	"features": {},
 	"forwardPorts": [],
 	"init": false,
 	"mounts": [],
-	"name": "Development",
+	"name": "Developing",
 	"otherPortsAttributes": {},
 	"overrideCommand": true,
 	"portsAttributes": {},
 	"privileged": false,
 	"remoteEnv": {},
-	"remoteUser": "node",
-	"runArgs": [],
+	"remoteUser": "developer",
 	"securityOpt": [],
-	"shutdownAction": "stopContainer",
-	"updateRemoteUserUID": true,
+	"service": "image-flow",
+	"shutdownAction": "stopCompose",
+	"updateRemoteUserUID": false,
 	"userEnvProbe": "none",
-	"workspaceFolder": "/home/node/${localWorkspaceFolderBasename}",
-	"workspaceMount": "source=${localWorkspaceFolder},target=/home/node/${localWorkspaceFolderBasename},type=bind,consistency=consistent"
+	"workspaceFolder": "/home/developer/image-flow"
 }

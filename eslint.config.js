@@ -1,16 +1,16 @@
-import * as TypescriptEslintParser from "@typescript-eslint/parser";
+import * as typescriptEslintParser from "@typescript-eslint/parser";
 import perfectionistEslintPlugin from "eslint-plugin-perfectionist";
 export default [
 	{
-		files: ["**/*.mjs", "**/*.js", "**/*.ts"],
+		files: ["**/*.js", "**/*.mjs", "**/*.ts"],
 		languageOptions: {sourceType: "module"},
 	},
 	{files: ["**/*.cjs"], languageOptions: {sourceType: "commonjs"}},
 	{
-		files: ["**/*.ts", "**/*.js", "**/*.cjs", "**/*.mjs"],
+		files: ["**/*.cjs", "**/*.js", "**/*.mjs", "**/*.ts"],
 		languageOptions: {
 			ecmaVersion: 13,
-			parser: TypescriptEslintParser,
+			parser: typescriptEslintParser,
 			parserOptions: {
 				extraFileExtensions: [],
 				project: "./tsconfig.json",
@@ -27,14 +27,14 @@ export default [
 					customGroups: [],
 					groups: ["constructor", "unknown"],
 					ignoreCase: false,
+					newlinesBetween: "never",
 					order: "asc",
 					partitionByComment: false,
-					type: "natural",
 					specialCharacters: "keep",
-					newlinesBetween: "never",
+					type: "natural",
 				},
 			],
 		},
 	},
-	{ignores: ["**/.git/**", "**/.svelte-kit/**", "**/node_modules/**"]},
+	{ignores: [".git", ".svelte-kit", "build", "node_modules"]},
 ];

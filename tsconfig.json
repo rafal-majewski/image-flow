@@ -41,7 +41,7 @@
 		"resolveJsonModule": false,
 		"resolvePackageJsonExports": false,
 		"resolvePackageJsonImports": false,
-		"skipLibCheck": false,
+		"skipLibCheck": true,
 		"strict": true,
 		"strictBindCallApply": true,
 		"strictBuiltinIteratorReturn": true,
@@ -56,9 +56,21 @@
 		// "isolatedDeclarations": true,
 		// useDefineForClassFields: true,
 	},
-	"exclude": ["build", ".git", "node_modules"],
+	"exclude": [
+		"./.git",
+		"./.svelte-kit/adapter-node",
+		"./.svelte-kit/generated",
+		"./.svelte-kit/output",
+		"./build",
+		"./node_modules"
+	],
 	"extends": ["./.svelte-kit/tsconfig.json"],
 	"files": [],
-	"include": ["**/*", "**/.*"],
+	"include": [
+		"./**/*",
+		"./**/.*",
+		"./**/.*/**/*",
+		"./.svelte-kit/ambient.d.ts"
+	],
 	"references": []
 }

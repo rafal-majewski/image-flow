@@ -6,9 +6,9 @@ export default /** @type {const} @satisfies {import("dependency-cruiser").IConfi
 		detectJSDocImports: true,
 		doNotFollow: {path: []},
 		enhancedResolveOptions: {
-			conditionNames: ["import", "require", "node", "default", "types"],
+			conditionNames: ["default", "import", "node", "require", "types"],
 			exportsFields: ["exports"],
-			mainFields: ["module", "main", "types", "typings"],
+			mainFields: ["main", "module", "types", "typings"],
 		},
 		reporterOptions: {archi: {}, dot: {}, text: {highlightFocused: true}},
 		skipAnalysisNotInRules: true,

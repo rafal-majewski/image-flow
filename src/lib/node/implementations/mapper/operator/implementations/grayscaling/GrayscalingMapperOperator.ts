@@ -1,0 +1,51 @@
+import type {ContinuousWithoutAlphaColor} from "../../../../../operating/color/ContinuousWithoutAlphaColor.ts";
+import {DiscreteWithAlphaColor} from "../../../../../operating/color/DiscreteWithAlphaColor.ts";
+import {readWithAlphaColorFromImageAtPosition} from "../../../../../operating/color/readWithAlphaColorFromImageAtPosition.ts";
+import {sanitizeDiscreteColorComponent} from "../../../../../operating/color/sanitizeDiscreteColorComponent.ts";
+import {setEachPixel} from "../../../../../operator/setting-each-pixel/setEachPixel.ts";
+import {MappingOperator} from "../../MapperOperator.ts";
+export class GrayscalingMappingOperator extends MappingOperator {
+	public constructor(multiplier: ContinuousWithoutAlphaColor) {
+		super(
+			// @ts-expect-error
+			GrayscalingMappingOperatorDisplayer,
+			"grayscaling",
+			"Grayscaling",
+		);
+		this.multiplier = multiplier;
+	}
+	public readonly multiplier: ContinuousWithoutAlphaColor;
+	public *operate(
+		inputImages: readonly [ImageData],
+	): Generator<ImageData, ImageData, void> {
+		const outputImage = new ImageData(
+			inputImages[0].width,
+			inputImages[0].height,
+		);
+		yield* setEachPixel(outputImage, (position) => {
+			const colorWithAlphaComponent = readWithAlphaColorFromImageAtPosition(
+				inputImages[0],
+				position,
+			);
+			const continuousColorWithoutAlphaComponent = colorWithAlphaComponent
+				.withoutAlpha()
+				.convertToContinuous();
+			const grayness = continuousColorWithoutAlphaComponent.computeDotProduct(
+				this.multiplier,
+			);
+			const colorComponent = sanitizeDiscreteColorComponent(grayness * 255);
+			return new DiscreteWithAlphaColor(
+				colorComponent,
+				colorComponent,
+				colorComponent,
+				colorWithAlphaComponent.alphaComponent,
+			);
+		});
+		return outputImage;
+	}
+	public withNewMultiplier(
+		newMultiplier: ContinuousWithoutAlphaColor,
+	): GrayscalingMappingOperator {
+		return new GrayscalingMappingOperator(newMultiplier);
+	}
+}
