@@ -1,2 +1,2 @@
-export const supportedGameOfLifeMappingOperatorColorComponentComputers =
+export const supportedGameOfLifeMapperOperatorColorComponentComputers =
 	[] as const;

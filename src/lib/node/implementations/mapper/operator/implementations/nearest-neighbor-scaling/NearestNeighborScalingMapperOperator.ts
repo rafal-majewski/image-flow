@@ -2,9 +2,9 @@ import {Coordinates} from "../../../../../../coordinates/Coordinates.ts";
 import type {Dimensions} from "../../../../../../dimensions/Dimensions.ts";
 import {readWithAlphaColorFromImageAtPosition} from "../../../../../operating/color/readWithAlphaColorFromImageAtPosition.ts";
 import {setEachPixel} from "../../../../../operator/setting-each-pixel/setEachPixel.ts";
-import {MappingOperator} from "../../MapperOperator.ts";
+import {MapperOperator} from "../../MapperOperator.ts";
 import NearestNeighborScalingMapperOperatorDisplayer from "./displayer/NearestNeighborScalingMapperOperatorDisplayer.svelte";
-export class NearestNeighborScalingMappingOperator extends MappingOperator {
+export class NearestNeighborScalingMapperOperator extends MapperOperator {
 	public constructor(outputImageDimensions: Dimensions) {
 		super(
 			NearestNeighborScalingMapperOperatorDisplayer,
@@ -41,7 +41,7 @@ export class NearestNeighborScalingMappingOperator extends MappingOperator {
 	public readonly outputImageDimensions: Dimensions;
 	public withNewOutputImageDimensions(
 		newDimensions: Dimensions,
-	): NearestNeighborScalingMappingOperator {
-		return new NearestNeighborScalingMappingOperator(newDimensions);
+	): NearestNeighborScalingMapperOperator {
+		return new NearestNeighborScalingMapperOperator(newDimensions);
 	}
 }

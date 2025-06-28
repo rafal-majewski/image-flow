@@ -13,15 +13,20 @@
 	import type {Node} from "./node/Node.ts";
 	import type {NodeClass} from "./node/class/NodeClass.ts";
 	import {UnhandledEdgeBuilder} from "./edge/builder/unhandled/UnhandledEdgeBuilder.ts";
-	import {Graph} from "./graph/Graph.ts";
+	import {MapperOperatingNode} from "./node/implementations/mapper/MapperOperatingNode.ts";
+	import {CombinerOperatingNode} from "./node/implementations/combiner/CombinerOperatingNode.ts";
+	import {FromFileLoaderNode} from "./node/implementations/from-file-loader/FromFileLoaderNode.ts";
+	import {FromUrlLoaderNode} from "./node/implementations/from-url-loader/FromUrlLoaderNode.ts";
+	import {GeneratorOperatingNode} from "./node/implementations/generator/GeneratorOperatingNode.ts";
+	import type {Edge} from "./edge/Edge.ts";
 	let board: HTMLElement;
-	let graph: Graph = $state.raw(Graph.create());
+	let nodes = $state.raw<readonly Node[]>([]);
 	let cameraPosition = $state<Coordinates>(new Coordinates(0, 0));
 	let mode = $state.raw<null | SupportedBoardMode>(null);
 	function handleAddNodeRequest(NewNodeClass: NodeClass): void {
 		if (mode !== null && mode.name === "addingNode") {
-			const newNode = new NewNodeClass(mode.data.position);
-			graph = graph.withNewNode(newNode);
+			const newNode = new NewNodeClass(mode.position);
+			nodes = [...nodes, newNode];
 			mode = null;
 		}
 	}
@@ -51,6 +56,9 @@
 				),
 			);
 		}
+	}
+	function handleDeleteEdgeRequest(edge: Edge): void {
+		throw new Error("Edge deletion is not implemented yet.");
 	}
 	function handleMouseMove(event: MouseEvent): void {
 		if (mode !== null) {
@@ -173,7 +181,6 @@
 	}
 	function handleMouseLeftButtonUppedOnNode(): void {}
 	function handleDeleteNodeRequest(nodeToDelete: Node): void {
-		graph = graph.withoutNode(nodeToDelete.id);
 		if (mode !== null) {
 			switch (mode.name) {
 				case "settingEdgeOutput": {
@@ -224,7 +231,7 @@
 			/>
 		{/if}
 		<ul>
-			{#each graph as node (node.id)}
+			{#each nodes as node (node.id)}
 				<li>
 					<node.displayer
 						onDeleteRequest={handleDeleteNodeRequest}
@@ -237,7 +244,7 @@
 				</li>
 				{#each node.outputEdges as edge (`${edge.inputNodeId}-${edge.outputNodeInputEdgeIndex}-${edge.outputNodeId}`)}
 					<li>
-						<EdgeDisplayer {edge} />
+						<EdgeDisplayer {edge} onDeleteRequest={handleDeleteEdgeRequest} />
 					</li>
 				{/each}
 			{/each}

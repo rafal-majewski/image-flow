@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {NodeId} from "../../../id/NodeId.ts";
+	import type {NodeId} from "../../../id/NodeId.ts";
 	import type {ColorImageGeneratorOperator} from "./ColorImageGeneratorOperator.ts";
 	const {
 		operator,

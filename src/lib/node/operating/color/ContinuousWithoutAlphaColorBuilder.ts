@@ -13,11 +13,6 @@ export class ContinuousWithoutAlphaColorBuilder {
 		this.greenComponent = greenComponent;
 		this.blueComponent = blueComponent;
 	}
-	public readonly blueComponent: ContinuousColorComponent;
-
-	public readonly greenComponent: ContinuousColorComponent;
-
-	public readonly redComponent: ContinuousColorComponent;
 	public addColor(
 		color: ContinuousWithoutAlphaColor,
 	): ContinuousWithoutAlphaColorBuilder {
@@ -27,13 +22,21 @@ export class ContinuousWithoutAlphaColorBuilder {
 			this.blueComponent + color.blueComponent,
 		);
 	}
-	public subtractColor(
-		color: ContinuousWithAlphaColor,
+	public addBuilder(
+		color: ContinuousWithoutAlphaColorBuilder,
 	): ContinuousWithoutAlphaColorBuilder {
 		return new ContinuousWithoutAlphaColorBuilder(
-			this.redComponent - color.redComponent,
-			this.greenComponent - color.greenComponent,
-			this.blueComponent - color.blueComponent,
+			this.redComponent + color.redComponent,
+			this.greenComponent + color.greenComponent,
+			this.blueComponent + color.blueComponent,
+		);
+	}
+	public readonly blueComponent: ContinuousColorComponent;
+	public build(): ContinuousWithoutAlphaColor {
+		return new ContinuousWithoutAlphaColor(
+			sanitizeContinuousColorComponent(this.redComponent),
+			sanitizeContinuousColorComponent(this.greenComponent),
+			sanitizeContinuousColorComponent(this.blueComponent),
 		);
 	}
 	public combineWith(
@@ -49,6 +52,7 @@ export class ContinuousWithoutAlphaColorBuilder {
 			combiner(this.blueComponent, color.blueComponent),
 		);
 	}
+	public readonly greenComponent: ContinuousColorComponent;
 	public mixWith(
 		weightOfOtherColor: ContinuousColorBuilderComponent,
 		otherColor: ContinuousWithoutAlphaColorBuilder,
@@ -60,11 +64,23 @@ export class ContinuousWithoutAlphaColorBuilder {
 			);
 		}, otherColor);
 	}
-	public build(): ContinuousWithoutAlphaColor {
-		return new ContinuousWithoutAlphaColor(
-			sanitizeContinuousColorComponent(this.redComponent),
-			sanitizeContinuousColorComponent(this.greenComponent),
-			sanitizeContinuousColorComponent(this.blueComponent),
+	public readonly redComponent: ContinuousColorComponent;
+	public subtractColor(
+		color: ContinuousWithAlphaColor,
+	): ContinuousWithoutAlphaColorBuilder {
+		return new ContinuousWithoutAlphaColorBuilder(
+			this.redComponent - color.redComponent,
+			this.greenComponent - color.greenComponent,
+			this.blueComponent - color.blueComponent,
+		);
+	}
+	public multiplyBy(
+		factor: ContinuousColorBuilderComponent,
+	): ContinuousWithoutAlphaColorBuilder {
+		return new ContinuousWithoutAlphaColorBuilder(
+			this.redComponent * factor,
+			this.greenComponent * factor,
+			this.blueComponent * factor,
 		);
 	}
 }

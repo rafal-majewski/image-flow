@@ -1,5 +1,5 @@
 import type {Coordinates} from "../../coordinates/Coordinates.ts";
-import {Node} from "../Node.ts";
+import {Node} from "../Node.svelte.ts";
 import type {Operator} from "../operator/Operator.ts";
 import {ManualInvalidAndNoOperatorOperatingNodeState} from "./state/implementations/manual-invalid-and-no-operator/ManualInvalidAndNoOperatorOperatingNodeState.ts";
 import type {SupportedOperatingNodeState} from "./state/supported/SupportedOperatingNodeState.ts";

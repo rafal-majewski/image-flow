@@ -3,12 +3,12 @@ import {DiscreteWithAlphaColor} from "../../../../../operating/color/DiscreteWit
 import {readWithAlphaColorFromImageAtPosition} from "../../../../../operating/color/readWithAlphaColorFromImageAtPosition.ts";
 import {sanitizeDiscreteColorComponent} from "../../../../../operating/color/sanitizeDiscreteColorComponent.ts";
 import {setEachPixel} from "../../../../../operator/setting-each-pixel/setEachPixel.ts";
-import {MappingOperator} from "../../MapperOperator.ts";
-export class GrayscalingMappingOperator extends MappingOperator {
+import {MapperOperator} from "../../MapperOperator.ts";
+export class GrayscalingMapperOperator extends MapperOperator {
 	public constructor(multiplier: ContinuousWithoutAlphaColor) {
 		super(
 			// @ts-expect-error
-			GrayscalingMappingOperatorDisplayer,
+			GrayscalingMapperOperatorDisplayer,
 			"grayscaling",
 			"Grayscaling",
 		);
@@ -45,7 +45,7 @@ export class GrayscalingMappingOperator extends MappingOperator {
 	}
 	public withNewMultiplier(
 		newMultiplier: ContinuousWithoutAlphaColor,
-	): GrayscalingMappingOperator {
-		return new GrayscalingMappingOperator(newMultiplier);
+	): GrayscalingMapperOperator {
+		return new GrayscalingMapperOperator(newMultiplier);
 	}
 }

@@ -1,5 +1,4 @@
-import type {Node} from "../../../node/Node.ts";
-import type {EdgeBuilder} from "../../EdgeBuilder.ts";
+import type {Node} from "../../../node/Node.svelte.ts";
 import {HandledEdgeBuilder} from "../handled/HandledEdgeBuilder.ts";
 export class UnhandledEdgeBuilder implements EdgeBuilder {
 	public constructor(inputIndexInOutput: number, output: Node) {

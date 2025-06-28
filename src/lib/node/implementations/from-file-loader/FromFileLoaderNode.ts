@@ -1,16 +1,12 @@
 import type {Coordinates} from "../../../coordinates/Coordinates.ts";
-import {WithStateNode} from "../../with-state/WithStateNode.svelte.ts";
+import {Node} from "../../Node.svelte.ts";
 import FromFileLoaderNodeDisplayer from "./displayer/FromFileLoaderNodeDisplayer.svelte";
 import {loadFile} from "./loading-file/loadFile.ts";
 import type {FromFileLoaderNodeState} from "./state/FromFileLoaderNodeState.ts";
 import {NoFileFromFileLoaderNodeState} from "./state/implementations/no-file/NoFileFromFileLoaderNodeState.ts";
-export class FromFileLoaderNode extends WithStateNode<
-	0,
-	FromFileLoaderNodeState
-> {
+export class FromFileLoaderNode extends Node<FromFileLoaderNodeState> {
 	public constructor(position: Coordinates) {
 		super(
-			// @ts-expect-error: TODO
 			FromFileLoaderNodeDisplayer,
 			0,
 			"From file loader",

@@ -3,11 +3,11 @@
 	import type {Edge} from "../Edge.ts";
 	const {
 		edge,
-		onDeleteEdgeRequest,
-	}: {readonly edge: Edge; readonly onDeleteEdgeRequest: (edge: Edge) => void} =
+		onDeleteRequest,
+	}: {readonly edge: Edge; readonly onDeleteRequest: (edge: Edge) => void} =
 		$props();
 	function handleDeleteButtonClick(): void {
-		onDeleteEdgeRequest(edge);
+		onDeleteRequest(edge);
 	}
 </script>
 

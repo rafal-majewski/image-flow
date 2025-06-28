@@ -1,4 +1,4 @@
-import type {Node} from "../../../node/Node.ts";
+import type {Node} from "../../../node/Node.svelte.ts";
 import {Edge} from "../../Edge.ts";
 import type {EdgeBuilder} from "../../EdgeBuilder.ts";
 export class HandledEdgeBuilder implements EdgeBuilder {

@@ -1,6 +1,6 @@
 import type {ContinuousColorComponent} from "../../../../../../../../operating/color/ContinuousColorComponent.ts";
-import {GameOfLifeMappingOperatorColorComponentComputer} from "../../GameOfLifeMapperOperatorColorComponentComputer.ts";
-export class GameOfLifeMappingOperatorFuzzyColorComponentComputer extends GameOfLifeMappingOperatorColorComponentComputer {
+import {GameOfLifeMapperOperatorColorComponentComputer} from "../../GameOfLifeMapperOperatorColorComponentComputer.ts";
+export class GameOfLifeMapperOperatorFuzzyColorComponentComputer extends GameOfLifeMapperOperatorColorComponentComputer {
 	public constructor() {
 		super("fuzzy", "Fuzzy");
 	}

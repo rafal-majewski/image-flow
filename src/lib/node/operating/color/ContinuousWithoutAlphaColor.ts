@@ -1,3 +1,4 @@
+import type {ContinuousColorBuilderComponent} from "./ContinuousColorBuilderComponent.ts";
 import type {ContinuousColorComponent} from "./ContinuousColorComponent.ts";
 import {ContinuousWithAlphaColor} from "./ContinuousWithAlphaColor.ts";
 import {ContinuousWithoutAlphaColorBuilder} from "./ContinuousWithoutAlphaColorBuilder.ts";
@@ -26,6 +27,45 @@ export class ContinuousWithoutAlphaColor {
 		);
 	}
 	public readonly blueComponent: ContinuousColorComponent;
+	public combineWithBuilderResultingInBuilder(
+		combiner: (
+			component1: ContinuousColorComponent,
+			component2: ContinuousColorBuilderComponent,
+		) => ContinuousColorBuilderComponent,
+		color: ContinuousWithoutAlphaColorBuilder,
+	): ContinuousWithoutAlphaColorBuilder {
+		return new ContinuousWithoutAlphaColorBuilder(
+			combiner(this.redComponent, color.redComponent),
+			combiner(this.greenComponent, color.greenComponent),
+			combiner(this.blueComponent, color.blueComponent),
+		);
+	}
+	public combineWithBuilderResultingInColor(
+		combiner: (
+			component1: ContinuousColorComponent,
+			component2: ContinuousColorBuilderComponent,
+		) => ContinuousColorComponent,
+		color: ContinuousWithoutAlphaColorBuilder,
+	): ContinuousWithoutAlphaColor {
+		return new ContinuousWithoutAlphaColor(
+			combiner(this.redComponent, color.redComponent),
+			combiner(this.greenComponent, color.greenComponent),
+			combiner(this.blueComponent, color.blueComponent),
+		);
+	}
+	public combineWithColor(
+		combiner: (
+			component1: ContinuousColorComponent,
+			component2: ContinuousColorComponent,
+		) => ContinuousColorComponent,
+		color: ContinuousWithoutAlphaColor,
+	): ContinuousWithoutAlphaColor {
+		return new ContinuousWithoutAlphaColor(
+			combiner(this.redComponent, color.redComponent),
+			combiner(this.greenComponent, color.greenComponent),
+			combiner(this.blueComponent, color.blueComponent),
+		);
+	}
 	public computeDotProduct(
 		color: ContinuousWithoutAlphaColor,
 	): ContinuousColorComponent {
@@ -33,6 +73,13 @@ export class ContinuousWithoutAlphaColor {
 			this.redComponent * color.redComponent
 			+ this.greenComponent * color.greenComponent
 			+ this.blueComponent * color.blueComponent
+		);
+	}
+	public convertToBuilder(): ContinuousWithoutAlphaColorBuilder {
+		return new ContinuousWithoutAlphaColorBuilder(
+			this.redComponent,
+			this.greenComponent,
+			this.blueComponent,
 		);
 	}
 	public convertToDiscrete(): DiscreteWithoutAlphaColor {
@@ -56,6 +103,17 @@ export class ContinuousWithoutAlphaColor {
 		);
 	}
 	public readonly greenComponent: ContinuousColorComponent;
+	public mixWithColor(
+		weightOfOtherColor: ContinuousColorComponent,
+		otherColor: ContinuousWithoutAlphaColor,
+	): ContinuousWithoutAlphaColor {
+		return this.combineWithColor((thisColorComponent, otherColorComponent) => {
+			return (
+				thisColorComponent * (1 - weightOfOtherColor)
+				+ otherColorComponent * weightOfOtherColor
+			);
+		}, otherColor);
+	}
 	public multiplyByColor(
 		color: ContinuousWithoutAlphaColor,
 	): ContinuousWithoutAlphaColor {
@@ -99,36 +157,5 @@ export class ContinuousWithoutAlphaColor {
 			this.blueComponent,
 			alphaComponent,
 		);
-	}
-	public convertToBuilder(): ContinuousWithoutAlphaColorBuilder {
-		return new ContinuousWithoutAlphaColorBuilder(
-			this.redComponent,
-			this.greenComponent,
-			this.blueComponent,
-		);
-	}
-	public combineWith(
-		combiner: (
-			component1: ContinuousColorComponent,
-			component2: ContinuousColorComponent,
-		) => ContinuousColorComponent,
-		color: ContinuousWithoutAlphaColor,
-	): ContinuousWithoutAlphaColor {
-		return new ContinuousWithoutAlphaColor(
-			combiner(this.redComponent, color.redComponent),
-			combiner(this.greenComponent, color.greenComponent),
-			combiner(this.blueComponent, color.blueComponent),
-		);
-	}
-	public mixWith(
-		weightOfOtherColor: ContinuousColorComponent,
-		otherColor: ContinuousWithoutAlphaColor,
-	): ContinuousWithoutAlphaColor {
-		return this.combineWith((thisColorComponent, otherColorComponent) => {
-			return (
-				thisColorComponent * (1 - weightOfOtherColor)
-				+ otherColorComponent * weightOfOtherColor
-			);
-		}, otherColor);
 	}
 }

@@ -26,10 +26,4 @@ export class LoadingStartedFromFileLoaderNodeState extends FromFileLoaderNodeSta
 	public override useEdgeBuilder(builder: HandledEdgeBuilder): void {
 		builder.buildWithoutImage();
 	}
-	public override validateInputImages(
-		inputImages: readonly [],
-		outputEdges: readonly Edge[],
-	): this {
-		return this;
-	}
 }

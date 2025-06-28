@@ -3,8 +3,8 @@ import {WithDataBoardMode} from "../../with-data/WithDataBoardMode.ts";
 import type {AddingNodeBoardModeData} from "./data/AddingNodeBoardModeData.ts";
 import {addingNodeBoardModeName} from "./name/addingNodeBoardModeName.ts";
 export class AddingNodeBoardMode extends WithDataBoardMode<
-	typeof addingNodeBoardModeName,
-	AddingNodeBoardModeData
+	AddingNodeBoardModeData,
+	typeof addingNodeBoardModeName
 > {
 	public constructor(position: Coordinates) {
 		super({position}, addingNodeBoardModeName);

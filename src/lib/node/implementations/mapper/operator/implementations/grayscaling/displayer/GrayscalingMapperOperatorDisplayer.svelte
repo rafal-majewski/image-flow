@@ -1,13 +1,13 @@
 <script lang="ts">
 	import {ContinuousWithoutAlphaColor} from "../../../../../../operating/color/ContinuousWithoutAlphaColor.ts";
-	import type {GrayscalingMappingOperator} from "../GrayscalingMapperOperator.ts";
+	import type {GrayscalingMapperOperator} from "../GrayscalingMapperOperator.ts";
 	const {
 		operator,
 		onSetOperatorRequest,
 	}: {
-		readonly operator: GrayscalingMappingOperator;
+		readonly operator: GrayscalingMapperOperator;
 		readonly onSetOperatorRequest: (
-			operator: GrayscalingMappingOperator,
+			operator: GrayscalingMapperOperator,
 		) => void;
 	} = $props();
 	function handleMultiplierRedComponentInputChange(

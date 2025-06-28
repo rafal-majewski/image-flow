@@ -1,6 +1,6 @@
 import type {DiscreteColorComponent} from "../../../../../../../../with-state/implementations/operatable/color/DiscreteColorComponent.ts";
-import {GameOfLifeMappingOperatorColorComponentComputer} from "../../GameOfLifeMapperOperatorColorComponentComputer.ts";
-export class GameOfLifeMappingOperatorClassicColorComponentComputer extends GameOfLifeMappingOperatorColorComponentComputer {
+import {GameOfLifeMapperOperatorColorComponentComputer} from "../../GameOfLifeMapperOperatorColorComponentComputer.ts";
+export class GameOfLifeMapperOperatorClassicColorComponentComputer extends GameOfLifeMapperOperatorColorComponentComputer {
 	public constructor() {
 		super("classic", "Classic");
 	}

@@ -1,12 +1,12 @@
 <script lang="ts">
-	import type {AverageBlurringMappingOperator} from "../AverageBlurringMapperOperator.ts";
+	import type {AverageBlurringMapperOperator} from "../AverageBlurringMapperOperator.ts";
 	const {
 		operator,
 		onSetOperatorRequest,
 	}: {
-		readonly operator: AverageBlurringMappingOperator;
+		readonly operator: AverageBlurringMapperOperator;
 		readonly onSetOperatorRequest: (
-			operator: AverageBlurringMappingOperator,
+			operator: AverageBlurringMapperOperator,
 		) => void;
 	} = $props();
 	function handleMixFactorInputChange(

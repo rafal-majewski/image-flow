@@ -1,27 +1,25 @@
 <script lang="ts">
-	import {GameOfLifeMappingOperatorClassicColorComponentComputer} from "../color-component-computer/implementations/classic/GameOfLifeMapperOperatorClassicColorComponentComputer.ts";
-	import {GameOfLifeMappingOperatorFuzzyColorComponentComputer} from "../color-component-computer/implementations/fuzzy/GameOfLifeMapperOperatorFuzzyColorComponentComputer.ts";
-	import type {GameOfLifeMappingOperator} from "../GameOfLifeMapperOperator.ts";
+	import {GameOfLifeMapperOperatorClassicColorComponentComputer} from "../color-component-computer/implementations/classic/GameOfLifeMapperOperatorClassicColorComponentComputer.ts";
+	import {GameOfLifeMapperOperatorFuzzyColorComponentComputer} from "../color-component-computer/implementations/fuzzy/GameOfLifeMapperOperatorFuzzyColorComponentComputer.ts";
+	import type {GameOfLifeMapperOperator} from "../GameOfLifeMapperOperator.ts";
 	const {
 		operator,
 		onSetOperatorRequest,
 	}: {
-		readonly operator: GameOfLifeMappingOperator;
-		readonly onSetOperatorRequest: (
-			operator: GameOfLifeMappingOperator,
-		) => void;
+		readonly operator: GameOfLifeMapperOperator;
+		readonly onSetOperatorRequest: (operator: GameOfLifeMapperOperator) => void;
 	} = $props();
 	function handleClassicColorComponentComputerInputChange(event: Event): void {
 		onSetOperatorRequest(
 			operator.withNewColorComponentComputer(
-				new GameOfLifeMappingOperatorClassicColorComponentComputer(),
+				new GameOfLifeMapperOperatorClassicColorComponentComputer(),
 			),
 		);
 	}
 	function handleFuzzyColorComponentComputerInputChange(event: Event): void {
 		onSetOperatorRequest(
 			operator.withNewColorComponentComputer(
-				new GameOfLifeMappingOperatorFuzzyColorComponentComputer(),
+				new GameOfLifeMapperOperatorFuzzyColorComponentComputer(),
 			),
 		);
 	}
@@ -44,7 +42,7 @@
 					name="component-computer"
 					value="classic"
 					checked={operator.componentComputer
-						instanceof GameOfLifeMappingOperatorClassicColorComponentComputer}
+						instanceof GameOfLifeMapperOperatorClassicColorComponentComputer}
 					onchange={handleClassicColorComponentComputerInputChange}
 				/>
 				Classic
@@ -55,7 +53,7 @@
 					name="component-computer"
 					value="fuzzy"
 					checked={operator.componentComputer
-						instanceof GameOfLifeMappingOperatorFuzzyColorComponentComputer}
+						instanceof GameOfLifeMapperOperatorFuzzyColorComponentComputer}
 					onchange={handleFuzzyColorComponentComputerInputChange}
 				/>
 				Fuzzy

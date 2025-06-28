@@ -2,14 +2,13 @@
 	lang="ts"
 	generics="
 		InputEdgeCount extends number,
-		StateToUse extends NodeState<InputEdgeCount>,
+		StateToUse extends NodeState,
 	"
 >
 	import type {Snippet} from "svelte";
-	import type {Coordinates} from "../../coordinates/Coordinates.ts";
+	import {Coordinates} from "../../coordinates/Coordinates.ts";
 	import type {SupportedBoardMode} from "../../mode/supported/SupportedBoardMode.ts";
 	import type {Node} from "../Node.ts";
-	import type {WithStateNode} from "../with-state/WithStateNode.svelte.ts";
 	import {NodeState} from "../state/NodeState.ts";
 	const {
 		node,
@@ -87,10 +86,10 @@
 				<button
 					disabled={boardMode !== null && boardMode.name === "settingEdgeInput"}
 					onclick={(event) => {
-						handleSetInputButtonClick(index, {
-							x: event.clientX,
-							y: event.clientY,
-						});
+						handleSetInputButtonClick(
+							index,
+							new Coordinates(event.clientX, event.clientY),
+						);
 					}}>🔌</button
 				>
 				{#if edge !== null}

@@ -35,13 +35,15 @@ export abstract class Node<NodeStateToUse extends NodeState> {
 		this.id = generateNodeId();
 		this.name = name;
 		this.outputEdges = [];
-		this.position = position;
-		this.state = state;
+		this.position = $state.raw(position);
+		this.state = $state.raw(state);
 	}
-	addOutputEdge(edge: Edge): void;
-	delete(): void;
-	deleteOutputEdge(outputEdgeToBeDeleted: Edge): void;
-	readonly displayer: Component<{
+	// public addOutputEdge(edge: Edge): void {
+	// 	this.state...
+	// 	this.outputEdges = [...this.outputEdges, edge];}
+	public delete(): void;
+	public deleteOutputEdge(outputEdgeToBeDeleted: Edge): void;
+	public readonly displayer: Component<{
 		onDeleteRequest: (node: Node<NodeStateToUse>) => void;
 		boardMode: null | SupportedBoardMode;
 		onMouseLeftButtonDown: (
@@ -59,14 +61,14 @@ export abstract class Node<NodeStateToUse extends NodeState> {
 			inViewportPosition: Coordinates,
 		) => void;
 	}>;
-	handleEdgeBuilder(builder: UnhandledEdgeBuilder): void;
-	readonly id: NodeId;
-	readonly name: string;
+	public handleEdgeBuilder(builder: UnhandledEdgeBuilder): void;
+	public readonly id: NodeId;
+	public readonly name: string;
 	public readonly outputEdges: readonly Edge[];
-	position: Coordinates;
+	public position: Coordinates;
 	/**
 	 * Do not reassign externally.
 	 */
-	state: NodeStateToUse;
-	useEdgeBuilder(builder: HandledEdgeBuilder): void;
+	public state: NodeStateToUse;
+	public useEdgeBuilder(builder: HandledEdgeBuilder): void;
 }

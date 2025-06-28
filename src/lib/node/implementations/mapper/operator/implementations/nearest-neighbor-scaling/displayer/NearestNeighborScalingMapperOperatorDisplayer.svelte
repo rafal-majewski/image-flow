@@ -1,13 +1,13 @@
 <script lang="ts">
 	import {Dimensions} from "../../../../../../../dimensions/Dimensions.ts";
-	import type {NearestNeighborScalingMappingOperator} from "../NearestNeighborScalingMapperOperator.ts";
+	import type {NearestNeighborScalingMapperOperator} from "../NearestNeighborScalingMapperOperator.ts";
 	const {
 		operator,
 		onSetOperatorRequest,
 	}: {
-		readonly operator: NearestNeighborScalingMappingOperator;
+		readonly operator: NearestNeighborScalingMapperOperator;
 		readonly onSetOperatorRequest: (
-			operator: NearestNeighborScalingMappingOperator,
+			operator: NearestNeighborScalingMapperOperator,
 		) => void;
 	} = $props();
 	function handleWidthInputChange(
