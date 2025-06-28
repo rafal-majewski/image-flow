@@ -184,7 +184,15 @@
 						/>
 					</label>
 				{/if}
-				<button onclick={handleResetOutputImageButtonClick}>Reset</button>
+				<button
+					disabled={state instanceof AnimatedNoOperatorOperatingNodeState
+						|| state instanceof AnimatedInvalidAndNoOperatorOperatingNodeState
+						|| state instanceof AnimatedInvalidOperatingNodeState
+						|| state instanceof ManualNoOperatorOperatingNodeState
+						|| state instanceof ManualInvalidAndNoOperatorOperatingNodeState
+						|| state instanceof ManualInvalidOperatingNodeState}
+					onclick={handleResetOutputImageButtonClick}>Reset</button
+				>
 			</div>
 		{/if}
 	</fieldset>

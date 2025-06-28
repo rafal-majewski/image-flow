@@ -28,9 +28,11 @@ export class OperatingNode<InputEdgeCount extends number> extends Node<
 			new ManualInvalidAndNoOperatorOperatingNodeState(stepCount),
 		);
 		this.availableOperators = availableOperators;
-		this.inputEdges = new Array(inputEdgeCount).fill(
-			null,
-		) as unknown as readonly Edge[] & {readonly length: InputEdgeCount};
+		this.inputEdges = $state.raw(
+			new Array(inputEdgeCount).fill(null) as unknown as readonly Edge[] & {
+				readonly length: InputEdgeCount;
+			},
+		);
 		this.tryToValidateInputEdges();
 	}
 	public readonly availableOperators: readonly Operator<InputEdgeCount>[];
