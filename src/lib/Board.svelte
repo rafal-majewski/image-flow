@@ -1,71 +1,42 @@
 <script lang="ts">
 	import {Coordinates} from "./coordinates/Coordinates.ts";
-	import Menu from "./menu/Menu.svelte";
 	import type {SupportedBoardMode} from "./mode/supported/SupportedBoardMode.ts";
 	import LineDisplayer from "./line-displayer/LineDisplayer.svelte";
 	import {movingCameraBoardMode} from "./mode/implementations/moving-camera/instance/movingCameraBoardMode.ts";
 	import {computeInBoardPositionFromInViewportPosition} from "./computing-in-board-position-from-in-viewport-position/computeInBoardPositionFromInViewportPosition.ts";
 	import EdgeDisplayer from "./edge/displayer/EdgeDisplayer.svelte";
 	import {MovingNodeBoardMode} from "./mode/implementations/moving-node/MovingNodeBoardMode.ts";
-	import {AddingNodeBoardMode} from "./mode/implementations/adding-node/AddingNodeBoardMode.ts";
 	import {SettingEdgeInputBoardMode} from "./mode/implementations/setting-edge-input/SettingEdgeInputBoardMode.ts";
 	import {SettingEdgeOutputBoardMode} from "./mode/implementations/setting-edge-output/SettingEdgeOutputBoardMode.ts";
 	import type {NodeClass} from "./node/class/NodeClass.ts";
 	import {UnhandledEdgeBuilder} from "./edge/builder/unhandled/UnhandledEdgeBuilder.ts";
-	import {MapperOperatingNode} from "./node/implementations/mapper/MapperOperatingNode.ts";
-	import {CombinerOperatingNode} from "./node/implementations/combiner/CombinerOperatingNode.ts";
-	import {FromFileLoaderNode} from "./node/implementations/from-file-loader/FromFileLoaderNode.ts";
-	import {FromUrlLoaderNode} from "./node/implementations/from-url-loader/FromUrlLoaderNode.ts";
-	import {GeneratorOperatingNode} from "./node/implementations/generator/GeneratorOperatingNode.ts";
 	import type {NodeState} from "./node/state/NodeState.ts";
 	import type {Node} from "./node/Node.svelte.ts";
-	import type {Edge} from "./edge/Edge.ts";
 	import type {OperatingNode} from "./node/operating/OperatingNode.svelte.ts";
 	let board: HTMLElement;
-	let nodes = $state.raw<readonly Node<NodeState>[]>([]);
-	let cameraPosition = $state<Coordinates>(new Coordinates(0, 0));
 	let mode = $state.raw<null | SupportedBoardMode>(null);
-	function handleAddNodeRequest(newNodeClass: NodeClass): void {
-		if (mode !== null && mode.name === "addingNode") {
-			const newNode = new newNodeClass(mode.data.position);
-			nodes = [...nodes, newNode];
-			mode = null;
-		}
-	}
-	function handleAddMapperOperatingNodeRequest(): void {
-		handleAddNodeRequest(MapperOperatingNode);
-	}
-	function handleAddGeneratorOperatingNodeRequest(): void {
-		handleAddNodeRequest(GeneratorOperatingNode);
-	}
-	function handleAddFromFileLoaderNodeRequest(): void {
-		handleAddNodeRequest(FromFileLoaderNode);
-	}
-	function handleAddFromUrlLoaderNodeRequest(): void {
-		handleAddNodeRequest(FromUrlLoaderNode);
-	}
-	function handleAddCombinerOperatingNodeRequest(): void {
-		handleAddNodeRequest(CombinerOperatingNode);
-	}
-	function handleContextMenuOpen(event: MouseEvent): void {
-		if (event.target === board && mode === null) {
-			event.preventDefault();
-			mode = new AddingNodeBoardMode(
-				computeInBoardPositionFromInViewportPosition(
-					new Coordinates(event.clientX, event.clientY),
-					board.getBoundingClientRect(),
-					cameraPosition,
-				),
-			);
-		}
-	}
+	const {
+		nodes,
+		onSetCameraPositionRequest,
+		cameraPosition,
+		onDeleteNodeRequest,
+	}: {
+		readonly nodes: readonly Node<NodeState>[];
+		readonly onSetCameraPositionRequest: (
+			newCameraPosition: Coordinates,
+		) => void;
+		readonly cameraPosition: Coordinates;
+		readonly onDeleteNodeRequest: (nodeToDelete: Node<NodeState>) => void;
+	} = $props();
 	function handleMouseMove(event: MouseEvent): void {
 		if (mode !== null) {
 			switch (mode.name) {
 				case "movingCamera": {
-					cameraPosition = cameraPosition.subtract(
-						new Coordinates(event.movementX, event.movementY).divideBy(
-							window.devicePixelRatio,
+					onSetCameraPositionRequest(
+						cameraPosition.subtract(
+							new Coordinates(event.movementX, event.movementY).divideBy(
+								window.devicePixelRatio,
+							),
 						),
 					);
 					break;
@@ -142,20 +113,20 @@
 				),
 			);
 		} else if (mode.name === "settingEdgeInput") {
-			nodeInRequest.handleEdgeBuilder(
-				new UnhandledEdgeBuilder(mode.data.index, mode.data.output),
+			nodeInRequest.useEdgeBuilder(
+				new UnhandledEdgeBuilder(mode.data.output, mode.data.index),
 			);
 			mode = null;
 		}
 	}
 	function handleSetInputRequest(
-		index: number,
 		nodeInRequest: OperatingNode<number>,
+		nodeInRequestInputIndex: number,
 		inViewportPosition: Coordinates,
 	): void {
 		if (mode === null) {
 			mode = new SettingEdgeInputBoardMode(
-				index,
+				nodeInRequestInputIndex,
 				computeInBoardPositionFromInViewportPosition(
 					inViewportPosition,
 					board.getBoundingClientRect(),
@@ -164,8 +135,8 @@
 				nodeInRequest,
 			);
 		} else if (mode.name === "settingEdgeOutput") {
-			mode.data.input.handleEdgeBuilder(
-				new UnhandledEdgeBuilder(index, nodeInRequest),
+			mode.data.input.useEdgeBuilder(
+				new UnhandledEdgeBuilder(nodeInRequest, nodeInRequestInputIndex),
 			);
 			mode = null;
 		}
@@ -177,38 +148,33 @@
 	}
 	function handleMouseLeftButtonUppedOnNode(): void {}
 	function handleDeleteNodeRequest(nodeToDelete: Node<NodeState>): void {
-		throw new Error("Not implemented yet.");
-		// nodes = nodes.filter((node) => node !== nodeToDelete);
-		// if (mode !== null) {
-		// 	switch (mode.name) {
-		// 		case "settingEdgeOutput": {
-		// 			if (mode.data.input === nodeToDelete) {
-		// 				mode = null;
-		// 			}
-		// 			break;
-		// 		}
-		// 		case "settingEdgeInput": {
-		// 			if (mode.data.output === nodeToDelete) {
-		// 				mode = null;
-		// 			}
-		// 			break;
-		// 		}
-		// 		case "movingNode": {
-		// 			if (mode.data.node === nodeToDelete) {
-		// 				mode = null;
-		// 			}
-		// 			break;
-		// 		}
-		// 	}
-		// }
-	}
-	function handleDeleteEdgeRequest(edgeToDelete: Edge): void {
-		throw new Error("Not implemented yet.");
+		onDeleteNodeRequest(nodeToDelete);
+		if (mode !== null) {
+			switch (mode.name) {
+				case "settingEdgeOutput": {
+					if (mode.data.input === nodeToDelete) {
+						mode = null;
+					}
+					break;
+				}
+				case "settingEdgeInput": {
+					if (mode.data.output === nodeToDelete) {
+						mode = null;
+					}
+					break;
+				}
+				case "movingNode": {
+					if (mode.data.node === nodeToDelete) {
+						mode = null;
+					}
+					break;
+				}
+			}
+		}
 	}
 </script>
 
 <section
-	oncontextmenu={handleContextMenuOpen}
 	role="none"
 	bind:this={board}
 	onmousemove={handleMouseMove}
@@ -221,16 +187,6 @@
 		style:top="calc(50% + {-cameraPosition.y}px)"
 		style:left="calc(50% + {-cameraPosition.x}px)"
 	>
-		{#if mode !== null && mode.name === "addingNode"}
-			<Menu
-				position={mode.data.position}
-				onAddMapperOperatingNodeRequest={handleAddMapperOperatingNodeRequest}
-				onAddGeneratorOperatingNodeRequest={handleAddGeneratorOperatingNodeRequest}
-				onAddFromFileLoaderNodeRequest={handleAddFromFileLoaderNodeRequest}
-				onAddFromUrlLoaderNodeRequest={handleAddFromUrlLoaderNodeRequest}
-				onAddCombinerOperatingNodeRequest={handleAddCombinerOperatingNodeRequest}
-			/>
-		{/if}
 		<ul>
 			{#each nodes as node (node.id)}
 				<li>
@@ -245,7 +201,7 @@
 				</li>
 				{#each node.outputEdges as edge (`${edge.input.id}-${edge.outputInputIndex}-${edge.output.id}`)}
 					<li>
-						<EdgeDisplayer {edge} onDeleteRequest={handleDeleteEdgeRequest} />
+						<EdgeDisplayer {edge} />
 					</li>
 				{/each}
 			{/each}

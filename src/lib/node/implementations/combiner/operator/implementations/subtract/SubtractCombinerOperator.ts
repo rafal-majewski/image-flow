@@ -5,8 +5,13 @@ export class SubtractCombinerOperator extends CombinerOperator {
 		alphaChannelPolicy: "subtract" | "keepFrom1" | "keepFrom2" | "ignore",
 	) {
 		super(
-			// @ts-expect-error
-			SubtractCombinerOperatorDisplayer,
+			(...parameters) => {
+				const newParameters = [
+					parameters[0],
+					{...parameters[1], operator: this},
+				] as const;
+				return SubtractCombinerOperatorDisplayer(...newParameters);
+			},
 			"subtract",
 			"Subtract",
 		);

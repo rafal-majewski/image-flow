@@ -4,14 +4,14 @@ import type {NodeState} from "../node/state/NodeState.ts";
 export class Edge {
 	public constructor(
 		image: ImageData | null,
-		outputInputIndex: number,
 		input: Node<NodeState>,
 		output: OperatingNode<number>,
+		outputInputIndex: number,
 	) {
 		this.image = image;
-		this.outputInputIndex = outputInputIndex;
 		this.input = input;
 		this.output = output;
+		this.outputInputIndex = outputInputIndex;
 	}
 	public delete(): void {
 		this.input.deleteOutputEdge(this);

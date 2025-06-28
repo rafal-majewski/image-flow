@@ -3,29 +3,30 @@ import {Edge} from "../edge/Edge.ts";
 import type {Component} from "svelte";
 import type {SupportedBoardMode} from "../mode/supported/SupportedBoardMode.ts";
 import type {UnhandledEdgeBuilder} from "../edge/builder/unhandled/UnhandledEdgeBuilder.ts";
-import type {HandledEdgeBuilder} from "../edge/builder/handled/HandledEdgeBuilder.ts";
 import type {NodeState} from "./state/NodeState.ts";
 import type {NodeId} from "./id/NodeId.ts";
 import {generateNodeId} from "./id/generation/generateNodeId.ts";
 import type {OperatingNode} from "./operating/OperatingNode.svelte.ts";
 export abstract class Node<NodeStateToUse extends NodeState> {
+	public useEdgeBuilder(builder: UnhandledEdgeBuilder): void {
+		this.state.useEdgeBuilder(builder.handleInput(this));
+	}
 	protected constructor(
 		displayer: Component<{
-			node: Node<NodeStateToUse>;
-			onDeleteRequest: (node: Node<NodeStateToUse>) => void;
+			onDeleteRequest: (node: Node<NodeState>) => void;
 			boardMode: null | SupportedBoardMode;
 			onMouseLeftButtonDown: (
-				node: Node<NodeStateToUse>,
+				node: Node<NodeState>,
 				mouseCursorInViewportPosition: Coordinates,
 			) => void;
-			onMouseLeftButtonUp: (node: Node<NodeStateToUse>) => void;
+			onMouseLeftButtonUp: (node: Node<NodeState>) => void;
 			onSetInputRequest: (
-				index: number,
-				nodeInRequest: Node<NodeStateToUse>,
+				nodeInRequest: OperatingNode<number>,
+				nodeInRequestInputIndex: number,
 				inViewportPosition: Coordinates,
 			) => void;
 			onSetOutputRequest: (
-				nodeInRequest: Node<NodeStateToUse>,
+				nodeInRequest: Node<NodeState>,
 				inViewportPosition: Coordinates,
 			) => void;
 		}>,
@@ -33,21 +34,13 @@ export abstract class Node<NodeStateToUse extends NodeState> {
 		position: Coordinates,
 		state: NodeStateToUse,
 	) {
-		this.displayer = (...parameters) => {
-			// @ts-expect-error: TODO
-			parameters[1].node = this;
-			// @ts-expect-error: TODO
-			return displayer(...parameters);
-		};
+		this.displayer = displayer;
 		this.id = generateNodeId();
 		this.name = name;
-		this.outputEdges = [];
+		this.outputEdges = $state.raw([]);
 		this.position = $state.raw(position);
 		this.state = $state.raw(state);
 	}
-	// public addOutputEdge(edge: Edge): void {
-	// 	this.state...
-	// 	this.outputEdges = [...this.outputEdges, edge];}
 	public disconnect(): void {
 		this.disconnectOutputEdges();
 		this.disconnectInputEdges();
@@ -63,25 +56,27 @@ export abstract class Node<NodeStateToUse extends NodeState> {
 			return edge !== edge;
 		});
 	}
+	public addOutputEdge(edge: Edge): void {
+		this.outputEdges = [...this.outputEdges, edge];
+	}
 	public readonly displayer: Component<{
-		onDeleteRequest: (node: Node<NodeStateToUse>) => void;
+		onDeleteRequest: (node: Node<NodeState>) => void;
 		boardMode: null | SupportedBoardMode;
 		onMouseLeftButtonDown: (
-			node: Node<NodeStateToUse>,
+			node: Node<NodeState>,
 			mouseCursorInViewportPosition: Coordinates,
 		) => void;
-		onMouseLeftButtonUp: (node: Node<NodeStateToUse>) => void;
+		onMouseLeftButtonUp: (node: Node<NodeState>) => void;
 		onSetInputRequest: (
-			index: number,
 			nodeInRequest: OperatingNode<number>,
+			nodeInRequestInputIndex: number,
 			inViewportPosition: Coordinates,
 		) => void;
 		onSetOutputRequest: (
-			nodeInRequest: Node<NodeStateToUse>,
+			nodeInRequest: Node<NodeState>,
 			inViewportPosition: Coordinates,
 		) => void;
 	}>;
-	public handleEdgeBuilder(builder: UnhandledEdgeBuilder): void;
 	public readonly id: NodeId;
 	public readonly name: string;
 	/**
@@ -93,5 +88,4 @@ export abstract class Node<NodeStateToUse extends NodeState> {
 	 * Do not reassign externally.
 	 */
 	public state: NodeStateToUse;
-	public useEdgeBuilder(builder: HandledEdgeBuilder): void;
 }

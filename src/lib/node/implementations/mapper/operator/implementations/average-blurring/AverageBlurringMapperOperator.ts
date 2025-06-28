@@ -1,15 +1,18 @@
-import {Coordinates} from "../../../../../../coordinates/Coordinates.ts";
 import {readWithAlphaColorFromImageAtPosition} from "../../../../../operating/color/readWithAlphaColorFromImageAtPosition.ts";
-import {readWithoutAlphaColorFromImageAtByteIndex} from "../../../../../operating/color/readWithoutAlphaColorFromImageAtByteIndex.ts";
-import {readWithoutAlphaColorFromImageAtPosition} from "../../../../../operating/color/readWithoutAlphaColorFromImageAtPosition.ts";
 import {setEachPixel} from "../../../../../operator/setting-each-pixel/setEachPixel.ts";
 import {MapperOperator} from "../../MapperOperator.ts";
 import {useBlur} from "./using-blur/useBlur.ts";
+import AverageBlurringMapperOperatorDisplayer from "./displayer/AverageBlurringMapperOperatorDisplayer.svelte";
 export class AverageBlurringMapperOperator extends MapperOperator {
 	public constructor(mixFactor: number, radius: number) {
 		super(
-			// @ts-expect-error
-			AverageBlurringMapperOperatorDisplayer,
+			(...parameters) => {
+				const newParameters = [
+					parameters[0],
+					{...parameters[1], operator: this},
+				] as const;
+				return AverageBlurringMapperOperatorDisplayer(...newParameters);
+			},
 			"average-blurring",
 			"Average blurring",
 		);

@@ -1,9 +1,4 @@
-<script
-	lang="ts"
-	generics="
-		InputEdgeCount extends number,
-	"
->
+<script lang="ts">
 	import {Coordinates} from "../../../coordinates/Coordinates.ts";
 	import type {SupportedBoardMode} from "../../../mode/supported/SupportedBoardMode.ts";
 	import NodeDisplayer from "../../displayer/NodeDisplayer.svelte";
@@ -22,20 +17,20 @@
 		boardMode,
 	}: {
 		readonly onDeleteRequest: (node: Node<NodeState>) => void;
-		readonly node: OperatingNode<InputEdgeCount>;
+		readonly node: OperatingNode<number>;
 		readonly boardMode: null | SupportedBoardMode;
 		readonly onMouseLeftButtonDown: (
 			node: Node<NodeState>,
 			mouseCursorInViewportPosition: Coordinates,
 		) => void;
 		readonly onMouseLeftButtonUp: (node: Node<NodeState>) => void;
-		readonly onSetInputRequest: (
-			index: number,
+		readonly onSetOutputRequest: (
 			nodeInRequest: Node<NodeState>,
 			inViewportPosition: Coordinates,
 		) => void;
-		readonly onSetOutputRequest: (
-			nodeInRequest: Node<NodeState>,
+		readonly onSetInputRequest: (
+			nodeInRequest: OperatingNode<number>,
+			nodeInRequestInputIndex: number,
 			inViewportPosition: Coordinates,
 		) => void;
 	} = $props();
@@ -48,7 +43,7 @@
 	function handleMakeInstantRequest(): void {
 		node.makeInstant();
 	}
-	function handleSetOperatorRequest(operator: Operator<InputEdgeCount>): void {
+	function handleSetOperatorRequest(operator: Operator<number>): void {
 		node.setOperator(operator);
 	}
 	function handleResetOutputImageRequest(): void {
@@ -72,7 +67,7 @@
 		index: number,
 		mouseCursorInViewportPosition: Coordinates,
 	): void {
-		onSetInputRequest(index, node, mouseCursorInViewportPosition);
+		onSetInputRequest(node, index, mouseCursorInViewportPosition);
 	}
 </script>
 
@@ -80,7 +75,6 @@
 	{onDeleteRequest}
 	{onMouseLeftButtonDown}
 	{onMouseLeftButtonUp}
-	{onSetInputRequest}
 	{onSetOutputRequest}
 	{boardMode}
 	{node}

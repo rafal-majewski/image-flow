@@ -5,7 +5,6 @@ import {Operator} from "../../../operator/Operator.ts";
 export abstract class MapperOperator extends Operator<1> {
 	public constructor(
 		displayer: Component<{
-			readonly operator: MapperOperator;
 			readonly onSetOperatorRequest: (operator: MapperOperator) => void;
 			readonly nodeId: NodeId;
 		}>,

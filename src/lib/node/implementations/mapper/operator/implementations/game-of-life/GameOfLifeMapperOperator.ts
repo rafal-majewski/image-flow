@@ -7,7 +7,17 @@ export class GameOfLifeMapperOperator extends MapperOperator {
 		componentComputer: GameOfLifeMapperOperatorColorComponentComputer,
 		mixFactor: number,
 	) {
-		super(GameOfLifeMapperOperatorDisplayer, "game-of-life", "Game of Life");
+		super(
+			(...parameters) => {
+				const newParameters = [
+					parameters[0],
+					{...parameters[1], operator: this},
+				] as const;
+				return GameOfLifeMapperOperatorDisplayer(...newParameters);
+			},
+			"game-of-life",
+			"Game of Life",
+		);
 		this.componentComputer = componentComputer;
 		this.mixFactor = mixFactor;
 	}

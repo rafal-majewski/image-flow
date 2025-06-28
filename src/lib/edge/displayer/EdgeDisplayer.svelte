@@ -1,13 +1,9 @@
 <script lang="ts">
 	import LineDisplayer from "../../line-displayer/LineDisplayer.svelte";
 	import type {Edge} from "../Edge.ts";
-	const {
-		edge,
-		onDeleteRequest,
-	}: {readonly edge: Edge; readonly onDeleteRequest: (edge: Edge) => void} =
-		$props();
+	const {edge}: {readonly edge: Edge} = $props();
 	function handleDeleteButtonClick(): void {
-		onDeleteRequest(edge);
+		edge.delete();
 	}
 </script>
 
@@ -26,8 +22,8 @@
 
 <style lang="scss">
 	button {
-		// position: absolute;
-		// transform-origin: center left;
-		// transform: translate(-50%, -50%);
+		position: absolute;
+		transform-origin: center left;
+		transform: translate(-50%, -50%);
 	}
 </style>

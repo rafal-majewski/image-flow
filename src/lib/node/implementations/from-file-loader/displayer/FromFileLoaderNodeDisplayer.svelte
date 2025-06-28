@@ -12,7 +12,6 @@
 		onDeleteRequest,
 		onMouseLeftButtonDown,
 		onMouseLeftButtonUp,
-		onSetInputRequest,
 		onSetOutputRequest,
 		boardMode,
 	}: {
@@ -24,11 +23,6 @@
 			mouseCursorInViewportPosition: Coordinates,
 		) => void;
 		readonly onMouseLeftButtonUp: (node: Node<NodeState>) => void;
-		readonly onSetInputRequest: (
-			index: number,
-			nodeInRequest: Node<NodeState>,
-			inViewportPosition: Coordinates,
-		) => void;
 		readonly onSetOutputRequest: (
 			nodeInRequest: Node<NodeState>,
 			inViewportPosition: Coordinates,

@@ -4,11 +4,17 @@ import {readWithAlphaColorFromImageAtPosition} from "../../../../../operating/co
 import {sanitizeDiscreteColorComponent} from "../../../../../operating/color/sanitizeDiscreteColorComponent.ts";
 import {setEachPixel} from "../../../../../operator/setting-each-pixel/setEachPixel.ts";
 import {MapperOperator} from "../../MapperOperator.ts";
+import GrayscalingMapperOperatorDisplayer from "./displayer/GrayscalingMapperOperatorDisplayer.svelte";
 export class GrayscalingMapperOperator extends MapperOperator {
 	public constructor(multiplier: ContinuousWithoutAlphaColor) {
 		super(
-			// @ts-expect-error
-			GrayscalingMapperOperatorDisplayer,
+			(...parameters) => {
+				const newParameters = [
+					parameters[0],
+					{...parameters[1], operator: this},
+				] as const;
+				return GrayscalingMapperOperatorDisplayer(...newParameters);
+			},
 			"grayscaling",
 			"Grayscaling",
 		);

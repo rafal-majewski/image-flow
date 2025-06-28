@@ -1,9 +1,4 @@
-<script
-	lang="ts"
-	generics="
-		InputImageCount extends number,
-	"
->
+<script lang="ts">
 	import type {SupportedOperatingNodeState} from "../supported/SupportedOperatingNodeState.ts";
 	import Canvas from "./canvas/Canvas.svelte";
 	import {AnimatedInvalidAndNoOperatorOperatingNodeState} from "../implementations/animated-invalid-and-no-operator/AnimatedInvalidAndNoOperatorOperatingNodeState.ts";
@@ -37,12 +32,10 @@
 		availableOperators,
 	}: {
 		readonly nodeId: NodeId;
-		readonly state: SupportedOperatingNodeState<InputImageCount>;
+		readonly state: SupportedOperatingNodeState<number>;
 		readonly onDoManualStepsRequest: () => void;
 		readonly onUnsetOperatorRequest: () => void;
-		readonly onSetOperatorRequest: (
-			operator: Operator<InputImageCount>,
-		) => void;
+		readonly onSetOperatorRequest: (operator: Operator<number>) => void;
 		readonly onMakeManualRequest: () => void;
 		readonly onMakeAnimatedRequest: () => void;
 		readonly onMakeInstantRequest: () => void;
@@ -51,7 +44,7 @@
 			intervalIntervalSeconds: number,
 		) => void;
 		readonly onResetOutputImageRequest: () => void;
-		readonly availableOperators: readonly Operator<InputImageCount>[];
+		readonly availableOperators: readonly Operator<number>[];
 	} = $props();
 	function handleSelectChange(
 		event: Event & {readonly currentTarget: HTMLSelectElement},

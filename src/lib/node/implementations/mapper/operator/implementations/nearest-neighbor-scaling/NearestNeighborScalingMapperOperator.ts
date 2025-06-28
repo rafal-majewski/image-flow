@@ -7,7 +7,13 @@ import NearestNeighborScalingMapperOperatorDisplayer from "./displayer/NearestNe
 export class NearestNeighborScalingMapperOperator extends MapperOperator {
 	public constructor(outputImageDimensions: Dimensions) {
 		super(
-			NearestNeighborScalingMapperOperatorDisplayer,
+			(...parameters) => {
+				const newParameters = [
+					parameters[0],
+					{...parameters[1], operator: this},
+				] as const;
+				return NearestNeighborScalingMapperOperatorDisplayer(...newParameters);
+			},
 			"nearest-neighbor-scaling",
 			"Nearest neighbor scaling",
 		);

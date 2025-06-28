@@ -5,9 +5,16 @@ import {loadFile} from "./loading-file/loadFile.ts";
 import type {FromFileLoaderNodeState} from "./state/FromFileLoaderNodeState.ts";
 import {NoFileFromFileLoaderNodeState} from "./state/implementations/no-file/NoFileFromFileLoaderNodeState.ts";
 export class FromFileLoaderNode extends Node<FromFileLoaderNodeState> {
+	public override disconnectInputEdges(): void {}
 	public constructor(position: Coordinates) {
 		super(
-			FromFileLoaderNodeDisplayer,
+			(...parameters) => {
+				const newParameters = [
+					parameters[0],
+					{...parameters[1], node: this},
+				] as const;
+				return FromFileLoaderNodeDisplayer(...newParameters);
+			},
 			"From file loader",
 			position,
 			new NoFileFromFileLoaderNodeState(),

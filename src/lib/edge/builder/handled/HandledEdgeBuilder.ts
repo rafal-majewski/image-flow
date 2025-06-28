@@ -2,36 +2,34 @@ import type {Node} from "../../../node/Node.svelte.ts";
 import type {OperatingNode} from "../../../node/operating/OperatingNode.svelte.ts";
 import type {NodeState} from "../../../node/state/NodeState.ts";
 import {Edge} from "../../Edge.ts";
-export class HandledEdgeBuilder implements EdgeBuilder {
+import {EdgeBuilder} from "../EdgeBuilder.ts";
+export class HandledEdgeBuilder extends EdgeBuilder {
 	public constructor(
-		outputInputIndex: number,
 		input: Node<NodeState>,
 		output: OperatingNode<number>,
+		outputInputIndex: number,
 	) {
-		this.outputInputIndex = outputInputIndex;
+		super(output, outputInputIndex);
 		this.input = input;
-		this.output = output;
 	}
 	public buildWithImage(image: ImageData): void {
 		const edge = new Edge(
 			image,
-			this.outputInputIndex,
 			this.input,
 			this.output,
+			this.outputInputIndex,
 		);
 		this.input.addOutputEdge(edge);
-		this.output.clearInputEdgeLeft(this.outputInputIndex);
-		this.output.setInputEdge(this.outputInputIndex, edge);
-		this.output.validateInputEdges();
+		this.output.deleteInputEdge(this.outputInputIndex);
+		this.output.setInputEdge(edge, this.outputInputIndex);
+		this.output.tryToValidateInputEdges();
 	}
 	public buildWithoutImage(): void {
-		const edge = new Edge(null, this.outputInputIndex, this.input, this.output);
+		const edge = new Edge(null, this.input, this.output, this.outputInputIndex);
 		this.input.addOutputEdge(edge);
-		this.output.clearInputEdgeLeft(this.outputInputIndex);
-		this.output.setInputEdge(this.outputInputIndex, edge);
+		this.output.deleteInputEdge(this.outputInputIndex);
+		this.output.setInputEdge(edge, this.outputInputIndex);
 		this.output.invalidateInputImages();
 	}
 	private readonly input: Node<NodeState>;
-	public readonly outputInputIndex: number;
-	public readonly output: OperatingNode<number>;
 }

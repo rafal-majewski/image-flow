@@ -28,7 +28,7 @@
 		readonly children: Snippet<[]>;
 	} = $props();
 	function handleDeleteButtonClick(): void {
-		node.delete();
+		node.disconnect();
 		onDeleteRequest(node);
 	}
 	function handleMouseDown(event: MouseEvent): void {

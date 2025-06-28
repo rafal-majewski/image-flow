@@ -9,9 +9,11 @@ export class OperatingNode<InputEdgeCount extends number> extends Node<
 	SupportedOperatingNodeState<InputEdgeCount>
 > {
 	public override disconnectInputEdges(): void {
-		this.inputEdges = new Array(this.inputEdges.length).fill(
-			null,
-		) as unknown as readonly Edge[] & {readonly length: InputEdgeCount};
+		for (const edge of this.inputEdges) {
+			if (edge !== null) {
+				edge.delete();
+			}
+		}
 	}
 	public constructor(
 		inputEdgeCount: InputEdgeCount,
@@ -21,7 +23,13 @@ export class OperatingNode<InputEdgeCount extends number> extends Node<
 	) {
 		const stepCount = 1;
 		super(
-			OperatingNodeDisplayer,
+			(...parameters) => {
+				const newParameters = [
+					parameters[0],
+					{...parameters[1], node: this},
+				] as const;
+				return OperatingNodeDisplayer(...newParameters);
+			},
 			name,
 			position,
 			new ManualInvalidAndNoOperatorOperatingNodeState(stepCount),
@@ -30,6 +38,7 @@ export class OperatingNode<InputEdgeCount extends number> extends Node<
 		this.inputEdges = new Array(inputEdgeCount).fill(
 			null,
 		) as unknown as readonly Edge[] & {readonly length: InputEdgeCount};
+		this.tryToValidateInputEdges();
 	}
 	public readonly availableOperators: readonly Operator<InputEdgeCount>[];
 	public doManualSteps(): void {
@@ -37,6 +46,18 @@ export class OperatingNode<InputEdgeCount extends number> extends Node<
 	}
 	public invalidateInputImages(): void {
 		this.state = this.state.invalidateInputImages(this.outputEdges);
+	}
+	public deleteInputEdge(index: number): void {
+		this.inputEdges = this.inputEdges.with(
+			index,
+			null,
+		) as unknown as readonly Edge[] & {readonly length: InputEdgeCount};
+	}
+	public setInputEdge(edge: Edge, index: number): void {
+		this.inputEdges = this.inputEdges.with(
+			index,
+			edge,
+		) as unknown as readonly Edge[] & {readonly length: InputEdgeCount};
 	}
 	public makeAnimated(): void {
 		const intervalIntervalSeconds = 0.001;
@@ -89,7 +110,7 @@ export class OperatingNode<InputEdgeCount extends number> extends Node<
 			);
 		}
 	}
-	private inputEdges: readonly (Edge | null)[] & {
+	public inputEdges: readonly (Edge | null)[] & {
 		readonly length: InputEdgeCount;
 	};
 	public unsetInputEdge(index: number): void {

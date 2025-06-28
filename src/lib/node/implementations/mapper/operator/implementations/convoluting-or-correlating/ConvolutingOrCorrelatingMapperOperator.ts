@@ -7,7 +7,15 @@ import ConvolutingOrCorrelatingMapperOperatorDisplayer from "./displayer/Convolu
 export class ConvolutingOrCorrelatingMapperOperator extends MapperOperator {
 	public constructor(kernel: Kernel, rotationApplier: RotationApplier) {
 		super(
-			ConvolutingOrCorrelatingMapperOperatorDisplayer,
+			(...parameters) => {
+				const newParameters = [
+					parameters[0],
+					{...parameters[1], operator: this},
+				] as const;
+				return ConvolutingOrCorrelatingMapperOperatorDisplayer(
+					...newParameters,
+				);
+			},
 			"convoluting-or-correlating",
 			"Convoluting / Correlating",
 		);

@@ -6,8 +6,13 @@ import AddCombinerOperatorDisplayer from "./displayer/AddCombinerOperatorDisplay
 export class AddCombinerOperator extends CombinerOperator {
 	constructor() {
 		super(
-			// @ts-expect-error
-			AddCombinerOperatorDisplayer,
+			(...parameters) => {
+				const newParameters = [
+					parameters[0],
+					{...parameters[1], operator: this},
+				] as const;
+				return AddCombinerOperatorDisplayer(...newParameters);
+			},
 			"add",
 			"Add",
 		);
