@@ -8,13 +8,14 @@
 	import {InstantInvalidAndNoOperatorOperatingNodeState} from "../implementations/instant-invalid-and-no-operator/InstantInvalidAndNoOperatorOperatingNodeState.ts";
 	import {InstantInvalidOperatingNodeState} from "../implementations/instant-invalid/InstantInvalidOperatingNodeState.ts";
 	import {InstantNoOperatorOperatingNodeState} from "../implementations/instant-no-operator/InstantNoOperatorOperatingNodeState.ts";
+	import {InstantOperatingStartedOperatingNodeState} from "../implementations/instant-operating-started/InstantOperatingStartedOperatingNodeState.ts";
 	import {ManualInvalidAndNoOperatorOperatingNodeState} from "../implementations/manual-invalid-and-no-operator/ManualInvalidAndNoOperatorOperatingNodeState.ts";
 	import {ManualInvalidOperatingNodeState} from "../implementations/manual-invalid/ManualInvalidOperatingNodeState.ts";
 	import {ManualNoOperatorOperatingNodeState} from "../implementations/manual-no-operator/ManualNoOperatorOperatingNodeState.ts";
 	import {ManualOperatingStartedOperatingNodeState} from "../implementations/manual-operating-started/ManualOperatingStartedOperatingNodeState.ts";
-	import {AnimatedOperatingDonedOperatingNodeState} from "../implementations/animated-operating-done/AnimatedOperatingDoneOperatingNodeState.ts";
-	import {InstantOperatingDonedOperatingNodeState} from "../implementations/instant-operating-done/InstantOperatingDoneOperatingNodeState.ts";
-	import {ManualOperatingDonedOperatingNodeState} from "../implementations/manual-operating-done/ManualOperatingDoneOperatingNodeState.ts";
+	import {AnimatedOperatingDoneOperatingNodeState} from "../implementations/animated-operating-done/AnimatedOperatingDoneOperatingNodeState.ts";
+	import {InstantOperatingDoneOperatingNodeState} from "../implementations/instant-operating-done/InstantOperatingDoneOperatingNodeState.ts";
+	import {ManualOperatingDoneOperatingNodeState} from "../implementations/manual-operating-done/ManualOperatingDoneOperatingNodeState.ts";
 	import type {Operator} from "../../../operator/Operator.ts";
 	import type {NodeId} from "../../../id/NodeId.ts";
 	const {
@@ -64,12 +65,12 @@
 	function handleStepCountInputChange(
 		event: Event & {readonly currentTarget: HTMLInputElement},
 	): void {
-		onSetStepCountRequest(Number.parseInt(event.currentTarget.value, 10));
+		onSetStepCountRequest(event.currentTarget.valueAsNumber);
 	}
 	function handleIntervalIntervalInputChange(
 		event: Event & {readonly currentTarget: HTMLInputElement},
 	): void {
-		onSetIntervalIntervalRequest(Number.parseFloat(event.currentTarget.value));
+		onSetIntervalIntervalRequest(event.currentTarget.valueAsNumber);
 	}
 	function handleResetOutputImageButtonClick(
 		event: Event & {readonly currentTarget: HTMLButtonElement},
@@ -95,21 +96,22 @@
 			<option
 				value={operator.id}
 				selected={(state instanceof AnimatedOperatingStartedOperatingNodeState
-					|| state instanceof AnimatedOperatingDonedOperatingNodeState
+					|| state instanceof AnimatedOperatingDoneOperatingNodeState
 					|| state instanceof AnimatedInvalidOperatingNodeState
-					|| state instanceof InstantOperatingDonedOperatingNodeState
+					|| state instanceof InstantOperatingStartedOperatingNodeState
+					|| state instanceof InstantOperatingDoneOperatingNodeState
 					|| state instanceof InstantInvalidOperatingNodeState
 					|| state instanceof ManualOperatingStartedOperatingNodeState
-					|| state instanceof ManualOperatingDonedOperatingNodeState
+					|| state instanceof ManualOperatingDoneOperatingNodeState
 					|| state instanceof ManualInvalidOperatingNodeState)
 					&& state.operator.id === operator.id}>{operator.name}</option
 			>
 		{/each}
 	</select>
-	{#if state instanceof AnimatedOperatingStartedOperatingNodeState || state instanceof AnimatedOperatingDonedOperatingNodeState || state instanceof AnimatedInvalidOperatingNodeState || state instanceof AnimatedInvalidOperatingNodeState || state instanceof InstantOperatingDonedOperatingNodeState || state instanceof InstantInvalidOperatingNodeState || state instanceof InstantInvalidOperatingNodeState || state instanceof ManualOperatingStartedOperatingNodeState || state instanceof ManualOperatingDonedOperatingNodeState || state instanceof ManualInvalidOperatingNodeState || state instanceof ManualInvalidOperatingNodeState}
+	{#if state instanceof AnimatedOperatingStartedOperatingNodeState || state instanceof AnimatedOperatingDoneOperatingNodeState || state instanceof AnimatedInvalidOperatingNodeState || state instanceof AnimatedInvalidOperatingNodeState || state instanceof InstantOperatingStartedOperatingNodeState || state instanceof InstantOperatingDoneOperatingNodeState || state instanceof InstantInvalidOperatingNodeState || state instanceof InstantInvalidOperatingNodeState || state instanceof ManualOperatingStartedOperatingNodeState || state instanceof ManualOperatingDoneOperatingNodeState || state instanceof ManualInvalidOperatingNodeState || state instanceof ManualInvalidOperatingNodeState}
 		<state.operator.displayer {onSetOperatorRequest} {nodeId} />
 	{/if}
-	{#if state instanceof AnimatedOperatingStartedOperatingNodeState || state instanceof AnimatedOperatingDonedOperatingNodeState || state instanceof InstantOperatingDonedOperatingNodeState || state instanceof ManualOperatingStartedOperatingNodeState || state instanceof ManualOperatingDonedOperatingNodeState}
+	{#if state instanceof AnimatedOperatingStartedOperatingNodeState || state instanceof AnimatedOperatingDoneOperatingNodeState || state instanceof InstantOperatingStartedOperatingNodeState || state instanceof InstantOperatingDoneOperatingNodeState || state instanceof ManualOperatingStartedOperatingNodeState || state instanceof ManualOperatingDoneOperatingNodeState}
 		<Canvas image={state.outputImage} />
 	{/if}
 	<fieldset>
@@ -121,7 +123,7 @@
 					name="{nodeId}-mode"
 					value="manual"
 					checked={state instanceof ManualOperatingStartedOperatingNodeState
-						|| state instanceof ManualOperatingDonedOperatingNodeState
+						|| state instanceof ManualOperatingDoneOperatingNodeState
 						|| state instanceof ManualInvalidAndNoOperatorOperatingNodeState
 						|| state instanceof ManualInvalidOperatingNodeState
 						|| state instanceof ManualNoOperatorOperatingNodeState}
@@ -135,7 +137,7 @@
 					name="{nodeId}-mode"
 					value="animated"
 					checked={state instanceof AnimatedOperatingStartedOperatingNodeState
-						|| state instanceof AnimatedOperatingDonedOperatingNodeState
+						|| state instanceof AnimatedOperatingDoneOperatingNodeState
 						|| state instanceof AnimatedInvalidAndNoOperatorOperatingNodeState
 						|| state instanceof AnimatedInvalidOperatingNodeState
 						|| state instanceof AnimatedNoOperatorOperatingNodeState}
@@ -148,7 +150,8 @@
 					type="radio"
 					name="{nodeId}-mode"
 					value="instant"
-					checked={state instanceof InstantOperatingDonedOperatingNodeState
+					checked={state instanceof InstantOperatingStartedOperatingNodeState
+						|| state instanceof InstantOperatingDoneOperatingNodeState
 						|| state instanceof InstantInvalidAndNoOperatorOperatingNodeState
 						|| state instanceof InstantInvalidOperatingNodeState
 						|| state instanceof InstantNoOperatorOperatingNodeState}
@@ -157,9 +160,9 @@
 				Instant
 			</label>
 		</div>
-		{#if state instanceof ManualOperatingStartedOperatingNodeState || state instanceof ManualOperatingDonedOperatingNodeState || state instanceof ManualInvalidAndNoOperatorOperatingNodeState || state instanceof ManualInvalidOperatingNodeState || state instanceof ManualNoOperatorOperatingNodeState || state instanceof AnimatedOperatingStartedOperatingNodeState || state instanceof AnimatedOperatingDonedOperatingNodeState || state instanceof AnimatedInvalidAndNoOperatorOperatingNodeState || state instanceof AnimatedInvalidOperatingNodeState || state instanceof AnimatedNoOperatorOperatingNodeState}
+		{#if state instanceof ManualOperatingStartedOperatingNodeState || state instanceof ManualOperatingDoneOperatingNodeState || state instanceof ManualInvalidAndNoOperatorOperatingNodeState || state instanceof ManualInvalidOperatingNodeState || state instanceof ManualNoOperatorOperatingNodeState || state instanceof AnimatedOperatingStartedOperatingNodeState || state instanceof AnimatedOperatingDoneOperatingNodeState || state instanceof AnimatedInvalidAndNoOperatorOperatingNodeState || state instanceof AnimatedInvalidOperatingNodeState || state instanceof AnimatedNoOperatorOperatingNodeState}
 			<div>
-				{#if state instanceof ManualOperatingStartedOperatingNodeState || state instanceof ManualOperatingDonedOperatingNodeState || state instanceof ManualInvalidAndNoOperatorOperatingNodeState || state instanceof ManualInvalidOperatingNodeState || state instanceof ManualNoOperatorOperatingNodeState}
+				{#if state instanceof ManualOperatingStartedOperatingNodeState || state instanceof ManualOperatingDoneOperatingNodeState || state instanceof ManualInvalidAndNoOperatorOperatingNodeState || state instanceof ManualInvalidOperatingNodeState || state instanceof ManualNoOperatorOperatingNodeState}
 					<label>
 						Step count:
 						<input
@@ -172,7 +175,7 @@
 					</label>
 					<button onclick={handleDoManualStepsButtonClick}>Do steps</button>
 				{/if}
-				{#if state instanceof AnimatedOperatingStartedOperatingNodeState || state instanceof AnimatedOperatingDonedOperatingNodeState || state instanceof AnimatedInvalidAndNoOperatorOperatingNodeState || state instanceof AnimatedInvalidOperatingNodeState || state instanceof AnimatedNoOperatorOperatingNodeState}
+				{#if state instanceof AnimatedOperatingStartedOperatingNodeState || state instanceof AnimatedOperatingDoneOperatingNodeState || state instanceof AnimatedInvalidAndNoOperatorOperatingNodeState || state instanceof AnimatedInvalidOperatingNodeState || state instanceof AnimatedNoOperatorOperatingNodeState}
 					<label>
 						Interval (seconds):
 						<input

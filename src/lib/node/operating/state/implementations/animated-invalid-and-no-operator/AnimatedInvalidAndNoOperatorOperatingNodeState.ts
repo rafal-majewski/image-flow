@@ -17,7 +17,10 @@ export class AnimatedInvalidAndNoOperatorOperatingNodeState<
 		this.intervalId = intervalId;
 		this.intervalIntervalSeconds = intervalIntervalSeconds;
 	}
-	public override doAnimatedStep(outputEdges: readonly Edge[]): this {
+	public override doAnimatedSteps(outputEdges: readonly Edge[]): this {
+		return this;
+	}
+	public override doInstantSteps(outputEdges: readonly Edge[]): this {
 		return this;
 	}
 	public override doManualSteps(outputEdges: readonly Edge[]): this {
@@ -35,10 +38,13 @@ export class AnimatedInvalidAndNoOperatorOperatingNodeState<
 		return this;
 	}
 	public override makeInstant(
+		intervalId: ReturnType<typeof setInterval>,
 		outputEdges: readonly Edge[],
 	): InstantInvalidAndNoOperatorOperatingNodeState<InputImageCount> {
 		clearInterval(this.intervalId);
-		return new InstantInvalidAndNoOperatorOperatingNodeState<InputImageCount>();
+		return new InstantInvalidAndNoOperatorOperatingNodeState<InputImageCount>(
+			intervalId,
+		);
 	}
 	public override makeManual(
 		stepCount: number,

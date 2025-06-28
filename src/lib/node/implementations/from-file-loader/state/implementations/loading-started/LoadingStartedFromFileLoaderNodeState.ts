@@ -1,7 +1,7 @@
 import type {HandledEdgeBuilder} from "../../../../../../edge/builder/handled/HandledEdgeBuilder.ts";
 import type {Edge} from "../../../../../../edge/Edge.ts";
 import {FromFileLoaderNodeState} from "../../FromFileLoaderNodeState.ts";
-import {LoadingDonedFromFileLoaderNodeState} from "../loading-doned/LoadingDonedFromFileLoaderNodeState.ts";
+import {LoadingDoneFromFileLoaderNodeState} from "../loading-doned/LoadingDoneFromFileLoaderNodeState.ts";
 export class LoadingStartedFromFileLoaderNodeState extends FromFileLoaderNodeState {
 	public constructor() {
 		super("started");
@@ -9,11 +9,11 @@ export class LoadingStartedFromFileLoaderNodeState extends FromFileLoaderNodeSta
 	public doneLoading(
 		image: ImageData,
 		outputEdges: readonly Edge[],
-	): LoadingDonedFromFileLoaderNodeState {
+	): LoadingDoneFromFileLoaderNodeState {
 		for (const edge of outputEdges) {
 			edge.setImage(image);
 		}
-		return new LoadingDonedFromFileLoaderNodeState(image);
+		return new LoadingDoneFromFileLoaderNodeState(image);
 	}
 	public startLoading(
 		outputEdges: readonly Edge[],

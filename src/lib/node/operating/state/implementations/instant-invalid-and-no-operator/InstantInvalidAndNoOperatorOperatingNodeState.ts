@@ -9,15 +9,20 @@ import {ManualInvalidAndNoOperatorOperatingNodeState} from "../manual-invalid-an
 export class InstantInvalidAndNoOperatorOperatingNodeState<
 	InputImageCount extends number,
 > extends OperatingNodeState<InputImageCount> {
-	public constructor() {
+	public constructor(intervalId: ReturnType<typeof setInterval>) {
 		super("unconfigured");
+		this.intervalId = intervalId;
 	}
-	public override doAnimatedStep(outputEdges: readonly Edge[]): this {
+	public override doAnimatedSteps(outputEdges: readonly Edge[]): this {
+		return this;
+	}
+	public override doInstantSteps(outputEdges: readonly Edge[]): this {
 		return this;
 	}
 	public override doManualSteps(outputEdges: readonly Edge[]): this {
 		return this;
 	}
+	public readonly intervalId: ReturnType<typeof setInterval>;
 	public override invalidateInputImages(outputEdges: readonly Edge[]): this {
 		return this;
 	}
@@ -25,17 +30,25 @@ export class InstantInvalidAndNoOperatorOperatingNodeState<
 		intervalId: ReturnType<typeof setInterval>,
 		intervalIntervalSeconds: number,
 	): AnimatedInvalidAndNoOperatorOperatingNodeState<InputImageCount> {
+		clearInterval(this.intervalId);
 		return new AnimatedInvalidAndNoOperatorOperatingNodeState<InputImageCount>(
 			intervalId,
 			intervalIntervalSeconds,
 		);
 	}
-	public override makeInstant(outputEdges: readonly Edge[]): this {
-		return this;
+	public override makeInstant(
+		newIntervalId: ReturnType<typeof setInterval>,
+		outputEdges: readonly Edge[],
+	): InstantInvalidAndNoOperatorOperatingNodeState<InputImageCount> {
+		clearInterval(this.intervalId);
+		return new InstantInvalidAndNoOperatorOperatingNodeState<InputImageCount>(
+			newIntervalId,
+		);
 	}
 	public override makeManual(
 		stepCount: number,
 	): ManualInvalidAndNoOperatorOperatingNodeState<InputImageCount> {
+		clearInterval(this.intervalId);
 		return new ManualInvalidAndNoOperatorOperatingNodeState<InputImageCount>(
 			stepCount,
 		);
@@ -53,7 +66,10 @@ export class InstantInvalidAndNoOperatorOperatingNodeState<
 		operator: Operator<InputImageCount>,
 		outputEdges: readonly Edge[],
 	): InstantInvalidOperatingNodeState<InputImageCount> {
-		return new InstantInvalidOperatingNodeState<InputImageCount>(operator);
+		return new InstantInvalidOperatingNodeState<InputImageCount>(
+			this.intervalId,
+			operator,
+		);
 	}
 	public override setStepCount(stepCount: number): this {
 		return this;
@@ -69,6 +85,7 @@ export class InstantInvalidAndNoOperatorOperatingNodeState<
 		outputEdges: readonly Edge[],
 	): InstantNoOperatorOperatingNodeState<InputImageCount> {
 		return new InstantNoOperatorOperatingNodeState<InputImageCount>(
+			this.intervalId,
 			inputImages,
 		);
 	}

@@ -1,5 +1,5 @@
 import {readWithAlphaColorFromImageAtPosition} from "../../../../../operating/color/readWithAlphaColorFromImageAtPosition.ts";
-import {setEachPixel} from "../../../../../operator/setting-each-pixel/setEachPixel.ts";
+import {setEachPixelYielding} from "../../../../../operator/setting-each-pixel-yielding/setEachPixelYielding.ts";
 import {MapperOperator} from "../../MapperOperator.ts";
 import {useBlur} from "./using-blur/useBlur.ts";
 import AverageBlurringMapperOperatorDisplayer from "./displayer/AverageBlurringMapperOperatorDisplayer.svelte";
@@ -27,7 +27,7 @@ export class AverageBlurringMapperOperator extends MapperOperator {
 			inputImages[0].width,
 			inputImages[0].height,
 		);
-		yield* setEachPixel(outputImage, (position) => {
+		yield* setEachPixelYielding(outputImage, (position) => {
 			const blurredColor = useBlur(position, inputImages[0], this.radius);
 			return readWithAlphaColorFromImageAtPosition(inputImages[0], position)
 				.convertToContinuous()

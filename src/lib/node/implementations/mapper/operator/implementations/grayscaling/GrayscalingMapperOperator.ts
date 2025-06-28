@@ -2,7 +2,7 @@ import type {ContinuousWithoutAlphaColor} from "../../../../../operating/color/C
 import {DiscreteWithAlphaColor} from "../../../../../operating/color/DiscreteWithAlphaColor.ts";
 import {readWithAlphaColorFromImageAtPosition} from "../../../../../operating/color/readWithAlphaColorFromImageAtPosition.ts";
 import {sanitizeDiscreteColorComponent} from "../../../../../operating/color/sanitizeDiscreteColorComponent.ts";
-import {setEachPixel} from "../../../../../operator/setting-each-pixel/setEachPixel.ts";
+import {setEachPixelYielding} from "../../../../../operator/setting-each-pixel-yielding/setEachPixelYielding.ts";
 import {MapperOperator} from "../../MapperOperator.ts";
 import GrayscalingMapperOperatorDisplayer from "./displayer/GrayscalingMapperOperatorDisplayer.svelte";
 export class GrayscalingMapperOperator extends MapperOperator {
@@ -28,7 +28,7 @@ export class GrayscalingMapperOperator extends MapperOperator {
 			inputImages[0].width,
 			inputImages[0].height,
 		);
-		yield* setEachPixel(outputImage, (position) => {
+		yield* setEachPixelYielding(outputImage, (position) => {
 			const colorWithAlphaComponent = readWithAlphaColorFromImageAtPosition(
 				inputImages[0],
 				position,

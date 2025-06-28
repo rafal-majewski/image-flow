@@ -45,11 +45,10 @@ export class Kernel
 				relativeToAnchorPositionX = relativeToAnchorPositionX + 1
 			) {
 				const multiplier = (
-					this.multipliers[relativeToAnchorPositionY] as readonly [
-						number,
-						...(readonly number[]),
-					]
-				)[relativeToAnchorPositionX] as number;
+					this.multipliers[
+						relativeToAnchorPositionY + this.anchorPosition.y
+					] as readonly [number, ...(readonly number[])]
+				)[relativeToAnchorPositionX + this.anchorPosition.x] as number;
 				const relativeToAnchorPosition = new Coordinates(
 					relativeToAnchorPositionX,
 					relativeToAnchorPositionY,

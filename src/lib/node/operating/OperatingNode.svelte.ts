@@ -61,12 +61,15 @@ export class OperatingNode<InputEdgeCount extends number> extends Node<
 	public makeAnimated(): void {
 		const intervalIntervalSeconds = 0.001;
 		const intervalId = setInterval(() => {
-			this.state = this.state.doAnimatedStep(this.outputEdges);
+			this.state = this.state.doAnimatedSteps(this.outputEdges);
 		}, intervalIntervalSeconds * 1000);
 		this.state = this.state.makeAnimated(intervalId, intervalIntervalSeconds);
 	}
 	public makeInstant(): void {
-		this.state = this.state.makeInstant(this.outputEdges);
+		const intervalId = setInterval(() => {
+			this.state = this.state.doInstantSteps(this.outputEdges);
+		}, 0);
+		this.state = this.state.makeInstant(intervalId, this.outputEdges);
 	}
 	public makeManual(): void {
 		const stepCount = 1;
@@ -83,7 +86,7 @@ export class OperatingNode<InputEdgeCount extends number> extends Node<
 	}
 	public setIntervalInterval(intervalIntervalSeconds: number): void {
 		const intervalId = setInterval(() => {
-			this.state = this.state.doAnimatedStep(this.outputEdges);
+			this.state = this.state.doAnimatedSteps(this.outputEdges);
 		}, intervalIntervalSeconds * 1000);
 		this.state = this.state.setIntervalInterval(
 			intervalId,

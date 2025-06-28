@@ -5,9 +5,9 @@ import {OperatingNodeState} from "../../OperatingNodeState.ts";
 import {AnimatedInvalidOperatingNodeState} from "../animated-invalid/AnimatedInvalidOperatingNodeState.ts";
 import {AnimatedNoOperatorOperatingNodeState} from "../animated-no-operator/AnimatedNoOperatorOperatingNodeState.ts";
 import {AnimatedOperatingStartedOperatingNodeState} from "../animated-operating-started/AnimatedOperatingStartedOperatingNodeState.ts";
-import {InstantOperatingDonedOperatingNodeState} from "../instant-operating-done/InstantOperatingDoneOperatingNodeState.ts";
-import {ManualOperatingDonedOperatingNodeState} from "../manual-operating-done/ManualOperatingDoneOperatingNodeState.ts";
-export class AnimatedOperatingDonedOperatingNodeState<
+import {InstantOperatingDoneOperatingNodeState} from "../instant-operating-done/InstantOperatingDoneOperatingNodeState.ts";
+import {ManualOperatingDoneOperatingNodeState} from "../manual-operating-done/ManualOperatingDoneOperatingNodeState.ts";
+export class AnimatedOperatingDoneOperatingNodeState<
 	InputImageCount extends number,
 > extends OperatingNodeState<InputImageCount> {
 	public constructor(
@@ -24,7 +24,10 @@ export class AnimatedOperatingDonedOperatingNodeState<
 		this.operator = operator;
 		this.outputImage = outputImage;
 	}
-	public override doAnimatedStep(outputEdges: readonly Edge[]): this {
+	public override doAnimatedSteps(outputEdges: readonly Edge[]): this {
+		return this;
+	}
+	public override doInstantSteps(outputEdges: readonly Edge[]): this {
 		return this;
 	}
 	public override doManualSteps(outputEdges: readonly Edge[]): this {
@@ -54,10 +57,12 @@ export class AnimatedOperatingDonedOperatingNodeState<
 		return this;
 	}
 	public override makeInstant(
+		intervalId: ReturnType<typeof setInterval>,
 		outputEdges: readonly Edge[],
-	): InstantOperatingDonedOperatingNodeState<InputImageCount> {
+	): InstantOperatingDoneOperatingNodeState<InputImageCount> {
 		clearInterval(this.intervalId);
-		return new InstantOperatingDonedOperatingNodeState<InputImageCount>(
+		return new InstantOperatingDoneOperatingNodeState<InputImageCount>(
+			intervalId,
 			this.inputImages,
 			this.operator,
 			this.outputImage,
@@ -65,9 +70,9 @@ export class AnimatedOperatingDonedOperatingNodeState<
 	}
 	public override makeManual(
 		stepCount: number,
-	): ManualOperatingDonedOperatingNodeState<InputImageCount> {
+	): ManualOperatingDoneOperatingNodeState<InputImageCount> {
 		clearInterval(this.intervalId);
-		return new ManualOperatingDonedOperatingNodeState<InputImageCount>(
+		return new ManualOperatingDoneOperatingNodeState<InputImageCount>(
 			this.inputImages,
 			this.operator,
 			this.outputImage,
@@ -79,7 +84,7 @@ export class AnimatedOperatingDonedOperatingNodeState<
 	public override resetOutputImage(
 		outputEdges: readonly Edge[],
 	):
-		| AnimatedOperatingDonedOperatingNodeState<InputImageCount>
+		| AnimatedOperatingDoneOperatingNodeState<InputImageCount>
 		| AnimatedOperatingStartedOperatingNodeState<InputImageCount> {
 		const generator = this.operator.operate(this.inputImages);
 		const generatorResult = generator.next();
@@ -87,7 +92,7 @@ export class AnimatedOperatingDonedOperatingNodeState<
 			for (const edge of outputEdges) {
 				edge.setImage(generatorResult.value);
 			}
-			return new AnimatedOperatingDonedOperatingNodeState<InputImageCount>(
+			return new AnimatedOperatingDoneOperatingNodeState<InputImageCount>(
 				this.inputImages,
 				this.intervalId,
 				this.intervalIntervalSeconds,
@@ -111,9 +116,9 @@ export class AnimatedOperatingDonedOperatingNodeState<
 	public override setIntervalInterval(
 		newIntervalId: ReturnType<typeof setInterval>,
 		newIntervalIntervalSeconds: number,
-	): AnimatedOperatingDonedOperatingNodeState<InputImageCount> {
+	): AnimatedOperatingDoneOperatingNodeState<InputImageCount> {
 		clearInterval(this.intervalId);
-		return new AnimatedOperatingDonedOperatingNodeState<InputImageCount>(
+		return new AnimatedOperatingDoneOperatingNodeState<InputImageCount>(
 			this.inputImages,
 			newIntervalId,
 			newIntervalIntervalSeconds,
@@ -125,7 +130,7 @@ export class AnimatedOperatingDonedOperatingNodeState<
 		newOperator: Operator<InputImageCount>,
 		outputEdges: readonly Edge[],
 	):
-		| AnimatedOperatingDonedOperatingNodeState<InputImageCount>
+		| AnimatedOperatingDoneOperatingNodeState<InputImageCount>
 		| AnimatedOperatingStartedOperatingNodeState<InputImageCount> {
 		const generator = newOperator.operate(this.inputImages);
 		const generatorResult = generator.next();
@@ -133,7 +138,7 @@ export class AnimatedOperatingDonedOperatingNodeState<
 			for (const edge of outputEdges) {
 				edge.setImage(generatorResult.value);
 			}
-			return new AnimatedOperatingDonedOperatingNodeState<InputImageCount>(
+			return new AnimatedOperatingDoneOperatingNodeState<InputImageCount>(
 				this.inputImages,
 				this.intervalId,
 				this.intervalIntervalSeconds,
@@ -176,7 +181,7 @@ export class AnimatedOperatingDonedOperatingNodeState<
 		newInputImages: readonly ImageData[] & {readonly length: InputImageCount},
 		outputEdges: readonly Edge[],
 	):
-		| AnimatedOperatingDonedOperatingNodeState<InputImageCount>
+		| AnimatedOperatingDoneOperatingNodeState<InputImageCount>
 		| AnimatedOperatingStartedOperatingNodeState<InputImageCount> {
 		const generator = this.operator.operate(newInputImages);
 		const generatorResult = generator.next();
@@ -184,7 +189,7 @@ export class AnimatedOperatingDonedOperatingNodeState<
 			for (const edge of outputEdges) {
 				edge.setImage(generatorResult.value);
 			}
-			return new AnimatedOperatingDonedOperatingNodeState<InputImageCount>(
+			return new AnimatedOperatingDoneOperatingNodeState<InputImageCount>(
 				newInputImages,
 				this.intervalId,
 				this.intervalIntervalSeconds,

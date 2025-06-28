@@ -2,7 +2,7 @@ import type {HandledEdgeBuilder} from "../../../../../../edge/builder/handled/Ha
 import type {Edge} from "../../../../../../edge/Edge.ts";
 import {FromUrlLoaderNodeState} from "../../FromUrlLoaderNodeState.ts";
 import {LoadingStartedFromUrlLoaderNodeState} from "../loading-started/LoadingStartedFromUrlLoaderNodeState.ts";
-export class LoadingDonedFromUrlLoaderNodeState extends FromUrlLoaderNodeState {
+export class LoadingDoneFromUrlLoaderNodeState extends FromUrlLoaderNodeState {
 	public constructor(image: ImageData) {
 		super("doned");
 		this.image = image;

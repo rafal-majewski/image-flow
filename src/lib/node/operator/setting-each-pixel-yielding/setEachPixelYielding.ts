@@ -1,7 +1,7 @@
 import {Coordinates} from "../../../coordinates/Coordinates.ts";
 import type {DiscreteWithAlphaColor} from "../../operating/color/DiscreteWithAlphaColor.ts";
 import {writeWithAlphaColorToImageAtPosition} from "../../operating/color/writeWithAlphaColorToImageAtPosition.ts";
-export function* setEachPixel(
+export function* setEachPixelYielding(
 	image: ImageData,
 	setter: (position: Coordinates) => DiscreteWithAlphaColor,
 ): Generator<ImageData, void, void> {

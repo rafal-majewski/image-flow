@@ -1,7 +1,7 @@
 import {Coordinates} from "../../../../../../coordinates/Coordinates.ts";
 import type {Dimensions} from "../../../../../../dimensions/Dimensions.ts";
 import {readWithAlphaColorFromImageAtPosition} from "../../../../../operating/color/readWithAlphaColorFromImageAtPosition.ts";
-import {setEachPixel} from "../../../../../operator/setting-each-pixel/setEachPixel.ts";
+import {setEachPixelYielding} from "../../../../../operator/setting-each-pixel-yielding/setEachPixelYielding.ts";
 import {MapperOperator} from "../../MapperOperator.ts";
 import NearestNeighborScalingMapperOperatorDisplayer from "./displayer/NearestNeighborScalingMapperOperatorDisplayer.svelte";
 export class NearestNeighborScalingMapperOperator extends MapperOperator {
@@ -26,7 +26,7 @@ export class NearestNeighborScalingMapperOperator extends MapperOperator {
 			this.outputImageDimensions.width,
 			this.outputImageDimensions.height,
 		);
-		yield* setEachPixel(outputImage, (positionInOutputImage) => {
+		yield* setEachPixelYielding(outputImage, (positionInOutputImage) => {
 			const positionInInputImage = new Coordinates(
 				Math.floor(
 					(positionInOutputImage.x * inputImages[0].width)

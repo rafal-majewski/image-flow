@@ -8,7 +8,10 @@ export abstract class OperatingNodeState<
 	public constructor(status: NodeStateStatus) {
 		super(status);
 	}
-	public abstract doAnimatedStep(
+	public abstract doAnimatedSteps(
+		outputEdges: readonly Edge[],
+	): OperatingNodeState<InputEdgeCount>;
+	public abstract doInstantSteps(
 		outputEdges: readonly Edge[],
 	): OperatingNodeState<InputEdgeCount>;
 	public abstract doManualSteps(
@@ -22,6 +25,7 @@ export abstract class OperatingNodeState<
 		intervalIntervalSeconds: number,
 	): OperatingNodeState<InputEdgeCount>;
 	public abstract makeInstant(
+		intervalId: ReturnType<typeof setInterval>,
 		outputEdges: readonly Edge[],
 	): OperatingNodeState<InputEdgeCount>;
 	public abstract makeManual(

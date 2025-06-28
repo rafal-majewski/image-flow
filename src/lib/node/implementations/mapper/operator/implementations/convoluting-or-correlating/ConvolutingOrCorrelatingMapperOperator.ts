@@ -1,9 +1,9 @@
-import {setEachPixel} from "../../../../../operator/setting-each-pixel/setEachPixel.ts";
 import {MapperOperator} from "../../MapperOperator.ts";
 import type {Kernel} from "./kernel/Kernel.ts";
 import type {RotationApplier} from "./rotation-applier/RotationApplier.ts";
 import {useKernel} from "./using-kernel/useKernel.ts";
 import ConvolutingOrCorrelatingMapperOperatorDisplayer from "./displayer/ConvolutingOrCorrelatingMapperOperatorDisplayer.svelte";
+import {setEachPixelYielding} from "../../../../../operator/setting-each-pixel-yielding/setEachPixelYielding.ts";
 export class ConvolutingOrCorrelatingMapperOperator extends MapperOperator {
 	public constructor(kernel: Kernel, rotationApplier: RotationApplier) {
 		super(
@@ -31,7 +31,7 @@ export class ConvolutingOrCorrelatingMapperOperator extends MapperOperator {
 			inputImages[0].width - (rotatedkernel.dimensions.width - 1),
 			inputImages[0].height - (rotatedkernel.dimensions.height - 1),
 		);
-		yield* setEachPixel(outputImage, (inOutputImagePosition) => {
+		yield* setEachPixelYielding(outputImage, (inOutputImagePosition) => {
 			return useKernel(inOutputImagePosition, inputImages[0], rotatedkernel)
 				.withAlphaComponent(1)
 				.convertToDiscrete();

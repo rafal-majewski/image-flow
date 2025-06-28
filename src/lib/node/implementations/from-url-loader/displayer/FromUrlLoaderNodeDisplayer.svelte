@@ -6,7 +6,7 @@
 	import Canvas from "../../../operating/state/displayer/canvas/Canvas.svelte";
 	import {NodeState} from "../../../state/NodeState.ts";
 	import type {FromUrlLoaderNode} from "../FromUrlLoaderNode.ts";
-	import {LoadingDonedFromUrlLoaderNodeState} from "../state/implementations/loading-doned/LoadingDonedFromUrlLoaderNodeState.ts";
+	import {LoadingDoneFromUrlLoaderNodeState} from "../state/implementations/loading-doned/LoadingDoneFromUrlLoaderNodeState.ts";
 	const {
 		node,
 		onDeleteRequest,
@@ -44,7 +44,7 @@
 	{node}
 >
 	<input type="url" placeholder="Image URL" onchange={handleUrlInputChange} />
-	{#if node.state instanceof LoadingDonedFromUrlLoaderNodeState}
-		<Canvas image={(node.state as LoadingDonedFromUrlLoaderNodeState).image} />
+	{#if node.state instanceof LoadingDoneFromUrlLoaderNodeState}
+		<Canvas image={(node.state as LoadingDoneFromUrlLoaderNodeState).image} />
 	{/if}
 </NodeDisplayer>

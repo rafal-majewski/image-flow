@@ -6,7 +6,7 @@
 	import Canvas from "../../../operating/state/displayer/canvas/Canvas.svelte";
 	import {NodeState} from "../../../state/NodeState.ts";
 	import type {FromFileLoaderNode} from "../FromFileLoaderNode.ts";
-	import {LoadingDonedFromFileLoaderNodeState} from "../state/implementations/loading-doned/LoadingDonedFromFileLoaderNodeState.ts";
+	import {LoadingDoneFromFileLoaderNodeState} from "../state/implementations/loading-doned/LoadingDoneFromFileLoaderNodeState.ts";
 	const {
 		node,
 		onDeleteRequest,
@@ -45,7 +45,7 @@
 	{node}
 >
 	<input type="file" accept="image/*" onchange={handleFileInputChange} />
-	{#if node.state instanceof LoadingDonedFromFileLoaderNodeState}
+	{#if node.state instanceof LoadingDoneFromFileLoaderNodeState}
 		<Canvas image={node.state.image} />
 	{/if}
 </NodeDisplayer>

@@ -158,6 +158,7 @@
 											event.currentTarget.valueAsNumber,
 										);
 									}}
+									name={`${nodeId}-kernel-cell-${columnIndex}-${rowIndex}`}
 								/>
 								<input
 									type="radio"
