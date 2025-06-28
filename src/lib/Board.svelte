@@ -10,7 +10,6 @@
 	import {AddingNodeBoardMode} from "./mode/implementations/adding-node/AddingNodeBoardMode.ts";
 	import {SettingEdgeInputBoardMode} from "./mode/implementations/setting-edge-input/SettingEdgeInputBoardMode.ts";
 	import {SettingEdgeOutputBoardMode} from "./mode/implementations/setting-edge-output/SettingEdgeOutputBoardMode.ts";
-	import type {Node} from "./node/Node.ts";
 	import type {NodeClass} from "./node/class/NodeClass.ts";
 	import {UnhandledEdgeBuilder} from "./edge/builder/unhandled/UnhandledEdgeBuilder.ts";
 	import {MapperOperatingNode} from "./node/implementations/mapper/MapperOperatingNode.ts";
@@ -18,14 +17,17 @@
 	import {FromFileLoaderNode} from "./node/implementations/from-file-loader/FromFileLoaderNode.ts";
 	import {FromUrlLoaderNode} from "./node/implementations/from-url-loader/FromUrlLoaderNode.ts";
 	import {GeneratorOperatingNode} from "./node/implementations/generator/GeneratorOperatingNode.ts";
+	import type {NodeState} from "./node/state/NodeState.ts";
+	import type {Node} from "./node/Node.svelte.ts";
 	import type {Edge} from "./edge/Edge.ts";
+	import type {OperatingNode} from "./node/operating/OperatingNode.svelte.ts";
 	let board: HTMLElement;
-	let nodes = $state.raw<readonly Node[]>([]);
+	let nodes = $state.raw<readonly Node<NodeState>[]>([]);
 	let cameraPosition = $state<Coordinates>(new Coordinates(0, 0));
 	let mode = $state.raw<null | SupportedBoardMode>(null);
-	function handleAddNodeRequest(NewNodeClass: NodeClass): void {
+	function handleAddNodeRequest(newNodeClass: NodeClass): void {
 		if (mode !== null && mode.name === "addingNode") {
-			const newNode = new NewNodeClass(mode.position);
+			const newNode = new newNodeClass(mode.data.position);
 			nodes = [...nodes, newNode];
 			mode = null;
 		}
@@ -57,9 +59,6 @@
 			);
 		}
 	}
-	function handleDeleteEdgeRequest(edge: Edge): void {
-		throw new Error("Edge deletion is not implemented yet.");
-	}
 	function handleMouseMove(event: MouseEvent): void {
 		if (mode !== null) {
 			switch (mode.name) {
@@ -72,12 +71,9 @@
 					break;
 				}
 				case "movingNode": {
-					graph = graph.withMovedNode(
-						mode.data.node.id,
-						mode.data.node.position.add(
-							new Coordinates(event.movementX, event.movementY).divideBy(
-								window.devicePixelRatio,
-							),
+					mode.data.node.position = mode.data.node.position.add(
+						new Coordinates(event.movementX, event.movementY).divideBy(
+							window.devicePixelRatio,
 						),
 					);
 					break;
@@ -133,7 +129,7 @@
 		}
 	}
 	function handleSetOutputRequest(
-		nodeInRequest: Node,
+		nodeInRequest: Node<NodeState>,
 		inViewportPosition: Coordinates,
 	): void {
 		if (mode === null) {
@@ -154,7 +150,7 @@
 	}
 	function handleSetInputRequest(
 		index: number,
-		nodeInRequest: Node,
+		nodeInRequest: OperatingNode<number>,
 		inViewportPosition: Coordinates,
 	): void {
 		if (mode === null) {
@@ -174,35 +170,40 @@
 			mode = null;
 		}
 	}
-	function handleMouseLeftButtonDownedOnNode(node: Node): void {
+	function handleMouseLeftButtonDownedOnNode(node: Node<NodeState>): void {
 		if (mode === null) {
 			mode = new MovingNodeBoardMode(node);
 		}
 	}
 	function handleMouseLeftButtonUppedOnNode(): void {}
-	function handleDeleteNodeRequest(nodeToDelete: Node): void {
-		if (mode !== null) {
-			switch (mode.name) {
-				case "settingEdgeOutput": {
-					if (mode.data.input === nodeToDelete) {
-						mode = null;
-					}
-					break;
-				}
-				case "settingEdgeInput": {
-					if (mode.data.output === nodeToDelete) {
-						mode = null;
-					}
-					break;
-				}
-				case "movingNode": {
-					if (mode.data.node === nodeToDelete) {
-						mode = null;
-					}
-					break;
-				}
-			}
-		}
+	function handleDeleteNodeRequest(nodeToDelete: Node<NodeState>): void {
+		throw new Error("Not implemented yet.");
+		// nodes = nodes.filter((node) => node !== nodeToDelete);
+		// if (mode !== null) {
+		// 	switch (mode.name) {
+		// 		case "settingEdgeOutput": {
+		// 			if (mode.data.input === nodeToDelete) {
+		// 				mode = null;
+		// 			}
+		// 			break;
+		// 		}
+		// 		case "settingEdgeInput": {
+		// 			if (mode.data.output === nodeToDelete) {
+		// 				mode = null;
+		// 			}
+		// 			break;
+		// 		}
+		// 		case "movingNode": {
+		// 			if (mode.data.node === nodeToDelete) {
+		// 				mode = null;
+		// 			}
+		// 			break;
+		// 		}
+		// 	}
+		// }
+	}
+	function handleDeleteEdgeRequest(edgeToDelete: Edge): void {
+		throw new Error("Not implemented yet.");
 	}
 </script>
 
@@ -242,7 +243,7 @@
 						boardMode={mode}
 					/>
 				</li>
-				{#each node.outputEdges as edge (`${edge.inputNodeId}-${edge.outputNodeInputEdgeIndex}-${edge.outputNodeId}`)}
+				{#each node.outputEdges as edge (`${edge.input.id}-${edge.outputInputIndex}-${edge.output.id}`)}
 					<li>
 						<EdgeDisplayer {edge} onDeleteRequest={handleDeleteEdgeRequest} />
 					</li>

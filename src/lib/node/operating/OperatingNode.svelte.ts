@@ -3,6 +3,7 @@ import {Node} from "../Node.svelte.ts";
 import type {Operator} from "../operator/Operator.ts";
 import {ManualInvalidAndNoOperatorOperatingNodeState} from "./state/implementations/manual-invalid-and-no-operator/ManualInvalidAndNoOperatorOperatingNodeState.ts";
 import type {SupportedOperatingNodeState} from "./state/supported/SupportedOperatingNodeState.ts";
+import OperatingNodeDisplayer from "./displayer/OperatingNodeDisplayer.svelte";
 export class OperatingNode<InputEdgeCount extends number> extends Node<
 	SupportedOperatingNodeState<InputEdgeCount>
 > {
@@ -14,7 +15,6 @@ export class OperatingNode<InputEdgeCount extends number> extends Node<
 	) {
 		const stepCount = 1;
 		super(
-			// @ts-expect-error: TODO
 			OperatingNodeDisplayer,
 			name,
 			position,

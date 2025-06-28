@@ -1,9 +1,8 @@
 import type {Coordinates} from "../../../coordinates/Coordinates.ts";
 import {settingEdgeInputBoardModeName} from "./name/settingEdgeInputBoardModeName.ts";
-import type {Node} from "../../../node/Node.svelte.ts";
-import type {NodeState} from "../../../node/state/NodeState.ts";
 import type {SettingEdgeInputBoardModeData} from "./data/SettingEdgeInputBoardModeData.ts";
 import {WithDataBoardMode} from "../../with-data/WithDataBoardMode.ts";
+import type {OperatingNode} from "../../../node/operating/OperatingNode.svelte.ts";
 export class SettingEdgeInputBoardMode extends WithDataBoardMode<
 	SettingEdgeInputBoardModeData,
 	typeof settingEdgeInputBoardModeName
@@ -11,7 +10,7 @@ export class SettingEdgeInputBoardMode extends WithDataBoardMode<
 	public constructor(
 		index: number,
 		mouseCursorInBoardPosition: Coordinates,
-		output: Node<NodeState>,
+		output: OperatingNode<number>,
 	) {
 		super(
 			{index, mouseCursorInBoardPosition, output},

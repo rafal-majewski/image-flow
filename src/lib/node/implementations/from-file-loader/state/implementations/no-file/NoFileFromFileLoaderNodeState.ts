@@ -6,9 +6,6 @@ export class NoFileFromFileLoaderNodeState extends FromFileLoaderNodeState {
 	public constructor() {
 		super("unconfigured");
 	}
-	public override invalidateInputImages(outputEdges: readonly Edge[]): this {
-		return this;
-	}
 	public override startLoading(
 		outputEdges: readonly Edge[],
 	): LoadingStartedFromFileLoaderNodeState {
@@ -16,8 +13,5 @@ export class NoFileFromFileLoaderNodeState extends FromFileLoaderNodeState {
 	}
 	public override useEdgeBuilder(builder: HandledEdgeBuilder): void {
 		builder.buildWithoutImage();
-	}
-	public override validateInputImages(inputImages: readonly []): this {
-		return this;
 	}
 }

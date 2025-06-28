@@ -1,43 +1,37 @@
 import type {Node} from "../../../node/Node.svelte.ts";
+import type {OperatingNode} from "../../../node/operating/OperatingNode.svelte.ts";
+import type {NodeState} from "../../../node/state/NodeState.ts";
 import {Edge} from "../../Edge.ts";
-import type {EdgeBuilder} from "../../EdgeBuilder.ts";
 export class HandledEdgeBuilder implements EdgeBuilder {
 	public constructor(
-		inputIndexInOutput: number,
-		input: Node,
-		output: IntermediateNode,
+		outputInputIndex: number,
+		input: Node<NodeState>,
+		output: OperatingNode<number>,
 	) {
-		this.inputIndexInOutput = inputIndexInOutput;
+		this.outputInputIndex = outputInputIndex;
 		this.input = input;
 		this.output = output;
 	}
 	public buildWithImage(image: ImageData): void {
 		const edge = new Edge(
-			`${this.input.id}-${this.inputIndexInOutput}-${this.output.id}`,
 			image,
-			this.inputIndexInOutput,
+			this.outputInputIndex,
 			this.input,
 			this.output,
 		);
 		this.input.addOutputEdge(edge);
-		this.output.clearInputEdgeLeft(this.inputIndexInOutput);
-		this.output.setInputEdge(this.inputIndexInOutput, edge);
+		this.output.clearInputEdgeLeft(this.outputInputIndex);
+		this.output.setInputEdge(this.outputInputIndex, edge);
 		this.output.validateInputEdges();
 	}
 	public buildWithoutImage(): void {
-		const edge = new Edge(
-			`${this.input.id}-${this.inputIndexInOutput}-${this.output.id}`,
-			null,
-			this.inputIndexInOutput,
-			this.input,
-			this.output,
-		);
+		const edge = new Edge(null, this.outputInputIndex, this.input, this.output);
 		this.input.addOutputEdge(edge);
-		this.output.clearInputEdgeLeft(this.inputIndexInOutput);
-		this.output.setInputEdge(this.inputIndexInOutput, edge);
+		this.output.clearInputEdgeLeft(this.outputInputIndex);
+		this.output.setInputEdge(this.outputInputIndex, edge);
 		this.output.invalidateInputImages();
 	}
-	private readonly input: Node;
-	public readonly inputIndexInOutput: number;
-	public readonly output: IntermediateNode;
+	private readonly input: Node<NodeState>;
+	public readonly outputInputIndex: number;
+	public readonly output: OperatingNode<number>;
 }

@@ -8,13 +8,11 @@ export class FromFileLoaderNode extends Node<FromFileLoaderNodeState> {
 	public constructor(position: Coordinates) {
 		super(
 			FromFileLoaderNodeDisplayer,
-			0,
 			"From file loader",
 			position,
 			new NoFileFromFileLoaderNodeState(),
 		);
 	}
-	public override invalidateInputImages(): void {}
 	public async setFile(file: File): Promise<void> {
 		const loadingStartedState = this.state.startLoading(this.outputEdges);
 		this.state = loadingStartedState;
@@ -23,5 +21,4 @@ export class FromFileLoaderNode extends Node<FromFileLoaderNodeState> {
 			this.state = loadingStartedState.doneLoading(image, this.outputEdges);
 		}
 	}
-	protected override validateInputImages(inputImages: readonly []): void {}
 }

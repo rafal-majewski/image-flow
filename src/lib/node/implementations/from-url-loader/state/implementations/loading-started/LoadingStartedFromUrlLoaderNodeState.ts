@@ -15,9 +15,6 @@ export class LoadingStartedFromUrlLoaderNodeState extends FromUrlLoaderNodeState
 		}
 		return new LoadingDonedFromUrlLoaderNodeState(image);
 	}
-	public override invalidateInputImages(outputEdges: readonly Edge[]): this {
-		return this;
-	}
 	public startLoading(
 		outputEdges: readonly Edge[],
 	): LoadingStartedFromUrlLoaderNodeState {
@@ -25,11 +22,5 @@ export class LoadingStartedFromUrlLoaderNodeState extends FromUrlLoaderNodeState
 	}
 	public override useEdgeBuilder(builder: HandledEdgeBuilder): void {
 		builder.buildWithoutImage();
-	}
-	public override validateInputImages(
-		inputImages: readonly [],
-		outputEdges: readonly Edge[],
-	): this {
-		return this;
 	}
 }

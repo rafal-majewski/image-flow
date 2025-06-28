@@ -1,6 +1,7 @@
 import {MapperOperator} from "../../MapperOperator.ts";
 import type {GameOfLifeMapperOperatorColorComponentComputer} from "./color-component-computer/GameOfLifeMapperOperatorColorComponentComputer.ts";
 import {computeNewImage} from "./computing-new-image/computeNewImage.ts";
+import GameOfLifeMapperOperatorDisplayer from "./displayer/GameOfLifeMapperOperatorDisplayer.svelte";
 export class GameOfLifeMapperOperator extends MapperOperator {
 	public constructor(
 		componentComputer: GameOfLifeMapperOperatorColorComponentComputer,

@@ -6,9 +6,6 @@ export class NoUrlFromUrlLoaderNodeState extends FromUrlLoaderNodeState {
 	public constructor() {
 		super("unconfigured");
 	}
-	public override invalidateInputImages(outputEdges: readonly Edge[]): this {
-		return this;
-	}
 	public override startLoading(
 		outputEdges: readonly Edge[],
 	): LoadingStartedFromUrlLoaderNodeState {
@@ -16,8 +13,5 @@ export class NoUrlFromUrlLoaderNodeState extends FromUrlLoaderNodeState {
 	}
 	public override useEdgeBuilder(builder: HandledEdgeBuilder): void {
 		builder.buildWithoutImage();
-	}
-	public override validateInputImages(inputImages: readonly []): this {
-		return this;
 	}
 }

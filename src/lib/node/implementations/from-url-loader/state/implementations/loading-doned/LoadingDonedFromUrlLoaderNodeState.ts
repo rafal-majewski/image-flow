@@ -8,9 +8,6 @@ export class LoadingDonedFromUrlLoaderNodeState extends FromUrlLoaderNodeState {
 		this.image = image;
 	}
 	public readonly image: ImageData;
-	public override invalidateInputImages(outputEdges: readonly Edge[]): this {
-		return this;
-	}
 	public startLoading(
 		outputEdges: readonly Edge[],
 	): LoadingStartedFromUrlLoaderNodeState {
@@ -21,8 +18,5 @@ export class LoadingDonedFromUrlLoaderNodeState extends FromUrlLoaderNodeState {
 	}
 	public override useEdgeBuilder(builder: HandledEdgeBuilder): void {
 		builder.buildWithImage(this.image);
-	}
-	public override validateInputImages(inputImages: readonly []): this {
-		return this;
 	}
 }

@@ -1,40 +1,28 @@
-<script
-	lang="ts"
-	generics="
-		InputEdgeCount extends number,
-		StateToUse extends NodeState,
-	"
->
+<script lang="ts">
 	import type {Snippet} from "svelte";
 	import {Coordinates} from "../../coordinates/Coordinates.ts";
 	import type {SupportedBoardMode} from "../../mode/supported/SupportedBoardMode.ts";
-	import type {Node} from "../Node.ts";
+	import type {Node} from "../Node.svelte.ts";
 	import {NodeState} from "../state/NodeState.ts";
 	const {
 		node,
 		onDeleteRequest,
 		onMouseLeftButtonDown,
 		onMouseLeftButtonUp,
-		onSetInputRequest,
 		onSetOutputRequest,
 		boardMode,
 		children,
 	}: {
-		readonly onDeleteRequest: (node: Node) => void;
-		readonly node: WithStateNode<InputEdgeCount, StateToUse>;
+		readonly onDeleteRequest: (node: Node<NodeState>) => void;
+		readonly node: Node<NodeState>;
 		readonly boardMode: null | SupportedBoardMode;
 		readonly onMouseLeftButtonDown: (
-			node: Node,
+			node: Node<NodeState>,
 			mouseCursorInViewportPosition: Coordinates,
 		) => void;
-		readonly onMouseLeftButtonUp: (node: Node) => void;
-		readonly onSetInputRequest: (
-			index: number,
-			nodeInRequest: Node,
-			inViewportPosition: Coordinates,
-		) => void;
+		readonly onMouseLeftButtonUp: (node: Node<NodeState>) => void;
 		readonly onSetOutputRequest: (
-			nodeInRequest: Node,
+			nodeInRequest: Node<NodeState>,
 			inViewportPosition: Coordinates,
 		) => void;
 		readonly children: Snippet<[]>;
@@ -45,7 +33,10 @@
 	}
 	function handleMouseDown(event: MouseEvent): void {
 		if (event.button === 0) {
-			onMouseLeftButtonDown(node, {x: event.clientX, y: event.clientY});
+			onMouseLeftButtonDown(
+				node,
+				new Coordinates(event.clientX, event.clientY),
+			);
 		}
 	}
 	function handleMouseUp(event: MouseEvent): void {
@@ -53,14 +44,8 @@
 			onMouseLeftButtonUp(node);
 		}
 	}
-	function handleSetInputButtonClick(
-		index: number,
-		mouseCursorInViewportPosition: Coordinates,
-	): void {
-		onSetInputRequest(index, node, mouseCursorInViewportPosition);
-	}
 	function handleSetOutputButtonClick(event: MouseEvent): void {
-		onSetOutputRequest(node, {x: event.clientX, y: event.clientY});
+		onSetOutputRequest(node, new Coordinates(event.clientX, event.clientY));
 	}
 </script>
 
@@ -80,28 +65,6 @@
 		</header>
 		<button onclick={handleDeleteButtonClick}>🗑️</button>
 	</div>
-	<ol>
-		{#each node.inputEdges as edge, index (index)}
-			<li>
-				<button
-					disabled={boardMode !== null && boardMode.name === "settingEdgeInput"}
-					onclick={(event) => {
-						handleSetInputButtonClick(
-							index,
-							new Coordinates(event.clientX, event.clientY),
-						);
-					}}>🔌</button
-				>
-				{#if edge !== null}
-					{#if edge.image === null}
-						⌛
-					{:else}
-						🖼️
-					{/if}
-				{/if}
-			</li>
-		{/each}
-	</ol>
 	{@render children()}
 	<div>
 		<button

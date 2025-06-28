@@ -4,10 +4,12 @@
 		InputEdgeCount extends number,
 	"
 >
-	import type {Coordinates} from "../../../coordinates/Coordinates.ts";
+	import {Coordinates} from "../../../coordinates/Coordinates.ts";
 	import type {SupportedBoardMode} from "../../../mode/supported/SupportedBoardMode.ts";
 	import NodeDisplayer from "../../displayer/NodeDisplayer.svelte";
+	import type {Node} from "../../Node.svelte.ts";
 	import type {Operator} from "../../operator/Operator.ts";
+	import type {NodeState} from "../../state/NodeState.ts";
 	import type {OperatingNode} from "../OperatingNode.svelte.ts";
 	import OperatingNodeStateDisplayer from "../state/displayer/OperatingNodeStateDisplayer.svelte";
 	const {
@@ -19,21 +21,21 @@
 		onSetOutputRequest,
 		boardMode,
 	}: {
-		readonly onDeleteRequest: (node: Node) => void;
+		readonly onDeleteRequest: (node: Node<NodeState>) => void;
 		readonly node: OperatingNode<InputEdgeCount>;
 		readonly boardMode: null | SupportedBoardMode;
 		readonly onMouseLeftButtonDown: (
-			node: Node,
+			node: Node<NodeState>,
 			mouseCursorInViewportPosition: Coordinates,
 		) => void;
-		readonly onMouseLeftButtonUp: (node: Node) => void;
+		readonly onMouseLeftButtonUp: (node: Node<NodeState>) => void;
 		readonly onSetInputRequest: (
 			index: number,
-			nodeInRequest: Node,
+			nodeInRequest: Node<NodeState>,
 			inViewportPosition: Coordinates,
 		) => void;
 		readonly onSetOutputRequest: (
-			nodeInRequest: Node,
+			nodeInRequest: Node<NodeState>,
 			inViewportPosition: Coordinates,
 		) => void;
 	} = $props();
@@ -66,6 +68,12 @@
 	): void {
 		node.setIntervalInterval(intervalIntervalSeconds);
 	}
+	function handleSetInputButtonClick(
+		index: number,
+		mouseCursorInViewportPosition: Coordinates,
+	): void {
+		onSetInputRequest(index, node, mouseCursorInViewportPosition);
+	}
 </script>
 
 <NodeDisplayer
@@ -77,6 +85,28 @@
 	{boardMode}
 	{node}
 >
+	<ol>
+		{#each node.inputEdges as edge, index (index)}
+			<li>
+				<button
+					disabled={boardMode !== null && boardMode.name === "settingEdgeInput"}
+					onclick={(event) => {
+						handleSetInputButtonClick(
+							index,
+							new Coordinates(event.clientX, event.clientY),
+						);
+					}}>🔌</button
+				>
+				{#if edge !== null}
+					{#if edge.image === null}
+						⌛
+					{:else}
+						🖼️
+					{/if}
+				{/if}
+			</li>
+		{/each}
+	</ol>
 	<OperatingNodeStateDisplayer
 		state={node.state}
 		availableOperators={node.availableOperators}

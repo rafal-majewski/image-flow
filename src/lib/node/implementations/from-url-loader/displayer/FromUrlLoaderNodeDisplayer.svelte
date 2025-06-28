@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type {Coordinates} from "../../../../coordinates/Coordinates.ts";
 	import type {SupportedBoardMode} from "../../../../mode/supported/SupportedBoardMode.ts";
+	import NodeDisplayer from "../../../displayer/NodeDisplayer.svelte";
 	import Canvas from "../../../operating/state/displayer/canvas/Canvas.svelte";
 	import type {FromUrlLoaderNode} from "../FromUrlLoaderNode.ts";
 	import {LoadingDonedFromUrlLoaderNodeState} from "../state/implementations/loading-doned/LoadingDonedFromUrlLoaderNodeState.ts";
@@ -38,7 +39,7 @@
 	}
 </script>
 
-<WithStateNodeDisplayer
+<NodeDisplayer
 	{onDeleteRequest}
 	{onMouseLeftButtonDown}
 	{onMouseLeftButtonUp}
@@ -51,4 +52,4 @@
 	{#if node.state instanceof LoadingDonedFromUrlLoaderNodeState}
 		<Canvas image={(node.state as LoadingDonedFromUrlLoaderNodeState).image} />
 	{/if}
-</WithStateNodeDisplayer>
+</NodeDisplayer>

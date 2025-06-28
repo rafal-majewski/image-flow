@@ -15,9 +15,6 @@ export class LoadingStartedFromFileLoaderNodeState extends FromFileLoaderNodeSta
 		}
 		return new LoadingDonedFromFileLoaderNodeState(image);
 	}
-	public override invalidateInputImages(outputEdges: readonly Edge[]): this {
-		return this;
-	}
 	public startLoading(
 		outputEdges: readonly Edge[],
 	): LoadingStartedFromFileLoaderNodeState {

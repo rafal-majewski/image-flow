@@ -1,4 +1,4 @@
-import type {DiscreteColorComponent} from "../../../../../../../../with-state/implementations/operatable/color/DiscreteColorComponent.ts";
+import type {ContinuousColorComponent} from "../../../../../../../../operating/color/ContinuousColorComponent.ts";
 import {GameOfLifeMapperOperatorColorComponentComputer} from "../../GameOfLifeMapperOperatorColorComponentComputer.ts";
 export class GameOfLifeMapperOperatorClassicColorComponentComputer extends GameOfLifeMapperOperatorColorComponentComputer {
 	public constructor() {
@@ -7,11 +7,11 @@ export class GameOfLifeMapperOperatorClassicColorComponentComputer extends GameO
 	public override compute(
 		selfCount: number,
 		neighborCount: number,
-	): DiscreteColorComponent {
+	): ContinuousColorComponent {
 		if (neighborCount < 2 + (1 - selfCount)) {
 			return 0;
 		} else if (neighborCount <= 3) {
-			return 255;
+			return 1;
 		} else {
 			return 0;
 		}
