@@ -2,9 +2,10 @@ import type {Coordinates} from "../../../coordinates/Coordinates.ts";
 import {Node} from "../../Node.svelte.ts";
 import FromUrlLoaderNodeDisplayer from "./displayer/FromUrlLoaderNodeDisplayer.svelte";
 import {loadUrl} from "./loading-url/loadUrl.ts";
-import type {FromUrlLoaderNodeState} from "./state/FromUrlLoaderNodeState.ts";
 import {NoUrlFromUrlLoaderNodeState} from "./state/implementations/no-url/NoUrlFromUrlLoaderNodeState.ts";
-export class FromUrlLoaderNode extends Node<FromUrlLoaderNodeState> {
+import type {SupportedFromUrlLoaderNodeState} from "./state/supported/SupportedFromUrlLoaderNodeState.ts";
+export class FromUrlLoaderNode extends Node<SupportedFromUrlLoaderNodeState> {
+	public override disconnectInputEdges(): void {}
 	public constructor(position: Coordinates) {
 		super(
 			FromUrlLoaderNodeDisplayer,

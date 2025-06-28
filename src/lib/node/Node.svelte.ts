@@ -7,9 +7,11 @@ import type {HandledEdgeBuilder} from "../edge/builder/handled/HandledEdgeBuilde
 import type {NodeState} from "./state/NodeState.ts";
 import type {NodeId} from "./id/NodeId.ts";
 import {generateNodeId} from "./id/generation/generateNodeId.ts";
+import type {OperatingNode} from "./operating/OperatingNode.svelte.ts";
 export abstract class Node<NodeStateToUse extends NodeState> {
 	protected constructor(
 		displayer: Component<{
+			node: Node<NodeStateToUse>;
 			onDeleteRequest: (node: Node<NodeStateToUse>) => void;
 			boardMode: null | SupportedBoardMode;
 			onMouseLeftButtonDown: (
@@ -31,7 +33,12 @@ export abstract class Node<NodeStateToUse extends NodeState> {
 		position: Coordinates,
 		state: NodeStateToUse,
 	) {
-		this.displayer = displayer;
+		this.displayer = (...parameters) => {
+			// @ts-expect-error: TODO
+			parameters[1].node = this;
+			// @ts-expect-error: TODO
+			return displayer(...parameters);
+		};
 		this.id = generateNodeId();
 		this.name = name;
 		this.outputEdges = [];
@@ -41,8 +48,21 @@ export abstract class Node<NodeStateToUse extends NodeState> {
 	// public addOutputEdge(edge: Edge): void {
 	// 	this.state...
 	// 	this.outputEdges = [...this.outputEdges, edge];}
-	public delete(): void;
-	public deleteOutputEdge(outputEdgeToBeDeleted: Edge): void;
+	public disconnect(): void {
+		this.disconnectOutputEdges();
+		this.disconnectInputEdges();
+	}
+	public disconnectOutputEdges(): void {
+		for (const edge of this.outputEdges) {
+			edge.delete();
+		}
+	}
+	public abstract disconnectInputEdges(): void;
+	public deleteOutputEdge(edge: Edge): void {
+		this.outputEdges = this.outputEdges.filter((edge) => {
+			return edge !== edge;
+		});
+	}
 	public readonly displayer: Component<{
 		onDeleteRequest: (node: Node<NodeStateToUse>) => void;
 		boardMode: null | SupportedBoardMode;
@@ -53,7 +73,7 @@ export abstract class Node<NodeStateToUse extends NodeState> {
 		onMouseLeftButtonUp: (node: Node<NodeStateToUse>) => void;
 		onSetInputRequest: (
 			index: number,
-			nodeInRequest: Node<NodeStateToUse>,
+			nodeInRequest: OperatingNode<number>,
 			inViewportPosition: Coordinates,
 		) => void;
 		onSetOutputRequest: (
@@ -64,7 +84,10 @@ export abstract class Node<NodeStateToUse extends NodeState> {
 	public handleEdgeBuilder(builder: UnhandledEdgeBuilder): void;
 	public readonly id: NodeId;
 	public readonly name: string;
-	public readonly outputEdges: readonly Edge[];
+	/**
+	 * Do not reassign externally.
+	 */
+	public outputEdges: readonly Edge[];
 	public position: Coordinates;
 	/**
 	 * Do not reassign externally.

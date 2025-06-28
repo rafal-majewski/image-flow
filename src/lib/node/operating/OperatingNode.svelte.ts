@@ -4,9 +4,15 @@ import type {Operator} from "../operator/Operator.ts";
 import {ManualInvalidAndNoOperatorOperatingNodeState} from "./state/implementations/manual-invalid-and-no-operator/ManualInvalidAndNoOperatorOperatingNodeState.ts";
 import type {SupportedOperatingNodeState} from "./state/supported/SupportedOperatingNodeState.ts";
 import OperatingNodeDisplayer from "./displayer/OperatingNodeDisplayer.svelte";
+import type {Edge} from "../../edge/Edge.ts";
 export class OperatingNode<InputEdgeCount extends number> extends Node<
 	SupportedOperatingNodeState<InputEdgeCount>
 > {
+	public override disconnectInputEdges(): void {
+		this.inputEdges = new Array(this.inputEdges.length).fill(
+			null,
+		) as unknown as readonly Edge[] & {readonly length: InputEdgeCount};
+	}
 	public constructor(
 		inputEdgeCount: InputEdgeCount,
 		name: string,
@@ -21,6 +27,9 @@ export class OperatingNode<InputEdgeCount extends number> extends Node<
 			new ManualInvalidAndNoOperatorOperatingNodeState(stepCount),
 		);
 		this.availableOperators = availableOperators;
+		this.inputEdges = new Array(inputEdgeCount).fill(
+			null,
+		) as unknown as readonly Edge[] & {readonly length: InputEdgeCount};
 	}
 	public readonly availableOperators: readonly Operator<InputEdgeCount>[];
 	public doManualSteps(): void {
@@ -64,9 +73,29 @@ export class OperatingNode<InputEdgeCount extends number> extends Node<
 	public unsetOperator(): void {
 		this.state = this.state.unsetOperator(this.outputEdges);
 	}
-	private validateInputImages(
-		inputImages: readonly ImageData[] & {readonly length: InputEdgeCount},
-	): void {
-		this.state = this.state.validateInputImages(inputImages, this.outputEdges);
+	public tryToValidateInputEdges(): void {
+		if (
+			this.inputEdges.every((edge) => {
+				return edge !== null && edge.image !== null;
+			})
+		) {
+			this.state = this.state.validateInputImages(
+				this.inputEdges.map((edge) => {
+					return (edge as Edge & {image: ImageData}).image;
+				}) as unknown as readonly ImageData[] & {
+					readonly length: InputEdgeCount;
+				},
+				this.outputEdges,
+			);
+		}
+	}
+	private inputEdges: readonly (Edge | null)[] & {
+		readonly length: InputEdgeCount;
+	};
+	public unsetInputEdge(index: number): void {
+		this.inputEdges = this.inputEdges.with(
+			index,
+			null,
+		) as unknown as readonly Edge[] & {readonly length: InputEdgeCount};
 	}
 }

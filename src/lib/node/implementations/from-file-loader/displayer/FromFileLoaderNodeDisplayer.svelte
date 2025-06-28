@@ -2,7 +2,9 @@
 	import type {Coordinates} from "../../../../coordinates/Coordinates.ts";
 	import type {SupportedBoardMode} from "../../../../mode/supported/SupportedBoardMode.ts";
 	import NodeDisplayer from "../../../displayer/NodeDisplayer.svelte";
+	import type {Node} from "../../../Node.svelte.ts";
 	import Canvas from "../../../operating/state/displayer/canvas/Canvas.svelte";
+	import {NodeState} from "../../../state/NodeState.ts";
 	import type {FromFileLoaderNode} from "../FromFileLoaderNode.ts";
 	import {LoadingDonedFromFileLoaderNodeState} from "../state/implementations/loading-doned/LoadingDonedFromFileLoaderNodeState.ts";
 	const {
@@ -14,21 +16,21 @@
 		onSetOutputRequest,
 		boardMode,
 	}: {
-		readonly onDeleteRequest: (node: Node) => void;
+		readonly onDeleteRequest: (node: Node<NodeState>) => void;
 		readonly node: FromFileLoaderNode;
 		readonly boardMode: null | SupportedBoardMode;
 		readonly onMouseLeftButtonDown: (
-			node: Node,
+			node: Node<NodeState>,
 			mouseCursorInViewportPosition: Coordinates,
 		) => void;
-		readonly onMouseLeftButtonUp: (node: Node) => void;
+		readonly onMouseLeftButtonUp: (node: Node<NodeState>) => void;
 		readonly onSetInputRequest: (
 			index: number,
-			nodeInRequest: Node,
+			nodeInRequest: Node<NodeState>,
 			inViewportPosition: Coordinates,
 		) => void;
 		readonly onSetOutputRequest: (
-			nodeInRequest: Node,
+			nodeInRequest: Node<NodeState>,
 			inViewportPosition: Coordinates,
 		) => void;
 	} = $props();
@@ -44,7 +46,6 @@
 	{onDeleteRequest}
 	{onMouseLeftButtonDown}
 	{onMouseLeftButtonUp}
-	{onSetInputRequest}
 	{onSetOutputRequest}
 	{boardMode}
 	{node}
