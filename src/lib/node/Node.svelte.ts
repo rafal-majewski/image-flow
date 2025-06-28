@@ -8,9 +8,6 @@ import type {NodeId} from "./id/NodeId.ts";
 import {generateNodeId} from "./id/generation/generateNodeId.ts";
 import type {OperatingNode} from "./operating/OperatingNode.svelte.ts";
 export abstract class Node<NodeStateToUse extends NodeState> {
-	public useEdgeBuilder(builder: UnhandledEdgeBuilder): void {
-		this.state.useEdgeBuilder(builder.handleInput(this));
-	}
 	protected constructor(
 		displayer: Component<{
 			onDeleteRequest: (node: Node<NodeState>) => void;
@@ -41,23 +38,23 @@ export abstract class Node<NodeStateToUse extends NodeState> {
 		this.position = $state.raw(position);
 		this.state = $state.raw(state);
 	}
-	public disconnect(): void {
-		this.disconnectOutputEdges();
-		this.disconnectInputEdges();
+	public addOutputEdge(edge: Edge): void {
+		this.outputEdges = [...this.outputEdges, edge];
 	}
-	public disconnectOutputEdges(): void {
-		for (const edge of this.outputEdges) {
-			edge.delete();
-		}
-	}
-	public abstract disconnectInputEdges(): void;
 	public deleteOutputEdge(edge: Edge): void {
 		this.outputEdges = this.outputEdges.filter((edge) => {
 			return edge !== edge;
 		});
 	}
-	public addOutputEdge(edge: Edge): void {
-		this.outputEdges = [...this.outputEdges, edge];
+	public disconnect(): void {
+		this.disconnectOutputEdges();
+		this.disconnectInputEdges();
+	}
+	public abstract disconnectInputEdges(): void;
+	public disconnectOutputEdges(): void {
+		for (const edge of this.outputEdges) {
+			edge.delete();
+		}
 	}
 	public readonly displayer: Component<{
 		onDeleteRequest: (node: Node<NodeState>) => void;
@@ -88,4 +85,7 @@ export abstract class Node<NodeStateToUse extends NodeState> {
 	 * Do not reassign externally.
 	 */
 	public state: NodeStateToUse;
+	public useEdgeBuilder(builder: UnhandledEdgeBuilder): void {
+		this.state.useEdgeBuilder(builder.handleInput(this));
+	}
 }

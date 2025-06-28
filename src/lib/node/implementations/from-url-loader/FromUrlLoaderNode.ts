@@ -9,7 +9,6 @@ import {loadUrl} from "./loading-url/loadUrl.ts";
 import {NoUrlFromUrlLoaderNodeState} from "./state/implementations/no-url/NoUrlFromUrlLoaderNodeState.ts";
 import type {SupportedFromUrlLoaderNodeState} from "./state/supported/SupportedFromUrlLoaderNodeState.ts";
 export class FromUrlLoaderNode extends Node<SupportedFromUrlLoaderNodeState> {
-	public override disconnectInputEdges(): void {}
 	public constructor(position: Coordinates) {
 		super(
 			(...parameters) => {
@@ -24,6 +23,7 @@ export class FromUrlLoaderNode extends Node<SupportedFromUrlLoaderNodeState> {
 			new NoUrlFromUrlLoaderNodeState(),
 		);
 	}
+	public override disconnectInputEdges(): void {}
 	public async setUrl(url: string): Promise<void> {
 		const loadingStartedState = this.state.startLoading(this.outputEdges);
 		this.state = loadingStartedState;

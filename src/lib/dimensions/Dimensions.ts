@@ -4,6 +4,9 @@ export class Dimensions {
 		this.width = width;
 		this.height = height;
 	}
+	public convertToCoordinates(): Coordinates {
+		return new Coordinates(this.width, this.height);
+	}
 	public divideBy(scalar: number): Dimensions {
 		return new Dimensions(this.width / scalar, this.height / scalar);
 	}
@@ -12,7 +15,4 @@ export class Dimensions {
 		return new Dimensions(this.width * scalar, this.height * scalar);
 	}
 	public readonly width: number;
-	public convertToCoordinates(): Coordinates {
-		return new Coordinates(this.width, this.height);
-	}
 }

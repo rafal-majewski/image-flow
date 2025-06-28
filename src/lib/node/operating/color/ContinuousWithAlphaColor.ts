@@ -31,6 +31,20 @@ export class ContinuousWithAlphaColor {
 	}
 	public readonly alphaComponent: ContinuousColorComponent;
 	public readonly blueComponent: ContinuousColorComponent;
+	public combineWithColor(
+		combiner: (
+			component1: ContinuousColorComponent,
+			component2: ContinuousColorComponent,
+		) => ContinuousColorComponent,
+		color: ContinuousWithAlphaColor,
+	): ContinuousWithAlphaColor {
+		return new ContinuousWithAlphaColor(
+			combiner(this.redComponent, color.redComponent),
+			combiner(this.greenComponent, color.greenComponent),
+			combiner(this.blueComponent, color.blueComponent),
+			combiner(this.alphaComponent, color.alphaComponent),
+		);
+	}
 	public convertToDiscrete(): DiscreteWithAlphaColor {
 		return new DiscreteWithAlphaColor(
 			convertContinuousColorComponentToDiscreteColorComponent(
@@ -56,6 +70,17 @@ export class ContinuousWithAlphaColor {
 		);
 	}
 	public readonly greenComponent: ContinuousColorComponent;
+	public mixWithColor(
+		weightOfOtherColor: ContinuousColorComponent,
+		otherColor: ContinuousWithAlphaColor,
+	): ContinuousWithAlphaColor {
+		return this.combineWithColor((thisColorComponent, otherColorComponent) => {
+			return (
+				thisColorComponent * (1 - weightOfOtherColor)
+				+ otherColorComponent * weightOfOtherColor
+			);
+		}, otherColor);
+	}
 	public multiplyByColor(
 		color: ContinuousWithAlphaColor,
 	): ContinuousWithAlphaColor {
@@ -100,31 +125,6 @@ export class ContinuousWithAlphaColor {
 			this.redComponent,
 			this.greenComponent,
 			this.blueComponent,
-		);
-	}
-	public mixWithColor(
-		weightOfOtherColor: ContinuousColorComponent,
-		otherColor: ContinuousWithAlphaColor,
-	): ContinuousWithAlphaColor {
-		return this.combineWithColor((thisColorComponent, otherColorComponent) => {
-			return (
-				thisColorComponent * (1 - weightOfOtherColor)
-				+ otherColorComponent * weightOfOtherColor
-			);
-		}, otherColor);
-	}
-	public combineWithColor(
-		combiner: (
-			component1: ContinuousColorComponent,
-			component2: ContinuousColorComponent,
-		) => ContinuousColorComponent,
-		color: ContinuousWithAlphaColor,
-	): ContinuousWithAlphaColor {
-		return new ContinuousWithAlphaColor(
-			combiner(this.redComponent, color.redComponent),
-			combiner(this.greenComponent, color.greenComponent),
-			combiner(this.blueComponent, color.blueComponent),
-			combiner(this.alphaComponent, color.alphaComponent),
 		);
 	}
 }

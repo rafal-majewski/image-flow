@@ -8,13 +8,6 @@ import type {Edge} from "../../edge/Edge.ts";
 export class OperatingNode<InputEdgeCount extends number> extends Node<
 	SupportedOperatingNodeState<InputEdgeCount>
 > {
-	public override disconnectInputEdges(): void {
-		for (const edge of this.inputEdges) {
-			if (edge !== null) {
-				edge.delete();
-			}
-		}
-	}
 	public constructor(
 		inputEdgeCount: InputEdgeCount,
 		name: string,
@@ -41,23 +34,27 @@ export class OperatingNode<InputEdgeCount extends number> extends Node<
 		this.tryToValidateInputEdges();
 	}
 	public readonly availableOperators: readonly Operator<InputEdgeCount>[];
-	public doManualSteps(): void {
-		this.state = this.state.doManualSteps(this.outputEdges);
-	}
-	public invalidateInputImages(): void {
-		this.state = this.state.invalidateInputImages(this.outputEdges);
-	}
 	public deleteInputEdge(index: number): void {
 		this.inputEdges = this.inputEdges.with(
 			index,
 			null,
 		) as unknown as readonly Edge[] & {readonly length: InputEdgeCount};
 	}
-	public setInputEdge(edge: Edge, index: number): void {
-		this.inputEdges = this.inputEdges.with(
-			index,
-			edge,
-		) as unknown as readonly Edge[] & {readonly length: InputEdgeCount};
+	public override disconnectInputEdges(): void {
+		for (const edge of this.inputEdges) {
+			if (edge !== null) {
+				edge.delete();
+			}
+		}
+	}
+	public doManualSteps(): void {
+		this.state = this.state.doManualSteps(this.outputEdges);
+	}
+	public inputEdges: readonly (Edge | null)[] & {
+		readonly length: InputEdgeCount;
+	};
+	public invalidateInputImages(): void {
+		this.state = this.state.invalidateInputImages(this.outputEdges);
 	}
 	public makeAnimated(): void {
 		const intervalIntervalSeconds = 0.001;
@@ -76,6 +73,12 @@ export class OperatingNode<InputEdgeCount extends number> extends Node<
 	public resetOutputImage(): void {
 		this.state = this.state.resetOutputImage(this.outputEdges);
 	}
+	public setInputEdge(edge: Edge, index: number): void {
+		this.inputEdges = this.inputEdges.with(
+			index,
+			edge,
+		) as unknown as readonly Edge[] & {readonly length: InputEdgeCount};
+	}
 	public setIntervalInterval(intervalIntervalSeconds: number): void {
 		const intervalId = setInterval(() => {
 			this.state = this.state.doAnimatedStep(this.outputEdges);
@@ -90,9 +93,6 @@ export class OperatingNode<InputEdgeCount extends number> extends Node<
 	}
 	public setStepCount(stepCount: number): void {
 		this.state = this.state.setStepCount(stepCount);
-	}
-	public unsetOperator(): void {
-		this.state = this.state.unsetOperator(this.outputEdges);
 	}
 	public tryToValidateInputEdges(): void {
 		if (
@@ -110,13 +110,13 @@ export class OperatingNode<InputEdgeCount extends number> extends Node<
 			);
 		}
 	}
-	public inputEdges: readonly (Edge | null)[] & {
-		readonly length: InputEdgeCount;
-	};
 	public unsetInputEdge(index: number): void {
 		this.inputEdges = this.inputEdges.with(
 			index,
 			null,
 		) as unknown as readonly Edge[] & {readonly length: InputEdgeCount};
+	}
+	public unsetOperator(): void {
+		this.state = this.state.unsetOperator(this.outputEdges);
 	}
 }

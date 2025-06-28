@@ -13,8 +13,8 @@ export class ContinuousWithoutAlphaColorBuilder {
 		this.greenComponent = greenComponent;
 		this.blueComponent = blueComponent;
 	}
-	public addColor(
-		color: ContinuousWithoutAlphaColor,
+	public addBuilder(
+		color: ContinuousWithoutAlphaColorBuilder,
 	): ContinuousWithoutAlphaColorBuilder {
 		return new ContinuousWithoutAlphaColorBuilder(
 			this.redComponent + color.redComponent,
@@ -22,8 +22,8 @@ export class ContinuousWithoutAlphaColorBuilder {
 			this.blueComponent + color.blueComponent,
 		);
 	}
-	public addBuilder(
-		color: ContinuousWithoutAlphaColorBuilder,
+	public addColor(
+		color: ContinuousWithoutAlphaColor,
 	): ContinuousWithoutAlphaColorBuilder {
 		return new ContinuousWithoutAlphaColorBuilder(
 			this.redComponent + color.redComponent,
@@ -64,6 +64,15 @@ export class ContinuousWithoutAlphaColorBuilder {
 			);
 		}, otherColor);
 	}
+	public multiplyBy(
+		factor: ContinuousColorBuilderComponent,
+	): ContinuousWithoutAlphaColorBuilder {
+		return new ContinuousWithoutAlphaColorBuilder(
+			this.redComponent * factor,
+			this.greenComponent * factor,
+			this.blueComponent * factor,
+		);
+	}
 	public readonly redComponent: ContinuousColorComponent;
 	public subtractColor(
 		color: ContinuousWithAlphaColor,
@@ -72,15 +81,6 @@ export class ContinuousWithoutAlphaColorBuilder {
 			this.redComponent - color.redComponent,
 			this.greenComponent - color.greenComponent,
 			this.blueComponent - color.blueComponent,
-		);
-	}
-	public multiplyBy(
-		factor: ContinuousColorBuilderComponent,
-	): ContinuousWithoutAlphaColorBuilder {
-		return new ContinuousWithoutAlphaColorBuilder(
-			this.redComponent * factor,
-			this.greenComponent * factor,
-			this.blueComponent * factor,
 		);
 	}
 }

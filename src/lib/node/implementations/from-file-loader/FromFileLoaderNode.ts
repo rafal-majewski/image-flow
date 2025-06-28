@@ -5,7 +5,6 @@ import {loadFile} from "./loading-file/loadFile.ts";
 import type {FromFileLoaderNodeState} from "./state/FromFileLoaderNodeState.ts";
 import {NoFileFromFileLoaderNodeState} from "./state/implementations/no-file/NoFileFromFileLoaderNodeState.ts";
 export class FromFileLoaderNode extends Node<FromFileLoaderNodeState> {
-	public override disconnectInputEdges(): void {}
 	public constructor(position: Coordinates) {
 		super(
 			(...parameters) => {
@@ -20,6 +19,7 @@ export class FromFileLoaderNode extends Node<FromFileLoaderNodeState> {
 			new NoFileFromFileLoaderNodeState(),
 		);
 	}
+	public override disconnectInputEdges(): void {}
 	public async setFile(file: File): Promise<void> {
 		const loadingStartedState = this.state.startLoading(this.outputEdges);
 		this.state = loadingStartedState;

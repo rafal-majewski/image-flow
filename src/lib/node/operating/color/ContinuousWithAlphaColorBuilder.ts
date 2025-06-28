@@ -26,16 +26,12 @@ export class ContinuousWithAlphaColorBuilder {
 	}
 	public readonly alphaComponent: ContinuousColorComponent;
 	public readonly blueComponent: ContinuousColorComponent;
-	public readonly greenComponent: ContinuousColorComponent;
-	public readonly redComponent: ContinuousColorComponent;
-	public subtractColor(
-		color: ContinuousWithAlphaColor,
-	): ContinuousWithAlphaColorBuilder {
-		return new ContinuousWithAlphaColorBuilder(
-			this.redComponent - color.redComponent,
-			this.greenComponent - color.greenComponent,
-			this.blueComponent - color.blueComponent,
-			this.alphaComponent - color.alphaComponent,
+	public build(): ContinuousWithAlphaColor {
+		return new ContinuousWithAlphaColor(
+			sanitizeContinuousColorComponent(this.redComponent),
+			sanitizeContinuousColorComponent(this.greenComponent),
+			sanitizeContinuousColorComponent(this.blueComponent),
+			sanitizeContinuousColorComponent(this.alphaComponent),
 		);
 	}
 	public divideByFactor(factor: number): ContinuousWithAlphaColorBuilder {
@@ -46,12 +42,16 @@ export class ContinuousWithAlphaColorBuilder {
 			this.alphaComponent / factor,
 		);
 	}
-	public build(): ContinuousWithAlphaColor {
-		return new ContinuousWithAlphaColor(
-			sanitizeContinuousColorComponent(this.redComponent),
-			sanitizeContinuousColorComponent(this.greenComponent),
-			sanitizeContinuousColorComponent(this.blueComponent),
-			sanitizeContinuousColorComponent(this.alphaComponent),
+	public readonly greenComponent: ContinuousColorComponent;
+	public readonly redComponent: ContinuousColorComponent;
+	public subtractColor(
+		color: ContinuousWithAlphaColor,
+	): ContinuousWithAlphaColorBuilder {
+		return new ContinuousWithAlphaColorBuilder(
+			this.redComponent - color.redComponent,
+			this.greenComponent - color.greenComponent,
+			this.blueComponent - color.blueComponent,
+			this.alphaComponent - color.alphaComponent,
 		);
 	}
 }

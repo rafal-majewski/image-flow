@@ -22,9 +22,9 @@ export class Edge {
 	 * Do not reassign externally.
 	 */
 	public image: ImageData | null;
-	public readonly outputInputIndex: number;
 	public readonly input: Node<NodeState>;
 	public readonly output: OperatingNode<number>;
+	public readonly outputInputIndex: number;
 	public setImage(newImage: ImageData): void {
 		this.image = newImage;
 		this.output.tryToValidateInputEdges();

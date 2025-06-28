@@ -8,9 +8,6 @@ export class Kernel
 	implements
 		Iterable<{relativeToAnchorPosition: Coordinates; multiplier: number}>
 {
-	readonly anchorPosition: Coordinates;
-	readonly multipliers: KernelMultipliers;
-	readonly dimensions: Dimensions;
 	public constructor(
 		anchorPosition: Coordinates,
 		multipliers: KernelMultipliers,
@@ -19,6 +16,9 @@ export class Kernel
 		this.multipliers = multipliers;
 		this.dimensions = computeDimensions(multipliers);
 	}
+	readonly anchorPosition: Coordinates;
+	readonly dimensions: Dimensions;
+	readonly multipliers: KernelMultipliers;
 	public rotateBy180DegreesClockwise(): Kernel {
 		return new Kernel(
 			rotateAnchorPositionBy180DegreesClockwise(
@@ -64,33 +64,18 @@ export class Kernel
 	public withNewMultipliers(newMultipliers: KernelMultipliers): Kernel {
 		return new Kernel(this.anchorPosition, newMultipliers);
 	}
-	public withNewMultipliersRow(rowNumber: number): Kernel {
-		const newRow = this.multipliers[0].map(() => {
-			return 0;
-		}) as unknown as KernelMultipliers[number];
-		const newMultipliers = [
-			...this.multipliers.slice(0, rowNumber),
+	public withNewMultipliersCell(
+		cellPosition: Coordinates,
+		cellValue: number,
+	): Kernel {
+		const newRow = (
+			this.multipliers[cellPosition.y] as KernelMultipliers[number]
+		).with(cellPosition.x, cellValue) as unknown as KernelMultipliers[number];
+		const newMultipliers = this.multipliers.with(
+			cellPosition.y,
 			newRow,
-			...this.multipliers.slice(rowNumber),
-		] as unknown as KernelMultipliers;
-		const newAnchorY =
-			this.anchorPosition.y + (rowNumber <= this.anchorPosition.y ? 1 : 0);
-		return new Kernel(
-			new Coordinates(this.anchorPosition.x, newAnchorY),
-			newMultipliers,
-		);
-	}
-	public withoutMultipliersRow(rowNumber: number): Kernel {
-		const newMultipliers = [
-			...this.multipliers.slice(0, rowNumber),
-			...this.multipliers.slice(rowNumber + 1),
-		] as unknown as KernelMultipliers;
-		const newAnchorY =
-			this.anchorPosition.y - (rowNumber < this.anchorPosition.y ? 1 : 0);
-		return new Kernel(
-			new Coordinates(this.anchorPosition.x, newAnchorY),
-			newMultipliers,
-		);
+		) as unknown as KernelMultipliers;
+		return new Kernel(this.anchorPosition, newMultipliers);
 	}
 	public withNewMultipliersColumn(columnNumber: number): Kernel {
 		const newMultipliers = this.multipliers.map((row) => {
@@ -104,6 +89,22 @@ export class Kernel
 			this.anchorPosition.x + (columnNumber <= this.anchorPosition.x ? 1 : 0);
 		return new Kernel(
 			new Coordinates(newAnchorX, this.anchorPosition.y),
+			newMultipliers,
+		);
+	}
+	public withNewMultipliersRow(rowNumber: number): Kernel {
+		const newRow = this.multipliers[0].map(() => {
+			return 0;
+		}) as unknown as KernelMultipliers[number];
+		const newMultipliers = [
+			...this.multipliers.slice(0, rowNumber),
+			newRow,
+			...this.multipliers.slice(rowNumber),
+		] as unknown as KernelMultipliers;
+		const newAnchorY =
+			this.anchorPosition.y + (rowNumber <= this.anchorPosition.y ? 1 : 0);
+		return new Kernel(
+			new Coordinates(this.anchorPosition.x, newAnchorY),
 			newMultipliers,
 		);
 	}
@@ -121,17 +122,16 @@ export class Kernel
 			newMultipliers,
 		);
 	}
-	public withNewMultipliersCell(
-		cellPosition: Coordinates,
-		cellValue: number,
-	): Kernel {
-		const newRow = (
-			this.multipliers[cellPosition.y] as KernelMultipliers[number]
-		).with(cellPosition.x, cellValue) as unknown as KernelMultipliers[number];
-		const newMultipliers = this.multipliers.with(
-			cellPosition.y,
-			newRow,
-		) as unknown as KernelMultipliers;
-		return new Kernel(this.anchorPosition, newMultipliers);
+	public withoutMultipliersRow(rowNumber: number): Kernel {
+		const newMultipliers = [
+			...this.multipliers.slice(0, rowNumber),
+			...this.multipliers.slice(rowNumber + 1),
+		] as unknown as KernelMultipliers;
+		const newAnchorY =
+			this.anchorPosition.y - (rowNumber < this.anchorPosition.y ? 1 : 0);
+		return new Kernel(
+			new Coordinates(this.anchorPosition.x, newAnchorY),
+			newMultipliers,
+		);
 	}
 }
