@@ -9,14 +9,12 @@ import {DiscreteFourierTransformMapperOperator} from "./operator/implementations
 import {GameOfLifeMapperOperatorClassicColorComponentComputer} from "./operator/implementations/game-of-life/color-component-computer/implementations/classic/GameOfLifeMapperOperatorClassicColorComponentComputer.ts";
 import {GameOfLifeMapperOperator} from "./operator/implementations/game-of-life/GameOfLifeMapperOperator.ts";
 import {GrayscalingMapperOperator} from "./operator/implementations/grayscaling/GrayscalingMapperOperator.ts";
-import {LinearScalingMapperOperator} from "./operator/implementations/linear-scaling/LinearScalingMapperOperator.ts";
 import {NearestNeighborScalingMapperOperator} from "./operator/implementations/nearest-neighbor-scaling/NearestNeighborScalingMapperOperator.ts";
 export const mapperOperators = [
 	new GrayscalingMapperOperator(
 		new ContinuousWithoutAlphaColor(0.21, 0.72, 0.07),
 	),
 	new NearestNeighborScalingMapperOperator(new Dimensions(300, 300)),
-	new LinearScalingMapperOperator(new Dimensions(300, 300)),
 	new DiscreteFourierTransformMapperOperator(
 		new Dimensions(31, 31),
 		-1,
