@@ -21,6 +21,21 @@ export class Coordinates {
 			this.y - otherCoordinates.y,
 		);
 	}
+	public negate(): Coordinates {
+		return new Coordinates(-this.x, -this.y);
+	}
+	public multiplyCoordinateWise(otherCoordinates: Coordinates): Coordinates {
+		return new Coordinates(
+			this.x * otherCoordinates.x,
+			this.y * otherCoordinates.y,
+		);
+	}
+	public computeDotProduct(otherCoordinates: Coordinates): number {
+		return this.multiplyCoordinateWise(otherCoordinates).sumCoordinates();
+	}
+	public sumCoordinates(): number {
+		return this.x + this.y;
+	}
 	public readonly x: number;
 	public readonly y: number;
 }
