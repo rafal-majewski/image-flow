@@ -64,13 +64,13 @@ export class ContinuousWithoutAlphaColorBuilder {
 			);
 		}, otherColor);
 	}
-	public multiplyBy(
-		factor: ContinuousColorBuilderComponent,
+	public multiplyByNumber(
+		number_: ContinuousColorBuilderComponent,
 	): ContinuousWithoutAlphaColorBuilder {
 		return new ContinuousWithoutAlphaColorBuilder(
-			this.redComponent * factor,
-			this.greenComponent * factor,
-			this.blueComponent * factor,
+			this.redComponent * number_,
+			this.greenComponent * number_,
+			this.blueComponent * number_,
 		);
 	}
 	public readonly redComponent: ContinuousColorComponent;

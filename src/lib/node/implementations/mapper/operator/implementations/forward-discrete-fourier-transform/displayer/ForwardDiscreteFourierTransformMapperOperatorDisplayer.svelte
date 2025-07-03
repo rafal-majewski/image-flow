@@ -1,20 +1,20 @@
 <script lang="ts">
 	import {Dimensions} from "../../../../../../../dimensions/Dimensions.ts";
 	import type {NodeId} from "../../../../../../id/NodeId.ts";
-	import type {DiscreteFourierTransformMapperOperator} from "../DiscreteFourierTransformMapperOperator.ts";
+	import type {ForwardDiscreteFourierTransformMapperOperator} from "../ForwardDiscreteFourierTransformMapperOperator.ts";
 	const {
 		operator,
 		onSetOperatorRequest,
 		nodeId,
 	}: {
-		readonly operator: DiscreteFourierTransformMapperOperator;
+		readonly operator: ForwardDiscreteFourierTransformMapperOperator;
 		readonly onSetOperatorRequest: (
-			operator: DiscreteFourierTransformMapperOperator,
+			operator: ForwardDiscreteFourierTransformMapperOperator,
 		) => void;
 		readonly nodeId: NodeId;
 	} = $props();
 	function handleWidthInputChange(
-		event: Event & {currentTarget: HTMLInputElement},
+		event: Event & {readonly currentTarget: HTMLInputElement},
 	): void {
 		onSetOperatorRequest(
 			operator.withNewOutputImageDimensions(
@@ -26,7 +26,7 @@
 		);
 	}
 	function handleHeightInputChange(
-		event: Event & {currentTarget: HTMLInputElement},
+		event: Event & {readonly currentTarget: HTMLInputElement},
 	): void {
 		onSetOperatorRequest(
 			operator.withNewOutputImageDimensions(
@@ -146,16 +146,12 @@
 				a_x
 				<input
 					type="number"
-					step="0.01"
+					min="1"
+					step="1"
 					value={operator.a_x}
 					onchange={(event) => {
 						onSetOperatorRequest(
-							operator.withNewPositionCoefficients(
-								event.currentTarget.valueAsNumber,
-								operator.b_x,
-								operator.a_y,
-								operator.b_y,
-							),
+							operator.withNewA_x(event.currentTarget.valueAsNumber),
 						);
 					}}
 				/>
@@ -168,12 +164,7 @@
 					value={operator.b_x}
 					onchange={(event) => {
 						onSetOperatorRequest(
-							operator.withNewPositionCoefficients(
-								operator.a_x,
-								event.currentTarget.valueAsNumber,
-								operator.a_y,
-								operator.b_y,
-							),
+							operator.withNewB_x(event.currentTarget.valueAsNumber),
 						);
 					}}
 				/>
@@ -182,16 +173,12 @@
 				a_y
 				<input
 					type="number"
-					step="0.01"
+					min="1"
+					step="1"
 					value={operator.a_y}
 					onchange={(event) => {
 						onSetOperatorRequest(
-							operator.withNewPositionCoefficients(
-								operator.a_x,
-								operator.b_x,
-								event.currentTarget.valueAsNumber,
-								operator.b_y,
-							),
+							operator.withNewA_y(event.currentTarget.valueAsNumber),
 						);
 					}}
 				/>
@@ -204,20 +191,49 @@
 					value={operator.b_y}
 					onchange={(event) => {
 						onSetOperatorRequest(
-							operator.withNewPositionCoefficients(
-								operator.a_x,
-								operator.b_x,
-								operator.a_y,
-								event.currentTarget.valueAsNumber,
-							),
+							operator.withNewB_y(event.currentTarget.valueAsNumber),
 						);
 					}}
 				/>
 			</label>
 		</div>
 		<small>
-			These coefficients control the transformation: a_x * x + b_x, a_y * y +
+			These coefficients control the transformation: x / a_x + b_x, y / a_y +
 			b_y for input positions.
+		</small>
+	</fieldset>
+	<fieldset>
+		<legend>Input value bounds</legend>
+		<div style="display: flex; flex-direction: row; gap: 1em;">
+			<label>
+				Lower bound
+				<input
+					type="number"
+					step="0.01"
+					value={operator.lowerBound}
+					onchange={(event) => {
+						onSetOperatorRequest(
+							operator.withNewLowerBound(event.currentTarget.valueAsNumber),
+						);
+					}}
+				/>
+			</label>
+			<label>
+				Upper bound
+				<input
+					type="number"
+					step="0.01"
+					value={operator.upperBound}
+					onchange={(event) => {
+						onSetOperatorRequest(
+							operator.withNewUpperBound(event.currentTarget.valueAsNumber),
+						);
+					}}
+				/>
+			</label>
+		</div>
+		<small>
+			Input image values will be mapped to the range [lower bound, upper bound].
 		</small>
 	</fieldset>
 </section>

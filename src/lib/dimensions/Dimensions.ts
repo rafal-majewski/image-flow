@@ -7,12 +7,12 @@ export class Dimensions {
 	public convertToCoordinates(): Coordinates {
 		return new Coordinates(this.width, this.height);
 	}
-	public divideBy(scalar: number): Dimensions {
-		return new Dimensions(this.width / scalar, this.height / scalar);
+	public divideByNumber(number_: number): Dimensions {
+		return new Dimensions(this.width / number_, this.height / number_);
 	}
 	public readonly height: number;
-	public multiplyBy(scalar: number): Dimensions {
-		return new Dimensions(this.width * scalar, this.height * scalar);
+	public multiplyByNumber(number_: number): Dimensions {
+		return new Dimensions(this.width * number_, this.height * number_);
 	}
 	public readonly width: number;
 }

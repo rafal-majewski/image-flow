@@ -5,11 +5,13 @@ export function computeInBoardPositionFromInViewportPosition(
 	cameraPosition: Coordinates,
 ): Coordinates {
 	return inViewportPosition
-		.subtract(
-			new Coordinates(
-				boardBoundingBox.x + boardBoundingBox.width / 2,
-				boardBoundingBox.y + boardBoundingBox.height / 2,
+		.subtractCoordinates(
+			new Coordinates(boardBoundingBox.x, boardBoundingBox.y).addCoordinates(
+				new Coordinates(
+					boardBoundingBox.width,
+					boardBoundingBox.height,
+				).divideByNumber(2),
 			),
 		)
-		.add(cameraPosition);
+		.addCoordinates(cameraPosition);
 }

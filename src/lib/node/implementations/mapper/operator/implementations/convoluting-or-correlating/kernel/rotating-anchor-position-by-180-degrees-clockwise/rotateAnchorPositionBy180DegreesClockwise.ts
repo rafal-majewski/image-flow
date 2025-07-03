@@ -6,6 +6,6 @@ export function rotateAnchorPositionBy180DegreesClockwise(
 ): Coordinates {
 	return multipliersDimensions
 		.convertToCoordinates()
-		.subtract(new Coordinates(1, 1))
-		.subtract(anchorPosition);
+		.subtractCoordinates(new Coordinates(1, 1))
+		.subtractCoordinates(anchorPosition);
 }

@@ -10,7 +10,7 @@ export function useKernel(
 ): ContinuousWithoutAlphaColor {
 	let sum = new ContinuousWithoutAlphaColorBuilder(0, 0, 0);
 	for (const {relativeToAnchorPosition, multiplier} of kernel) {
-		const inInputImagePosition = inOutputImagePosition.add(
+		const inInputImagePosition = inOutputImagePosition.addCoordinates(
 			relativeToAnchorPosition,
 		);
 		const inInputImageColor = readWithoutAlphaColorFromImageAtPosition(
@@ -18,7 +18,7 @@ export function useKernel(
 			inInputImagePosition,
 		).convertToContinuous();
 		sum = sum.addBuilder(
-			inInputImageColor.convertToBuilder().multiplyBy(multiplier),
+			inInputImageColor.convertToBuilder().multiplyByNumber(multiplier),
 		);
 	}
 	return sum.build();

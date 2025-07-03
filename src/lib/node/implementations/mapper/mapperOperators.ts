@@ -5,7 +5,8 @@ import {AverageBlurringMapperOperator} from "./operator/implementations/average-
 import {ConvolutingOrCorrelatingMapperOperator} from "./operator/implementations/convoluting-or-correlating/ConvolutingOrCorrelatingMapperOperator.ts";
 import {Kernel} from "./operator/implementations/convoluting-or-correlating/kernel/Kernel.ts";
 import {correlatingRotationApplier} from "./operator/implementations/convoluting-or-correlating/rotation-applier/implementations/correlating/instance/correlatingRotationApplier.ts";
-import {DiscreteFourierTransformMapperOperator} from "./operator/implementations/discrete-fourier-transform/DiscreteFourierTransformMapperOperator.ts";
+import {ForwardDiscreteFourierTransformMapperOperator} from "./operator/implementations/forward-discrete-fourier-transform/ForwardDiscreteFourierTransformMapperOperator.ts";
+import {ForwardThenInverseDiscreteFourierTransformMapperOperator} from "./operator/implementations/forward-then-inverse/ForwardThenInverseDiscreteFourierTransformMapperOperator.ts";
 import {GameOfLifeMapperOperatorClassicColorComponentComputer} from "./operator/implementations/game-of-life/color-component-computer/implementations/classic/GameOfLifeMapperOperatorClassicColorComponentComputer.ts";
 import {GameOfLifeMapperOperator} from "./operator/implementations/game-of-life/GameOfLifeMapperOperator.ts";
 import {GrayscalingMapperOperator} from "./operator/implementations/grayscaling/GrayscalingMapperOperator.ts";
@@ -15,14 +16,26 @@ export const mapperOperators = [
 		new ContinuousWithoutAlphaColor(0.21, 0.72, 0.07),
 	),
 	new NearestNeighborScalingMapperOperator(new Dimensions(300, 300)),
-	new DiscreteFourierTransformMapperOperator(
+	new ForwardDiscreteFourierTransformMapperOperator(
 		new Dimensions(31, 31),
 		-1,
-		1 / 31,
+		31,
 		0,
-		1 / 31,
+		31,
 		0,
 		"magnitude",
+		0,
+		1,
+	),
+	new ForwardThenInverseDiscreteFourierTransformMapperOperator(
+		new Dimensions(31, 31),
+		new Dimensions(31, 31),
+		31,
+		0,
+		31,
+		0,
+		0,
+		1,
 	),
 	new GameOfLifeMapperOperator(
 		new GameOfLifeMapperOperatorClassicColorComponentComputer(),

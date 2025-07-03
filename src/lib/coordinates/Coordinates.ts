@@ -3,37 +3,49 @@ export class Coordinates {
 		this.x = x;
 		this.y = y;
 	}
-	public add(otherCoordinates: Coordinates): Coordinates {
+	public addCoordinates(otherCoordinates: Coordinates): Coordinates {
 		return new Coordinates(
 			this.x + otherCoordinates.x,
 			this.y + otherCoordinates.y,
 		);
 	}
-	public divideBy(scalar: number): Coordinates {
-		return new Coordinates(this.x / scalar, this.y / scalar);
-	}
-	public multiplyBy(scalar: number): Coordinates {
-		return new Coordinates(this.x * scalar, this.y * scalar);
-	}
-	public subtract(otherCoordinates: Coordinates): Coordinates {
+	public divideByCoordinatesComponentWise(
+		otherCoordinates: Coordinates,
+	): Coordinates {
 		return new Coordinates(
-			this.x - otherCoordinates.x,
-			this.y - otherCoordinates.y,
+			this.x / otherCoordinates.x,
+			this.y / otherCoordinates.y,
 		);
 	}
-	public negate(): Coordinates {
-		return new Coordinates(-this.x, -this.y);
+	public divideByNumber(number_: number): Coordinates {
+		return new Coordinates(this.x / number_, this.y / number_);
 	}
-	public multiplyCoordinateWise(otherCoordinates: Coordinates): Coordinates {
+	public dotProduct(otherCoordinates: Coordinates): number {
+		return this.multiplyByCoordinatesComponentWise(
+			otherCoordinates,
+		).sumComponents();
+	}
+	public multiplyByCoordinatesComponentWise(
+		otherCoordinates: Coordinates,
+	): Coordinates {
 		return new Coordinates(
 			this.x * otherCoordinates.x,
 			this.y * otherCoordinates.y,
 		);
 	}
-	public computeDotProduct(otherCoordinates: Coordinates): number {
-		return this.multiplyCoordinateWise(otherCoordinates).sumCoordinates();
+	public multiplyByNumber(number_: number): Coordinates {
+		return new Coordinates(this.x * number_, this.y * number_);
 	}
-	public sumCoordinates(): number {
+	public negate(): Coordinates {
+		return new Coordinates(-this.x, -this.y);
+	}
+	public subtractCoordinates(otherCoordinates: Coordinates): Coordinates {
+		return new Coordinates(
+			this.x - otherCoordinates.x,
+			this.y - otherCoordinates.y,
+		);
+	}
+	public sumComponents(): number {
 		return this.x + this.y;
 	}
 	public readonly x: number;

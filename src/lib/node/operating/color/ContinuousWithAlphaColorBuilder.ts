@@ -34,12 +34,12 @@ export class ContinuousWithAlphaColorBuilder {
 			sanitizeContinuousColorComponent(this.alphaComponent),
 		);
 	}
-	public divideByFactor(factor: number): ContinuousWithAlphaColorBuilder {
+	public divideByNumber(number_: number): ContinuousWithAlphaColorBuilder {
 		return new ContinuousWithAlphaColorBuilder(
-			this.redComponent / factor,
-			this.greenComponent / factor,
-			this.blueComponent / factor,
-			this.alphaComponent / factor,
+			this.redComponent / number_,
+			this.greenComponent / number_,
+			this.blueComponent / number_,
+			this.alphaComponent / number_,
 		);
 	}
 	public readonly greenComponent: ContinuousColorComponent;

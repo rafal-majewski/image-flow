@@ -18,5 +18,5 @@ export function useBlur(
 		neighborColorSum = neighborColorSum.addColor(neighborColor);
 		neighborCount = neighborCount + 1;
 	}
-	return neighborColorSum.divideByFactor(neighborCount).build();
+	return neighborColorSum.divideByNumber(neighborCount).build();
 }

@@ -95,11 +95,11 @@ export class ContinuousWithoutAlphaColor {
 			),
 		);
 	}
-	public divideByScalar(scalar: number): ContinuousWithoutAlphaColor {
+	public divideByNumber(number_: number): ContinuousWithoutAlphaColor {
 		return new ContinuousWithoutAlphaColor(
-			sanitizeContinuousColorComponent(this.redComponent / scalar),
-			sanitizeContinuousColorComponent(this.greenComponent / scalar),
-			sanitizeContinuousColorComponent(this.blueComponent / scalar),
+			sanitizeContinuousColorComponent(this.redComponent / number_),
+			sanitizeContinuousColorComponent(this.greenComponent / number_),
+			sanitizeContinuousColorComponent(this.blueComponent / number_),
 		);
 	}
 	public readonly greenComponent: ContinuousColorComponent;
@@ -127,11 +127,11 @@ export class ContinuousWithoutAlphaColor {
 			),
 		);
 	}
-	public multiplyByScalar(scalar: number): ContinuousWithoutAlphaColor {
+	public multiplyByNumber(number_: number): ContinuousWithoutAlphaColor {
 		return new ContinuousWithoutAlphaColor(
-			sanitizeContinuousColorComponent(this.redComponent * scalar),
-			sanitizeContinuousColorComponent(this.greenComponent * scalar),
-			sanitizeContinuousColorComponent(this.blueComponent * scalar),
+			sanitizeContinuousColorComponent(this.redComponent * number_),
+			sanitizeContinuousColorComponent(this.greenComponent * number_),
+			sanitizeContinuousColorComponent(this.blueComponent * number_),
 		);
 	}
 	public readonly redComponent: ContinuousColorComponent;

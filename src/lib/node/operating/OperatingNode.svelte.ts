@@ -107,7 +107,7 @@ export class OperatingNode<InputEdgeCount extends number> extends Node<
 		) {
 			this.state = this.state.validateInputImages(
 				this.inputEdges.map((edge) => {
-					return (edge as Edge & {image: ImageData}).image;
+					return (edge as Edge & {readonly image: ImageData}).image;
 				}) as unknown as readonly ImageData[] & {
 					readonly length: InputEdgeCount;
 				},

@@ -1,12 +1,12 @@
-import {CombinerOperator} from "../../CombinerOperator.ts";
+import {MapperOperator} from "../../MapperOperator.ts";
 import {setEachPixelYielding} from "../../../../../operator/setting-each-pixel-yielding/setEachPixelYielding.ts";
-import type {Dimensions} from "../../../../../../dimensions/Dimensions.ts";
-import InverseDiscreteFourierTransformCombinerOperatorDisplayer from "./displayer/InverseDiscreteFourierTransformCombinerOperatorDisplayer.svelte";
+import ForwardDiscreteFourierTransformMapperOperatorDisplayer from "./displayer/ForwardDiscreteFourierTransformMapperOperatorDisplayer.svelte";
 import {Coordinates} from "../../../../../../coordinates/Coordinates.ts";
-import {ComplexNumber} from "../../../../../complex-number/ComplexNumber.ts";
 import {readWithoutAlphaColorFromImageAtPosition} from "../../../../../operating/color/readWithoutAlphaColorFromImageAtPosition.ts";
+import {ComplexNumber} from "../../../../../complex-number/ComplexNumber.ts";
+import type {Dimensions} from "../../../../../../dimensions/Dimensions.ts";
 import {ContinuousWithoutAlphaColorBuilder} from "../../../../../operating/color/ContinuousWithoutAlphaColorBuilder.ts";
-export class InverseDiscreteFourierTransformCombinerOperator extends CombinerOperator {
+export class ForwardDiscreteFourierTransformMapperOperator extends MapperOperator {
 	public constructor(
 		outputImageDimensions: Dimensions,
 		magnitudeExponentSign: 1 | -1,
@@ -14,6 +14,7 @@ export class InverseDiscreteFourierTransformCombinerOperator extends CombinerOpe
 		b_x: number,
 		a_y: number,
 		b_y: number,
+		outputComponent: "magnitude" | "real" | "imaginary",
 		lowerBound: number,
 		upperBound: number,
 	) {
@@ -23,12 +24,12 @@ export class InverseDiscreteFourierTransformCombinerOperator extends CombinerOpe
 					parameters[0],
 					{...parameters[1], operator: this},
 				] as const;
-				return InverseDiscreteFourierTransformCombinerOperatorDisplayer(
+				return ForwardDiscreteFourierTransformMapperOperatorDisplayer(
 					...newParameters,
 				);
 			},
-			"inverse-discrete-fourier-transform",
-			"Inverse Discrete Fourier Transform",
+			"discrete-fourier-transform",
+			"Discrete Fourier Transform",
 		);
 		this.outputImageDimensions = outputImageDimensions;
 		this.magnitudeExponentSign = magnitudeExponentSign;
@@ -36,6 +37,7 @@ export class InverseDiscreteFourierTransformCombinerOperator extends CombinerOpe
 		this.b_x = b_x;
 		this.a_y = a_y;
 		this.b_y = b_y;
+		this.outputComponent = outputComponent;
 		this.lowerBound = lowerBound;
 		this.upperBound = upperBound;
 	}
@@ -46,7 +48,7 @@ export class InverseDiscreteFourierTransformCombinerOperator extends CombinerOpe
 	public readonly lowerBound: number;
 	public readonly magnitudeExponentSign: 1 | -1;
 	public *operate(
-		inputImages: readonly [ImageData, ImageData],
+		inputImages: readonly [ImageData],
 	): Generator<ImageData, ImageData, void> {
 		const outputImage = new ImageData(
 			this.outputImageDimensions.width,
@@ -68,149 +70,199 @@ export class InverseDiscreteFourierTransformCombinerOperator extends CombinerOpe
 						positionInInputImageX,
 						positionInInputImageY,
 					);
-					const realRaw = readWithoutAlphaColorFromImageAtPosition(
+					const colorInInputImageRaw = readWithoutAlphaColorFromImageAtPosition(
 						inputImages[0],
 						positionInInputImage,
 					).convertToContinuous().redComponent;
-					const imagRaw = readWithoutAlphaColorFromImageAtPosition(
-						inputImages[1],
-						positionInInputImage,
-					).convertToContinuous().redComponent;
-					const real =
-						this.lowerBound + (this.upperBound - this.lowerBound) * realRaw;
-					const imag =
-						this.lowerBound + (this.upperBound - this.lowerBound) * imagRaw;
-					const frequency = positionInInputImage
+					const colorInInputImage =
+						this.lowerBound
+						+ (this.upperBound - this.lowerBound) * colorInInputImageRaw;
+					const frequency = positionInOutputImage
 						.divideByCoordinatesComponentWise(
 							new Coordinates(this.a_x, this.a_y),
 						)
 						.addCoordinates(new Coordinates(this.b_x, this.b_y));
-					const angle = frequency.dotProduct(positionInOutputImage);
+					const angle = frequency.dotProduct(positionInInputImage);
 					const exponent = 2 * Math.PI * angle * this.magnitudeExponentSign;
-					const c = new ComplexNumber(real, imag);
-					const exp = new ComplexNumber(Math.cos(exponent), Math.sin(exponent));
-					sum = sum.addComplex(c.multiplyByComplex(exp));
+					sum = sum.addComplex(
+						new ComplexNumber(
+							colorInInputImage * Math.cos(exponent),
+							colorInInputImage * Math.sin(exponent),
+						),
+					);
 				}
 			}
-			const value = sum.realComponent;
-			return new ContinuousWithoutAlphaColorBuilder(value, value, value)
-				.addBuilder(new ContinuousWithoutAlphaColorBuilder(0.5, 0.5, 0.5))
-				.build()
-				.withAlphaComponent(1)
-				.convertToDiscrete();
+			sum = sum.divideByReal(inputImages[0].width * inputImages[0].height);
+			switch (this.outputComponent) {
+				case "real":
+					return new ContinuousWithoutAlphaColorBuilder(
+						sum.realComponent,
+						sum.realComponent,
+						sum.realComponent,
+					)
+						.addBuilder(new ContinuousWithoutAlphaColorBuilder(0.5, 0.5, 0.5))
+						.build()
+						.withAlphaComponent(1)
+						.convertToDiscrete();
+				case "imaginary":
+					return new ContinuousWithoutAlphaColorBuilder(
+						sum.imaginaryComponent,
+						sum.imaginaryComponent,
+						sum.imaginaryComponent,
+					)
+						.addBuilder(new ContinuousWithoutAlphaColorBuilder(0.5, 0.5, 0.5))
+						.build()
+						.withAlphaComponent(1)
+						.convertToDiscrete();
+				case "magnitude":
+					const magnitude = sum.magnitude();
+					return new ContinuousWithoutAlphaColorBuilder(
+						magnitude,
+						magnitude,
+						magnitude,
+					)
+						.multiplyByNumber(2)
+						.build()
+						.withAlphaComponent(1)
+						.convertToDiscrete();
+			}
 		});
 		return outputImage;
 	}
+	public readonly outputComponent: "magnitude" | "real" | "imaginary";
 	public readonly outputImageDimensions: Dimensions;
 	public readonly upperBound: number;
 	public withNewA_x(
 		newA_x: number,
-	): InverseDiscreteFourierTransformCombinerOperator {
-		return new InverseDiscreteFourierTransformCombinerOperator(
+	): ForwardDiscreteFourierTransformMapperOperator {
+		return new ForwardDiscreteFourierTransformMapperOperator(
 			this.outputImageDimensions,
 			this.magnitudeExponentSign,
 			newA_x,
 			this.b_x,
 			this.a_y,
 			this.b_y,
+			this.outputComponent,
 			this.lowerBound,
 			this.upperBound,
 		);
 	}
 	public withNewA_y(
 		newA_y: number,
-	): InverseDiscreteFourierTransformCombinerOperator {
-		return new InverseDiscreteFourierTransformCombinerOperator(
+	): ForwardDiscreteFourierTransformMapperOperator {
+		return new ForwardDiscreteFourierTransformMapperOperator(
 			this.outputImageDimensions,
 			this.magnitudeExponentSign,
 			this.a_x,
 			this.b_x,
 			newA_y,
 			this.b_y,
+			this.outputComponent,
 			this.lowerBound,
 			this.upperBound,
 		);
 	}
 	public withNewB_x(
 		newB_x: number,
-	): InverseDiscreteFourierTransformCombinerOperator {
-		return new InverseDiscreteFourierTransformCombinerOperator(
+	): ForwardDiscreteFourierTransformMapperOperator {
+		return new ForwardDiscreteFourierTransformMapperOperator(
 			this.outputImageDimensions,
 			this.magnitudeExponentSign,
 			this.a_x,
 			newB_x,
 			this.a_y,
 			this.b_y,
+			this.outputComponent,
 			this.lowerBound,
 			this.upperBound,
 		);
 	}
 	public withNewB_y(
 		newB_y: number,
-	): InverseDiscreteFourierTransformCombinerOperator {
-		return new InverseDiscreteFourierTransformCombinerOperator(
+	): ForwardDiscreteFourierTransformMapperOperator {
+		return new ForwardDiscreteFourierTransformMapperOperator(
 			this.outputImageDimensions,
 			this.magnitudeExponentSign,
 			this.a_x,
 			this.b_x,
 			this.a_y,
 			newB_y,
+			this.outputComponent,
 			this.lowerBound,
 			this.upperBound,
 		);
 	}
 	public withNewLowerBound(
 		newLowerBound: number,
-	): InverseDiscreteFourierTransformCombinerOperator {
-		return new InverseDiscreteFourierTransformCombinerOperator(
+	): ForwardDiscreteFourierTransformMapperOperator {
+		return new ForwardDiscreteFourierTransformMapperOperator(
 			this.outputImageDimensions,
 			this.magnitudeExponentSign,
 			this.a_x,
 			this.b_x,
 			this.a_y,
 			this.b_y,
+			this.outputComponent,
 			newLowerBound,
 			this.upperBound,
 		);
 	}
 	public withNewMagnitudeExponentSign(
 		newSign: 1 | -1,
-	): InverseDiscreteFourierTransformCombinerOperator {
-		return new InverseDiscreteFourierTransformCombinerOperator(
+	): ForwardDiscreteFourierTransformMapperOperator {
+		return new ForwardDiscreteFourierTransformMapperOperator(
 			this.outputImageDimensions,
 			newSign,
 			this.a_x,
 			this.b_x,
 			this.a_y,
 			this.b_y,
+			this.outputComponent,
 			this.lowerBound,
 			this.upperBound,
 		);
 	}
-	public withNewOutputImageDimensions(
-		newDimensions: Dimensions,
-	): InverseDiscreteFourierTransformCombinerOperator {
-		return new InverseDiscreteFourierTransformCombinerOperator(
-			newDimensions,
-			this.magnitudeExponentSign,
-			this.a_x,
-			this.b_x,
-			this.a_y,
-			this.b_y,
-			this.lowerBound,
-			this.upperBound,
-		);
-	}
-	public withNewUpperBound(
-		newUpperBound: number,
-	): InverseDiscreteFourierTransformCombinerOperator {
-		return new InverseDiscreteFourierTransformCombinerOperator(
+	public withNewOutputComponent(
+		outputComponent: "magnitude" | "real" | "imaginary",
+	): ForwardDiscreteFourierTransformMapperOperator {
+		return new ForwardDiscreteFourierTransformMapperOperator(
 			this.outputImageDimensions,
 			this.magnitudeExponentSign,
 			this.a_x,
 			this.b_x,
 			this.a_y,
 			this.b_y,
+			outputComponent,
+			this.lowerBound,
+			this.upperBound,
+		);
+	}
+	public withNewOutputImageDimensions(
+		newDimensions: Dimensions,
+	): ForwardDiscreteFourierTransformMapperOperator {
+		return new ForwardDiscreteFourierTransformMapperOperator(
+			newDimensions,
+			this.magnitudeExponentSign,
+			this.a_x,
+			this.b_x,
+			this.a_y,
+			this.b_y,
+			this.outputComponent,
+			this.lowerBound,
+			this.upperBound,
+		);
+	}
+	public withNewUpperBound(
+		newUpperBound: number,
+	): ForwardDiscreteFourierTransformMapperOperator {
+		return new ForwardDiscreteFourierTransformMapperOperator(
+			this.outputImageDimensions,
+			this.magnitudeExponentSign,
+			this.a_x,
+			this.b_x,
+			this.a_y,
+			this.b_y,
+			this.outputComponent,
 			this.lowerBound,
 			newUpperBound,
 		);

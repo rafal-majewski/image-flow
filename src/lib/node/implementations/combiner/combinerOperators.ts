@@ -8,9 +8,11 @@ export const combinerOperators = [
 	new InverseDiscreteFourierTransformCombinerOperator(
 		new Dimensions(31, 31),
 		1,
-		1 / 31,
+		31,
 		0,
-		1 / 31,
+		31,
 		0,
+		0,
+		1,
 	),
 ] as const;
