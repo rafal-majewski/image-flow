@@ -1,6 +1,5 @@
 import type {ContinuousColorBuilderComponent} from "./ContinuousColorBuilderComponent.ts";
 import type {ContinuousColorComponent} from "./ContinuousColorComponent.ts";
-import type {ContinuousWithAlphaColor} from "./ContinuousWithAlphaColor.ts";
 import {ContinuousWithoutAlphaColor} from "./ContinuousWithoutAlphaColor.ts";
 import {sanitizeContinuousColorComponent} from "./sanitizeContinuousColorComponent.ts";
 export class ContinuousWithoutAlphaColorBuilder {
@@ -52,6 +51,15 @@ export class ContinuousWithoutAlphaColorBuilder {
 			combiner(this.blueComponent, color.blueComponent),
 		);
 	}
+	public divideByScalar(
+		scalar: ContinuousColorBuilderComponent,
+	): ContinuousWithoutAlphaColorBuilder {
+		return new ContinuousWithoutAlphaColorBuilder(
+			this.redComponent / scalar,
+			this.greenComponent / scalar,
+			this.blueComponent / scalar,
+		);
+	}
 	public readonly greenComponent: ContinuousColorComponent;
 	public mixWith(
 		weightOfOtherColor: ContinuousColorBuilderComponent,
@@ -64,18 +72,27 @@ export class ContinuousWithoutAlphaColorBuilder {
 			);
 		}, otherColor);
 	}
-	public multiplyByNumber(
-		number_: ContinuousColorBuilderComponent,
+	public multiplyByColorComponentWise(
+		color: ContinuousWithoutAlphaColor,
 	): ContinuousWithoutAlphaColorBuilder {
 		return new ContinuousWithoutAlphaColorBuilder(
-			this.redComponent * number_,
-			this.greenComponent * number_,
-			this.blueComponent * number_,
+			this.redComponent * color.redComponent,
+			this.greenComponent * color.greenComponent,
+			this.blueComponent * color.blueComponent,
+		);
+	}
+	public multiplyByScalar(
+		scalar: ContinuousColorBuilderComponent,
+	): ContinuousWithoutAlphaColorBuilder {
+		return new ContinuousWithoutAlphaColorBuilder(
+			this.redComponent * scalar,
+			this.greenComponent * scalar,
+			this.blueComponent * scalar,
 		);
 	}
 	public readonly redComponent: ContinuousColorComponent;
 	public subtractColor(
-		color: ContinuousWithAlphaColor,
+		color: ContinuousWithoutAlphaColor,
 	): ContinuousWithoutAlphaColorBuilder {
 		return new ContinuousWithoutAlphaColorBuilder(
 			this.redComponent - color.redComponent,

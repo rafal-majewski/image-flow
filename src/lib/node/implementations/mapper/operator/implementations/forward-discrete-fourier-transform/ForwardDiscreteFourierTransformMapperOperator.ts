@@ -1,5 +1,5 @@
 import {MapperOperator} from "../../MapperOperator.ts";
-import {setEachPixelYielding} from "../../../../../operator/setting-each-pixel-yielding/setEachPixelYielding.ts";
+import {setEachPixelYielding} from "../../../../../operating/operator/setting-each-pixel-yielding/setEachPixelYielding.ts";
 import ForwardDiscreteFourierTransformMapperOperatorDisplayer from "./displayer/ForwardDiscreteFourierTransformMapperOperatorDisplayer.svelte";
 import {Coordinates} from "../../../../../../coordinates/Coordinates.ts";
 import {readWithoutAlphaColorFromImageAtPosition} from "../../../../../operating/color/readWithoutAlphaColorFromImageAtPosition.ts";
@@ -82,7 +82,7 @@ export class ForwardDiscreteFourierTransformMapperOperator extends MapperOperato
 							new Coordinates(this.a_x, this.a_y),
 						)
 						.addCoordinates(new Coordinates(this.b_x, this.b_y));
-					const angle = frequency.dotProduct(positionInInputImage);
+					const angle = frequency.computeDotProduct(positionInInputImage);
 					const exponent = 2 * Math.PI * angle * this.magnitudeExponentSign;
 					sum = sum.addComplex(
 						new ComplexNumber(
@@ -121,7 +121,7 @@ export class ForwardDiscreteFourierTransformMapperOperator extends MapperOperato
 						magnitude,
 						magnitude,
 					)
-						.multiplyByNumber(2)
+						.multiplyByScalar(2)
 						.build()
 						.withAlphaComponent(1)
 						.convertToDiscrete();
@@ -131,8 +131,7 @@ export class ForwardDiscreteFourierTransformMapperOperator extends MapperOperato
 	}
 	public readonly outputComponent: "magnitude" | "real" | "imaginary";
 	public readonly outputImageDimensions: Dimensions;
-	public readonly upperBound: number;
-	public withNewA_x(
+	public replaceA_x(
 		newA_x: number,
 	): ForwardDiscreteFourierTransformMapperOperator {
 		return new ForwardDiscreteFourierTransformMapperOperator(
@@ -147,7 +146,7 @@ export class ForwardDiscreteFourierTransformMapperOperator extends MapperOperato
 			this.upperBound,
 		);
 	}
-	public withNewA_y(
+	public replaceA_y(
 		newA_y: number,
 	): ForwardDiscreteFourierTransformMapperOperator {
 		return new ForwardDiscreteFourierTransformMapperOperator(
@@ -162,7 +161,7 @@ export class ForwardDiscreteFourierTransformMapperOperator extends MapperOperato
 			this.upperBound,
 		);
 	}
-	public withNewB_x(
+	public replaceB_x(
 		newB_x: number,
 	): ForwardDiscreteFourierTransformMapperOperator {
 		return new ForwardDiscreteFourierTransformMapperOperator(
@@ -177,7 +176,7 @@ export class ForwardDiscreteFourierTransformMapperOperator extends MapperOperato
 			this.upperBound,
 		);
 	}
-	public withNewB_y(
+	public replaceB_y(
 		newB_y: number,
 	): ForwardDiscreteFourierTransformMapperOperator {
 		return new ForwardDiscreteFourierTransformMapperOperator(
@@ -192,7 +191,7 @@ export class ForwardDiscreteFourierTransformMapperOperator extends MapperOperato
 			this.upperBound,
 		);
 	}
-	public withNewLowerBound(
+	public replaceLowerBound(
 		newLowerBound: number,
 	): ForwardDiscreteFourierTransformMapperOperator {
 		return new ForwardDiscreteFourierTransformMapperOperator(
@@ -207,7 +206,7 @@ export class ForwardDiscreteFourierTransformMapperOperator extends MapperOperato
 			this.upperBound,
 		);
 	}
-	public withNewMagnitudeExponentSign(
+	public replaceMagnitudeExponentSign(
 		newSign: 1 | -1,
 	): ForwardDiscreteFourierTransformMapperOperator {
 		return new ForwardDiscreteFourierTransformMapperOperator(
@@ -222,7 +221,7 @@ export class ForwardDiscreteFourierTransformMapperOperator extends MapperOperato
 			this.upperBound,
 		);
 	}
-	public withNewOutputComponent(
+	public replaceOutputComponent(
 		outputComponent: "magnitude" | "real" | "imaginary",
 	): ForwardDiscreteFourierTransformMapperOperator {
 		return new ForwardDiscreteFourierTransformMapperOperator(
@@ -237,7 +236,7 @@ export class ForwardDiscreteFourierTransformMapperOperator extends MapperOperato
 			this.upperBound,
 		);
 	}
-	public withNewOutputImageDimensions(
+	public replaceOutputImageDimensions(
 		newDimensions: Dimensions,
 	): ForwardDiscreteFourierTransformMapperOperator {
 		return new ForwardDiscreteFourierTransformMapperOperator(
@@ -252,7 +251,7 @@ export class ForwardDiscreteFourierTransformMapperOperator extends MapperOperato
 			this.upperBound,
 		);
 	}
-	public withNewUpperBound(
+	public replaceUpperBound(
 		newUpperBound: number,
 	): ForwardDiscreteFourierTransformMapperOperator {
 		return new ForwardDiscreteFourierTransformMapperOperator(
@@ -267,4 +266,5 @@ export class ForwardDiscreteFourierTransformMapperOperator extends MapperOperato
 			newUpperBound,
 		);
 	}
+	public readonly upperBound: number;
 }

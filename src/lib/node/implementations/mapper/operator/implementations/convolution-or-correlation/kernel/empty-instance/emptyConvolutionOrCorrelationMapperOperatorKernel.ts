@@ -1,0 +1,3 @@
+import {ConvolutionOrCorrelationMapperOperatorKernel} from "../ConvolutionOrCorrelationMapperOperatorKernel.ts";
+export const emptyConvolutionOrCorrelationMapperOperatorKernel =
+	ConvolutionOrCorrelationMapperOperatorKernel.createEmpty();

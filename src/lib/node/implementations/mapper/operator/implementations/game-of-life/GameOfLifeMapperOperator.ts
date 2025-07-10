@@ -40,7 +40,7 @@ export class GameOfLifeMapperOperator extends MapperOperator {
 			);
 		}
 	}
-	public withNewColorComponentComputer(
+	public replaceColorComponentComputer(
 		newColorComponentComputer: GameOfLifeMapperOperatorColorComponentComputer,
 	): GameOfLifeMapperOperator {
 		return new GameOfLifeMapperOperator(
@@ -48,7 +48,7 @@ export class GameOfLifeMapperOperator extends MapperOperator {
 			this.mixFactor,
 		);
 	}
-	public withNewMixFactor(newMixFactor: number): GameOfLifeMapperOperator {
+	public replaceMixFactor(newMixFactor: number): GameOfLifeMapperOperator {
 		return new GameOfLifeMapperOperator(this.componentComputer, newMixFactor);
 	}
 }

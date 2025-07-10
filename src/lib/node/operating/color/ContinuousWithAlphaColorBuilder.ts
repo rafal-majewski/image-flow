@@ -1,6 +1,6 @@
 import type {ContinuousColorBuilderComponent} from "./ContinuousColorBuilderComponent.ts";
 import type {ContinuousColorComponent} from "./ContinuousColorComponent.ts";
-import {ContinuousWithAlphaColor} from "./ContinuousWithAlphaColor.ts";
+import {ContinuousWithAlphaColor} from "./continuous-with-alpha/ContinuousWithAlphaColor.ts";
 import {sanitizeContinuousColorComponent} from "./sanitizeContinuousColorComponent.ts";
 export class ContinuousWithAlphaColorBuilder {
 	public constructor(
@@ -14,14 +14,24 @@ export class ContinuousWithAlphaColorBuilder {
 		this.blueComponent = blueComponent;
 		this.alphaComponent = alphaComponent;
 	}
-	public addColor(
-		color: ContinuousWithAlphaColor,
+	public addBuilder(
+		otherBuilder: ContinuousWithAlphaColorBuilder,
 	): ContinuousWithAlphaColorBuilder {
-		return new ContinuousWithAlphaColorBuilder(
-			this.redComponent + color.redComponent,
-			this.greenComponent + color.greenComponent,
-			this.blueComponent + color.blueComponent,
-			this.alphaComponent + color.alphaComponent,
+		return this.combineWithBuilderComponentWise(
+			otherBuilder,
+			(colorComponentFromThisBuilder, colorComponentFromOtherBuilder) => {
+				return colorComponentFromThisBuilder + colorComponentFromOtherBuilder;
+			},
+		);
+	}
+	public addColor(
+		otherColor: ContinuousWithAlphaColor,
+	): ContinuousWithAlphaColorBuilder {
+		return this.combineWithColorComponentWise(
+			otherColor,
+			(colorComponentFromThisBuilder, colorComponentFromOtherColor) => {
+				return colorComponentFromThisBuilder + colorComponentFromOtherColor;
+			},
 		);
 	}
 	public readonly alphaComponent: ContinuousColorComponent;
@@ -34,24 +44,81 @@ export class ContinuousWithAlphaColorBuilder {
 			sanitizeContinuousColorComponent(this.alphaComponent),
 		);
 	}
-	public divideByNumber(number_: number): ContinuousWithAlphaColorBuilder {
+	public combineWithBuilderComponentWise(
+		otherBuilder: ContinuousWithAlphaColorBuilder,
+		combiner: (
+			colorComponentFromThisBuilder: ContinuousColorBuilderComponent,
+			colorComponentFromOtherBuilder: ContinuousColorBuilderComponent,
+		) => ContinuousColorBuilderComponent,
+	): ContinuousWithAlphaColorBuilder {
 		return new ContinuousWithAlphaColorBuilder(
-			this.redComponent / number_,
-			this.greenComponent / number_,
-			this.blueComponent / number_,
-			this.alphaComponent / number_,
+			combiner(this.redComponent, otherBuilder.redComponent),
+			combiner(this.greenComponent, otherBuilder.greenComponent),
+			combiner(this.blueComponent, otherBuilder.blueComponent),
+			combiner(this.alphaComponent, otherBuilder.alphaComponent),
 		);
 	}
+	public combineWithColorComponentWise(
+		otherColor: ContinuousWithAlphaColor,
+		combiner: (
+			colorComponentFromThis: ContinuousColorBuilderComponent,
+			colorComponentFromOther: ContinuousColorComponent,
+		) => ContinuousColorBuilderComponent,
+	): ContinuousWithAlphaColorBuilder {
+		return new ContinuousWithAlphaColorBuilder(
+			combiner(this.redComponent, otherColor.redComponent),
+			combiner(this.greenComponent, otherColor.greenComponent),
+			combiner(this.blueComponent, otherColor.blueComponent),
+			combiner(this.alphaComponent, otherColor.alphaComponent),
+		);
+	}
+	public divideByScalar(scalar: number): ContinuousWithAlphaColorBuilder {
+		return this.map((component) => {
+			return component / scalar;
+		});
+	}
 	public readonly greenComponent: ContinuousColorComponent;
+	public map(
+		mapper: (
+			component: ContinuousColorBuilderComponent,
+		) => ContinuousColorBuilderComponent,
+	): ContinuousWithAlphaColorBuilder {
+		return new ContinuousWithAlphaColorBuilder(
+			mapper(this.redComponent),
+			mapper(this.greenComponent),
+			mapper(this.blueComponent),
+			mapper(this.alphaComponent),
+		);
+	}
+	public multiplyByColorComponentWise(
+		color: ContinuousWithAlphaColor,
+	): ContinuousWithAlphaColorBuilder {
+		return this.combineWithColorComponentWise(
+			color,
+			(colorComponentFromThis, colorComponentFromOther) => {
+				return colorComponentFromThis * colorComponentFromOther;
+			},
+		);
+	}
+	public multiplyByScalar(scalar: number): ContinuousWithAlphaColorBuilder {
+		return this.map((component) => {
+			return component * scalar;
+		});
+	}
 	public readonly redComponent: ContinuousColorComponent;
+	public round(): ContinuousWithAlphaColorBuilder {
+		return this.map((component) => {
+			return Math.round(component);
+		});
+	}
 	public subtractColor(
 		color: ContinuousWithAlphaColor,
 	): ContinuousWithAlphaColorBuilder {
-		return new ContinuousWithAlphaColorBuilder(
-			this.redComponent - color.redComponent,
-			this.greenComponent - color.greenComponent,
-			this.blueComponent - color.blueComponent,
-			this.alphaComponent - color.alphaComponent,
+		return this.combineWithColorComponentWise(
+			color,
+			(colorComponentFromThis, colorComponentFromOther) => {
+				return colorComponentFromThis - colorComponentFromOther;
+			},
 		);
 	}
 }

@@ -14,7 +14,7 @@
 		event: Event & {currentTarget: HTMLInputElement},
 	): void {
 		onSetOperatorRequest(
-			operator.withNewOutputImageDimensions(
+			operator.replaceOutputImageDimensions(
 				new Dimensions(
 					event.currentTarget.valueAsNumber,
 					operator.outputImageDimensions.height,
@@ -26,7 +26,7 @@
 		event: Event & {currentTarget: HTMLInputElement},
 	) {
 		onSetOperatorRequest(
-			operator.withNewOutputImageDimensions(
+			operator.replaceOutputImageDimensions(
 				new Dimensions(
 					operator.outputImageDimensions.width,
 					event.currentTarget.valueAsNumber,

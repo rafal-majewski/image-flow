@@ -14,7 +14,7 @@
 		event: Event & {readonly currentTarget: HTMLInputElement},
 	): void {
 		onSetOperatorRequest(
-			operator.withNewMultiplier(
+			operator.replaceMultiplier(
 				new ContinuousWithoutAlphaColor(
 					event.currentTarget.valueAsNumber,
 					operator.multiplier.greenComponent,
@@ -27,7 +27,7 @@
 		event: Event & {readonly currentTarget: HTMLInputElement},
 	): void {
 		onSetOperatorRequest(
-			operator.withNewMultiplier(
+			operator.replaceMultiplier(
 				new ContinuousWithoutAlphaColor(
 					operator.multiplier.redComponent,
 					event.currentTarget.valueAsNumber,
@@ -40,7 +40,7 @@
 		event: Event & {readonly currentTarget: HTMLInputElement},
 	): void {
 		onSetOperatorRequest(
-			operator.withNewMultiplier(
+			operator.replaceMultiplier(
 				new ContinuousWithoutAlphaColor(
 					operator.multiplier.redComponent,
 					operator.multiplier.greenComponent,

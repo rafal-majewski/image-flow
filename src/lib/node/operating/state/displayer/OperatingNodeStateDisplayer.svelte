@@ -16,7 +16,7 @@
 	import {AnimatedOperatingDoneOperatingNodeState} from "../implementations/animated-operating-done/AnimatedOperatingDoneOperatingNodeState.ts";
 	import {InstantOperatingDoneOperatingNodeState} from "../implementations/instant-operating-done/InstantOperatingDoneOperatingNodeState.ts";
 	import {ManualOperatingDoneOperatingNodeState} from "../implementations/manual-operating-done/ManualOperatingDoneOperatingNodeState.ts";
-	import type {Operator} from "../../../operator/Operator.ts";
+	import type {Operator} from "../../operator/Operator.ts";
 	import type {NodeId} from "../../../id/NodeId.ts";
 	const {
 		state,

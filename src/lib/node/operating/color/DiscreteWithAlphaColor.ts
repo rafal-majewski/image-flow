@@ -1,5 +1,4 @@
-import type {Coordinates} from "../../../coordinates/Coordinates.ts";
-import {ContinuousWithAlphaColor} from "./ContinuousWithAlphaColor.ts";
+import {ContinuousWithAlphaColor} from "./continuous-with-alpha/ContinuousWithAlphaColor.ts";
 import {convertDiscreteColorComponentToContinuousColorComponent} from "./convertDiscreteColorComponentToContinuousColorComponent.ts";
 import type {DiscreteColorComponent} from "./DiscreteColorComponent.ts";
 import {DiscreteWithoutAlphaColor} from "./DiscreteWithoutAlphaColor.ts";
@@ -46,6 +45,13 @@ export class DiscreteWithAlphaColor {
 			),
 		);
 	}
+	public deleteAlphaComponent(): DiscreteWithoutAlphaColor {
+		return new DiscreteWithoutAlphaColor(
+			this.redComponent,
+			this.greenComponent,
+			this.blueComponent,
+		);
+	}
 	public readonly greenComponent: DiscreteColorComponent;
 	public readonly redComponent: DiscreteColorComponent;
 	public subtract(color: DiscreteWithAlphaColor): DiscreteWithAlphaColor {
@@ -58,13 +64,6 @@ export class DiscreteWithAlphaColor {
 			sanitizeDiscreteColorComponent(
 				this.alphaComponent - color.alphaComponent,
 			),
-		);
-	}
-	public withoutAlpha(): DiscreteWithoutAlphaColor {
-		return new DiscreteWithoutAlphaColor(
-			this.redComponent,
-			this.greenComponent,
-			this.blueComponent,
 		);
 	}
 }

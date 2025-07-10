@@ -1,7 +1,7 @@
 import {NodeState} from "../../state/NodeState.ts";
 import type {Edge} from "../../../edge/Edge.ts";
 import type {NodeStateStatus} from "../../state/status/NodeStateStatus.ts";
-import type {Operator} from "../../operator/Operator.ts";
+import type {Operator} from "../operator/Operator.ts";
 export abstract class OperatingNodeState<
 	InputEdgeCount extends number,
 > extends NodeState {

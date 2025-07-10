@@ -1,6 +1,6 @@
 import type {ContinuousColorBuilderComponent} from "./ContinuousColorBuilderComponent.ts";
 import type {ContinuousColorComponent} from "./ContinuousColorComponent.ts";
-import {ContinuousWithAlphaColor} from "./ContinuousWithAlphaColor.ts";
+import {ContinuousWithAlphaColor} from "./continuous-with-alpha/ContinuousWithAlphaColor.ts";
 import {ContinuousWithoutAlphaColorBuilder} from "./ContinuousWithoutAlphaColorBuilder.ts";
 import {convertContinuousColorComponentToDiscreteColorComponent} from "./convertContinuousColorComponentToDiscreteColorComponent.ts";
 import {DiscreteWithoutAlphaColor} from "./DiscreteWithoutAlphaColor.ts";
@@ -95,12 +95,8 @@ export class ContinuousWithoutAlphaColor {
 			),
 		);
 	}
-	public divideByNumber(number_: number): ContinuousWithoutAlphaColor {
-		return new ContinuousWithoutAlphaColor(
-			sanitizeContinuousColorComponent(this.redComponent / number_),
-			sanitizeContinuousColorComponent(this.greenComponent / number_),
-			sanitizeContinuousColorComponent(this.blueComponent / number_),
-		);
+	public divideByScalar(scalar: number): ContinuousWithoutAlphaColor {
+		return this.convertToBuilder().divideByScalar(scalar).build();
 	}
 	public readonly greenComponent: ContinuousColorComponent;
 	public mixWithColor(
@@ -114,39 +110,19 @@ export class ContinuousWithoutAlphaColor {
 			);
 		}, otherColor);
 	}
-	public multiplyByColor(
+	public multiplyByColorComponentWise(
 		color: ContinuousWithoutAlphaColor,
 	): ContinuousWithoutAlphaColor {
-		return new ContinuousWithoutAlphaColor(
-			sanitizeContinuousColorComponent(this.redComponent * color.redComponent),
-			sanitizeContinuousColorComponent(
-				this.greenComponent * color.greenComponent,
-			),
-			sanitizeContinuousColorComponent(
-				this.blueComponent * color.blueComponent,
-			),
-		);
+		return this.convertToBuilder().multiplyByColorComponentWise(color).build();
 	}
-	public multiplyByNumber(number_: number): ContinuousWithoutAlphaColor {
-		return new ContinuousWithoutAlphaColor(
-			sanitizeContinuousColorComponent(this.redComponent * number_),
-			sanitizeContinuousColorComponent(this.greenComponent * number_),
-			sanitizeContinuousColorComponent(this.blueComponent * number_),
-		);
+	public multiplyByScalar(scalar: number): ContinuousWithoutAlphaColor {
+		return this.convertToBuilder().multiplyByScalar(scalar).build();
 	}
 	public readonly redComponent: ContinuousColorComponent;
 	public subtract(
 		color: ContinuousWithoutAlphaColor,
 	): ContinuousWithoutAlphaColor {
-		return new ContinuousWithoutAlphaColor(
-			sanitizeContinuousColorComponent(this.redComponent - color.redComponent),
-			sanitizeContinuousColorComponent(
-				this.greenComponent - color.greenComponent,
-			),
-			sanitizeContinuousColorComponent(
-				this.blueComponent - color.blueComponent,
-			),
-		);
+		return this.convertToBuilder().subtractColor(color).build();
 	}
 	public withAlphaComponent(
 		alphaComponent: ContinuousColorComponent,

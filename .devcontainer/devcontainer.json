@@ -3,13 +3,7 @@
 	"containerEnv": {},
 	"containerUser": "developer",
 	"customizations": {
-		"vscode": {
-			"extensions": [
-				"esbenp.prettier-vscode",
-				"mhutchie.git-graph",
-				"svelte.svelte-vscode"
-			]
-		}
+		"vscode": {"extensions": ["esbenp.prettier-vscode", "svelte.svelte-vscode"]}
 	},
 	"dockerComposeFile": ["./docker-compose.yaml"],
 	"features": {},

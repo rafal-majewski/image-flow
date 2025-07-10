@@ -11,14 +11,14 @@
 	} = $props();
 	function handleClassicColorComponentComputerInputChange(event: Event): void {
 		onSetOperatorRequest(
-			operator.withNewColorComponentComputer(
+			operator.replaceColorComponentComputer(
 				new GameOfLifeMapperOperatorClassicColorComponentComputer(),
 			),
 		);
 	}
 	function handleFuzzyColorComponentComputerInputChange(event: Event): void {
 		onSetOperatorRequest(
-			operator.withNewColorComponentComputer(
+			operator.replaceColorComponentComputer(
 				new GameOfLifeMapperOperatorFuzzyColorComponentComputer(),
 			),
 		);
@@ -27,7 +27,7 @@
 		event: Event & {readonly currentTarget: HTMLInputElement},
 	): void {
 		onSetOperatorRequest(
-			operator.withNewMixFactor(event.currentTarget.valueAsNumber),
+			operator.replaceMixFactor(event.currentTarget.valueAsNumber),
 		);
 	}
 </script>

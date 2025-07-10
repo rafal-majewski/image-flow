@@ -34,7 +34,7 @@
 				case "movingCamera": {
 					onSetCameraPositionRequest(
 						cameraPosition.subtractCoordinates(
-							new Coordinates(event.movementX, event.movementY).divideByNumber(
+							new Coordinates(event.movementX, event.movementY).divideByScalar(
 								window.devicePixelRatio,
 							),
 						),
@@ -43,7 +43,7 @@
 				}
 				case "movingNode": {
 					mode.data.node.position = mode.data.node.position.addCoordinates(
-						new Coordinates(event.movementX, event.movementY).divideByNumber(
+						new Coordinates(event.movementX, event.movementY).divideByScalar(
 							window.devicePixelRatio,
 						),
 					);

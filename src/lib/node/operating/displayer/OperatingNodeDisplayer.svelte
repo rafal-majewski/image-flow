@@ -3,7 +3,7 @@
 	import type {SupportedBoardMode} from "../../../mode/supported/SupportedBoardMode.ts";
 	import NodeDisplayer from "../../displayer/NodeDisplayer.svelte";
 	import type {Node} from "../../Node.svelte.ts";
-	import type {Operator} from "../../operator/Operator.ts";
+	import type {Operator} from "../operator/Operator.ts";
 	import type {NodeState} from "../../state/NodeState.ts";
 	import type {OperatingNode} from "../OperatingNode.svelte.ts";
 	import OperatingNodeStateDisplayer from "../state/displayer/OperatingNodeStateDisplayer.svelte";

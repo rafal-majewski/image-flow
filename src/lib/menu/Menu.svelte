@@ -5,6 +5,7 @@
 	import {FromUrlLoaderNode} from "../node/implementations/from-url-loader/FromUrlLoaderNode.ts";
 	import {GeneratorOperatingNode} from "../node/implementations/generator/GeneratorOperatingNode.ts";
 	import {MapperOperatingNode} from "../node/implementations/mapper/MapperOperatingNode.ts";
+	import {StaticNode} from "../node/implementations/static-node/StaticNode.ts";
 	import type {Node} from "../node/Node.svelte.ts";
 	import type {NodeState} from "../node/state/NodeState.ts";
 	const {
@@ -29,35 +30,45 @@
 	function handleAddCombinerOperatingNodeButtonClick(): void {
 		onAddNodeRequest(new CombinerOperatingNode(cameraPosition));
 	}
+	function handleAddStaticNodeButtonClick(): void {
+		onAddNodeRequest(new StaticNode(cameraPosition));
+	}
 </script>
 
-<menu>
-	<li>
-		<button onclick={handleAddFromFileLoaderNodeButtonClick}
-			>Add a from file loader</button
-		>
-	</li>
-	<li>
-		<button onclick={handleAddFromUrlLoaderNodeButtonClick}
-			>Add a from URL loader</button
-		>
-	</li>
-	<li>
-		<button onclick={handleAddGeneratorOperatingNodeButtonClick}
-			>Add a generator operatable</button
-		>
-	</li>
-	<li>
-		<button onclick={handleAddMapperOperatingNodeButtonClick}
-			>Add a mapper operatable</button
-		>
-	</li>
-	<li>
-		<button onclick={handleAddCombinerOperatingNodeButtonClick}
-			>Add a combiner operatable</button
-		>
-	</li>
-</menu>
+<section>
+	Add a
+	<menu>
+		<li>
+			<button onclick={handleAddStaticNodeButtonClick}>static</button>
+		</li>
+		<li>
+			<button onclick={handleAddFromFileLoaderNodeButtonClick}
+				>from file loader</button
+			>
+		</li>
+		<li>
+			<button onclick={handleAddFromUrlLoaderNodeButtonClick}
+				>from URL loader</button
+			>
+		</li>
+		<li>
+			<button onclick={handleAddGeneratorOperatingNodeButtonClick}
+				>generator operatable</button
+			>
+		</li>
+		<li>
+			<button onclick={handleAddMapperOperatingNodeButtonClick}
+				>mapper operatable</button
+			>
+		</li>
+		<li>
+			<button onclick={handleAddCombinerOperatingNodeButtonClick}
+				>combiner operatable</button
+			>
+		</li>
+	</menu>
+	node
+</section>
 
 <style lang="scss">
 	menu {

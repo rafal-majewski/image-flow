@@ -2,7 +2,7 @@ import type {ContinuousWithoutAlphaColor} from "../../../../../operating/color/C
 import {DiscreteWithAlphaColor} from "../../../../../operating/color/DiscreteWithAlphaColor.ts";
 import {readWithAlphaColorFromImageAtPosition} from "../../../../../operating/color/readWithAlphaColorFromImageAtPosition.ts";
 import {sanitizeDiscreteColorComponent} from "../../../../../operating/color/sanitizeDiscreteColorComponent.ts";
-import {setEachPixelYielding} from "../../../../../operator/setting-each-pixel-yielding/setEachPixelYielding.ts";
+import {setEachPixelYielding} from "../../../../../operating/operator/setting-each-pixel-yielding/setEachPixelYielding.ts";
 import {MapperOperator} from "../../MapperOperator.ts";
 import GrayscalingMapperOperatorDisplayer from "./displayer/GrayscalingMapperOperatorDisplayer.svelte";
 export class GrayscalingMapperOperator extends MapperOperator {
@@ -34,7 +34,7 @@ export class GrayscalingMapperOperator extends MapperOperator {
 				position,
 			);
 			const continuousColorWithoutAlphaComponent = colorWithAlphaComponent
-				.withoutAlpha()
+				.deleteAlphaComponent()
 				.convertToContinuous();
 			const grayness = continuousColorWithoutAlphaComponent.computeDotProduct(
 				this.multiplier,
@@ -49,7 +49,7 @@ export class GrayscalingMapperOperator extends MapperOperator {
 		});
 		return outputImage;
 	}
-	public withNewMultiplier(
+	public replaceMultiplier(
 		newMultiplier: ContinuousWithoutAlphaColor,
 	): GrayscalingMapperOperator {
 		return new GrayscalingMapperOperator(newMultiplier);

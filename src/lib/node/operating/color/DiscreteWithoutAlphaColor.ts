@@ -1,6 +1,7 @@
 import {ContinuousWithoutAlphaColor} from "./ContinuousWithoutAlphaColor.ts";
 import {convertDiscreteColorComponentToContinuousColorComponent} from "./convertDiscreteColorComponentToContinuousColorComponent.ts";
 import type {DiscreteColorComponent} from "./DiscreteColorComponent.ts";
+import {DiscreteWithAlphaColor} from "./DiscreteWithAlphaColor.ts";
 import {sanitizeDiscreteColorComponent} from "./sanitizeDiscreteColorComponent.ts";
 export class DiscreteWithoutAlphaColor {
 	public constructor(
@@ -44,6 +45,14 @@ export class DiscreteWithoutAlphaColor {
 				this.greenComponent - color.greenComponent,
 			),
 			sanitizeDiscreteColorComponent(this.blueComponent - color.blueComponent),
+		);
+	}
+	public withAlphaComponent(alphaComponent: number): DiscreteWithAlphaColor {
+		return new DiscreteWithAlphaColor(
+			this.redComponent,
+			this.greenComponent,
+			this.blueComponent,
+			alphaComponent,
 		);
 	}
 }

@@ -10,7 +10,7 @@ export function computeInBoardPositionFromInViewportPosition(
 				new Coordinates(
 					boardBoundingBox.width,
 					boardBoundingBox.height,
-				).divideByNumber(2),
+				).divideByScalar(2),
 			),
 		)
 		.addCoordinates(cameraPosition);

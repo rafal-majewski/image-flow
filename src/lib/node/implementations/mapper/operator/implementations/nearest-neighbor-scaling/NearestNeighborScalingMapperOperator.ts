@@ -1,7 +1,7 @@
 import {Coordinates} from "../../../../../../coordinates/Coordinates.ts";
-import type {Dimensions} from "../../../../../../dimensions/Dimensions.ts";
+import {Dimensions} from "../../../../../../dimensions/Dimensions.ts";
 import {readWithAlphaColorFromImageAtPosition} from "../../../../../operating/color/readWithAlphaColorFromImageAtPosition.ts";
-import {setEachPixelYielding} from "../../../../../operator/setting-each-pixel-yielding/setEachPixelYielding.ts";
+import {setEachPixelYielding} from "../../../../../operating/operator/setting-each-pixel-yielding/setEachPixelYielding.ts";
 import {MapperOperator} from "../../MapperOperator.ts";
 import NearestNeighborScalingMapperOperatorDisplayer from "./displayer/NearestNeighborScalingMapperOperatorDisplayer.svelte";
 export class NearestNeighborScalingMapperOperator extends MapperOperator {
@@ -15,7 +15,7 @@ export class NearestNeighborScalingMapperOperator extends MapperOperator {
 				return NearestNeighborScalingMapperOperatorDisplayer(...newParameters);
 			},
 			"nearest-neighbor-scaling",
-			"Nearest neighbor scaling",
+			"Nearest Neighbor Scaling",
 		);
 		this.outputImageDimensions = outputImageDimensions;
 	}
@@ -26,17 +26,20 @@ export class NearestNeighborScalingMapperOperator extends MapperOperator {
 			this.outputImageDimensions.width,
 			this.outputImageDimensions.height,
 		);
-		yield* setEachPixelYielding(outputImage, (positionInOutputImage) => {
-			const positionInInputImage = new Coordinates(
-				Math.floor(
-					(positionInOutputImage.x * inputImages[0].width)
-						/ this.outputImageDimensions.width,
-				),
-				Math.floor(
-					(positionInOutputImage.y * inputImages[0].height)
-						/ this.outputImageDimensions.height,
-				),
+		const stepSize = new Dimensions(inputImages[0].width, inputImages[0].height)
+			.convertToCoordinates()
+			.divideByCoordinatesComponentWise(
+				this.outputImageDimensions.convertToCoordinates(),
 			);
+		const offsetSize = stepSize
+			.divideByScalar(2)
+			.addCoordinates(new Coordinates(0.5, 0.5).negate());
+		yield* setEachPixelYielding(outputImage, (positionInOutputImage) => {
+			const positionInInputImage = offsetSize
+				.addCoordinates(
+					stepSize.multiplyByCoordinatesComponentWise(positionInOutputImage),
+				)
+				.round();
 			return readWithAlphaColorFromImageAtPosition(
 				inputImages[0],
 				positionInInputImage,
@@ -45,7 +48,7 @@ export class NearestNeighborScalingMapperOperator extends MapperOperator {
 		return outputImage;
 	}
 	public readonly outputImageDimensions: Dimensions;
-	public withNewOutputImageDimensions(
+	public replaceOutputImageDimensions(
 		newDimensions: Dimensions,
 	): NearestNeighborScalingMapperOperator {
 		return new NearestNeighborScalingMapperOperator(newDimensions);

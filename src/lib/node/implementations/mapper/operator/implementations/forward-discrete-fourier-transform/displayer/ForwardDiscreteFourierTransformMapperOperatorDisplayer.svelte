@@ -17,7 +17,7 @@
 		event: Event & {readonly currentTarget: HTMLInputElement},
 	): void {
 		onSetOperatorRequest(
-			operator.withNewOutputImageDimensions(
+			operator.replaceOutputImageDimensions(
 				new Dimensions(
 					event.currentTarget.valueAsNumber,
 					operator.outputImageDimensions.height,
@@ -29,7 +29,7 @@
 		event: Event & {readonly currentTarget: HTMLInputElement},
 	): void {
 		onSetOperatorRequest(
-			operator.withNewOutputImageDimensions(
+			operator.replaceOutputImageDimensions(
 				new Dimensions(
 					operator.outputImageDimensions.width,
 					event.currentTarget.valueAsNumber,
@@ -75,7 +75,7 @@
 					value="magnitude"
 					checked={operator.outputComponent === "magnitude"}
 					onchange={() => {
-						onSetOperatorRequest(operator.withNewOutputComponent("magnitude"));
+						onSetOperatorRequest(operator.replaceOutputComponent("magnitude"));
 					}}
 				/>
 				Magnitude
@@ -87,7 +87,7 @@
 					value="real"
 					checked={operator.outputComponent === "real"}
 					onchange={() => {
-						onSetOperatorRequest(operator.withNewOutputComponent("real"));
+						onSetOperatorRequest(operator.replaceOutputComponent("real"));
 					}}
 				/>
 				Real part
@@ -99,7 +99,7 @@
 					value="imaginary"
 					checked={operator.outputComponent === "imaginary"}
 					onchange={() => {
-						onSetOperatorRequest(operator.withNewOutputComponent("imaginary"));
+						onSetOperatorRequest(operator.replaceOutputComponent("imaginary"));
 					}}
 				/>
 				Imaginary part
@@ -120,7 +120,7 @@
 					value="1"
 					checked={operator.magnitudeExponentSign === 1}
 					onchange={() => {
-						onSetOperatorRequest(operator.withNewMagnitudeExponentSign(1));
+						onSetOperatorRequest(operator.replaceMagnitudeExponentSign(1));
 					}}
 				/>
 				+
@@ -132,7 +132,7 @@
 					value="-1"
 					checked={operator.magnitudeExponentSign === -1}
 					onchange={() => {
-						onSetOperatorRequest(operator.withNewMagnitudeExponentSign(-1));
+						onSetOperatorRequest(operator.replaceMagnitudeExponentSign(-1));
 					}}
 				/>
 				-
@@ -151,7 +151,7 @@
 					value={operator.a_x}
 					onchange={(event) => {
 						onSetOperatorRequest(
-							operator.withNewA_x(event.currentTarget.valueAsNumber),
+							operator.replaceA_x(event.currentTarget.valueAsNumber),
 						);
 					}}
 				/>
@@ -164,7 +164,7 @@
 					value={operator.b_x}
 					onchange={(event) => {
 						onSetOperatorRequest(
-							operator.withNewB_x(event.currentTarget.valueAsNumber),
+							operator.replaceB_x(event.currentTarget.valueAsNumber),
 						);
 					}}
 				/>
@@ -178,7 +178,7 @@
 					value={operator.a_y}
 					onchange={(event) => {
 						onSetOperatorRequest(
-							operator.withNewA_y(event.currentTarget.valueAsNumber),
+							operator.replaceA_y(event.currentTarget.valueAsNumber),
 						);
 					}}
 				/>
@@ -191,7 +191,7 @@
 					value={operator.b_y}
 					onchange={(event) => {
 						onSetOperatorRequest(
-							operator.withNewB_y(event.currentTarget.valueAsNumber),
+							operator.replaceB_y(event.currentTarget.valueAsNumber),
 						);
 					}}
 				/>
@@ -213,7 +213,7 @@
 					value={operator.lowerBound}
 					onchange={(event) => {
 						onSetOperatorRequest(
-							operator.withNewLowerBound(event.currentTarget.valueAsNumber),
+							operator.replaceLowerBound(event.currentTarget.valueAsNumber),
 						);
 					}}
 				/>
@@ -226,7 +226,7 @@
 					value={operator.upperBound}
 					onchange={(event) => {
 						onSetOperatorRequest(
-							operator.withNewUpperBound(event.currentTarget.valueAsNumber),
+							operator.replaceUpperBound(event.currentTarget.valueAsNumber),
 						);
 					}}
 				/>
@@ -237,3 +237,6 @@
 		</small>
 	</fieldset>
 </section>
+
+<style lang="scss">
+</style>
